@@ -1,5 +1,6 @@
 package com.webonise.urbanfarmers.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,45 +11,52 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.webonise.urbanfarmers.R;
+import com.webonise.urbanfarmers.utilities.Constants;
+import com.webonise.urbanfarmers.utilities.SharedPreferenceManager;
 
 public class SplashScreen extends AppCompatActivity {
 
+    private boolean isActivityStopped = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Thread sleeper = new Thread(sleepRunnable);
+        sleeper.start();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+    }
+    public Runnable sleepRunnable = new Runnable() {
+        public void run() {
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_splash_screen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            if (!isActivityStopped) {
+                goToNextActivity();
+            }
         }
+    };
 
-        return super.onOptionsItemSelected(item);
+    protected void goToNextActivity() {
+        Intent intent = new Intent();
+        SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(SplashScreen.this);
+        if (sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_IS_USER_LOGGED_IN)) {
+            //intent.setClass(SplashScreen.this, HomeScreenActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        } else {
+            //intent.setClass(SplashScreen.this, WalkThroughActivity.class);
+        }
+        //startActivity(intent);
+        //finish();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isActivityStopped = true;
+    }
+
 }
