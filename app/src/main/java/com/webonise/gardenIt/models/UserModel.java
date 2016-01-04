@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers.models;
+package com.webonise.gardenIt.models;
 
 public class UserModel {
 

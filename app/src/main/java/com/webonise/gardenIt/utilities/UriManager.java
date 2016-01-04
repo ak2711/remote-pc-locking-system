@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers.utilities;
+package com.webonise.gardenIt.utilities;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;

@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers.utilities;
+package com.webonise.gardenIt.utilities;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers;
+package com.webonise.gardenIt;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

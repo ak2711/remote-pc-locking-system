@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers;
+package com.webonise.gardenIt;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;

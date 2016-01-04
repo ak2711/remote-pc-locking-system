@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers;
+package com.webonise.gardenIt;
 
 import org.junit.Test;
 

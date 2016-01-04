@@ -1,11 +1,11 @@
-package com.webonise.urbanfarmers.utilities;
+package com.webonise.gardenIt.utilities;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-import com.webonise.urbanfarmers.R;
+import com.webonise.gardenIt.R;
 
 public class NetworkUtil {
     /**

@@ -1,13 +1,13 @@
-package com.webonise.urbanfarmers.activities;
+package com.webonise.gardenIt.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.webonise.urbanfarmers.R;
+import com.webonise.gardenIt.R;
 
-import com.webonise.urbanfarmers.utilities.Constants;
-import com.webonise.urbanfarmers.utilities.SharedPreferenceManager;
+import com.webonise.gardenIt.utilities.Constants;
+import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 
 public class SplashScreen extends AppCompatActivity {
 

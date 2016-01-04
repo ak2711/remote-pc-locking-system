@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers.webservice;
+package com.webonise.gardenIt.webservice;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,11 +14,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.webonise.urbanfarmers.AppController;
-import com.webonise.urbanfarmers.R;
-import com.webonise.urbanfarmers.interfaces.ApiResponseInterface;
-import com.webonise.urbanfarmers.utilities.LogUtils;
-import com.webonise.urbanfarmers.utilities.NetworkUtil;
+import com.webonise.gardenIt.AppController;
+import com.webonise.gardenIt.R;
+import com.webonise.gardenIt.interfaces.ApiResponseInterface;
+import com.webonise.gardenIt.utilities.LogUtils;
+import com.webonise.gardenIt.utilities.NetworkUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;

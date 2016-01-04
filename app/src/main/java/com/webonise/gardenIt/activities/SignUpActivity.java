@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers.activities;
+package com.webonise.gardenIt.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,13 +13,13 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
-import com.webonise.urbanfarmers.R;
-import com.webonise.urbanfarmers.interfaces.ApiResponseInterface;
-import com.webonise.urbanfarmers.models.UserModel;
-import com.webonise.urbanfarmers.utilities.Constants;
-import com.webonise.urbanfarmers.utilities.LogUtils;
-import com.webonise.urbanfarmers.utilities.SharedPreferenceManager;
-import com.webonise.urbanfarmers.webservice.WebService;
+import com.webonise.gardenIt.R;
+import com.webonise.gardenIt.interfaces.ApiResponseInterface;
+import com.webonise.gardenIt.models.UserModel;
+import com.webonise.gardenIt.utilities.Constants;
+import com.webonise.gardenIt.utilities.LogUtils;
+import com.webonise.gardenIt.utilities.SharedPreferenceManager;
+import com.webonise.gardenIt.webservice.WebService;
 
 import org.json.JSONObject;
 
@@ -30,10 +30,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private final String TAG = this.getClass().getName();
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.tvTitle)
-    TextView tvTitle;
     @Bind(R.id.etFullName)
     EditText etFullName;
     @Bind(R.id.etPhoneNumber)
@@ -48,16 +44,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
-        setToolbar();
-
         btnSignUp.setOnClickListener(this);
-    }
-
-    private void setToolbar() {
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            tvTitle.setText(R.string.sign_up);
-        }
     }
 
     @Override

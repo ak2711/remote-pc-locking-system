@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers.webservice;
+package com.webonise.gardenIt.webservice;
 
 
 import java.security.KeyManagementException;

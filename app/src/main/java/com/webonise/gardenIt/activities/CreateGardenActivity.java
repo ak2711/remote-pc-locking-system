@@ -1,11 +1,11 @@
-package com.webonise.urbanfarmers.activities;
+package com.webonise.gardenIt.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
-import com.webonise.urbanfarmers.R;
+import com.webonise.gardenIt.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

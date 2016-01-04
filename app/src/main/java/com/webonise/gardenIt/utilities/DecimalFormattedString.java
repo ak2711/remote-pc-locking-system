@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers.utilities;
+package com.webonise.gardenIt.utilities;
 
 public class DecimalFormattedString {
 

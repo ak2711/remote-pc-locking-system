@@ -1,4 +1,4 @@
-package com.webonise.urbanfarmers.utilities;
+package com.webonise.gardenIt.utilities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,7 +8,7 @@ import android.os.Environment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.webonise.urbanfarmers.AppController;
+import com.webonise.gardenIt.AppController;
 
 import java.io.File;
 import java.util.Arrays;
