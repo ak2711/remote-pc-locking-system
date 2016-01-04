@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.webonise.urbanfarmers"
+        applicationId "com.webonise.gardenIt"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
@@ -28,7 +28,7 @@ android {
                 variant.outputs.each { output ->
                     output.outputFile = new File(output.outputFile.parent,
                             output.outputFile.name.replace("app-release.apk",
-                                    "UrbanFarmers" + versionName + ".apk"))
+                                    "GardenIt" + versionName + ".apk"))
 
                 }
             }
@@ -42,8 +42,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-    compile 'com.facebook.android:facebook-android-sdk:4.1.0'
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.mcxiaoke.volley:library:1.0.17'
+    compile 'com.jakewharton:butterknife:7.0.1'
 }
