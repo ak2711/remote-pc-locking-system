@@ -31,11 +31,12 @@
         </activity>
         <activity
             android:name="com.webonise.gardenIt.activities.SignUpActivity"
-            android:label="@string/sign_up"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="com.webonise.gardenIt.activities.CreateGardenActivity"
-            android:label="@string/sign_up"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name="com.webonise.gardenIt.activities.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

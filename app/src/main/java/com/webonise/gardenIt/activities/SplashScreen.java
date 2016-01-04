@@ -17,9 +17,14 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isActivityStopped = false;
         Thread sleeper = new Thread(sleepRunnable);
         sleeper.start();
-
     }
 
     public Runnable sleepRunnable = new Runnable() {
@@ -39,12 +44,14 @@ public class SplashScreen extends AppCompatActivity {
         Intent intent = new Intent();
         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager
                 (SplashScreen.this);
-        if (sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_IS_USER_LOGGED_IN)) {
+        if (sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_IS_GARDEN_CREATED)){
+            intent.setClass(SplashScreen.this, DashboardActivity.class);
+        } else if (sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_IS_USER_LOGGED_IN)) {
             intent.setClass(SplashScreen.this, CreateGardenActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         } else {
             intent.setClass(SplashScreen.this, SignUpActivity.class);
         }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
@@ -54,5 +61,4 @@ public class SplashScreen extends AppCompatActivity {
         super.onStop();
         isActivityStopped = true;
     }
-
 }

@@ -73,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void registerUser(String fullName, String phoneNumber, String email) {
+    private void registerUser(String fullName, final String phoneNumber, String email) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
         webService.setUrl(Constants.REGISTER_URL);

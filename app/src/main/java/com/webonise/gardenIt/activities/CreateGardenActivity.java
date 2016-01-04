@@ -10,16 +10,19 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,7 +30,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.webonise.gardenIt.R;
+import com.webonise.gardenIt.interfaces.ApiResponseInterface;
+import com.webonise.gardenIt.models.CreateGardenModel;
+import com.webonise.gardenIt.models.UserModel;
+import com.webonise.gardenIt.utilities.Constants;
+import com.webonise.gardenIt.utilities.LogUtils;
+import com.webonise.gardenIt.utilities.SharedPreferenceManager;
+import com.webonise.gardenIt.webservice.WebService;
+
+import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,14 +48,14 @@ import butterknife.ButterKnife;
 public class CreateGardenActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        View.OnClickListener {
 
+    private Location location;
     private SupportMapFragment mapFragment;
     private GoogleMap map;
     private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
-    private long UPDATE_INTERVAL = 60000;  /* 60 secs */
-    private long FASTEST_INTERVAL = 5000; /* 5 secs */
+
+    private SharedPreferenceManager sharedPreferenceManager;
 
     private final String TAG = this.getClass().getName();
 
@@ -52,6 +65,8 @@ public class CreateGardenActivity extends AppCompatActivity implements
     TextView tvTitle;
     @Bind(R.id.etNameYourGarden)
     EditText etNameYourGarden;
+    @Bind(R.id.btnCreateGarden)
+    Button btnCreateGarden;
 
     /*
      * Define a request code to send to Google Play services This code is
@@ -64,6 +79,7 @@ public class CreateGardenActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_garden);
         ButterKnife.bind(this);
+        btnCreateGarden.setOnClickListener(this);
         setToolbar();
         mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         if (mapFragment != null) {
@@ -188,35 +204,16 @@ public class CreateGardenActivity extends AppCompatActivity implements
     @Override
     public void onConnected(Bundle dataBundle) {
         // Display the connection status
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
             Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             map.animateCamera(cameraUpdate);
-            startLocationUpdates();
         } else {
             Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast
                     .LENGTH_SHORT).show();
         }
-    }
-
-    protected void startLocationUpdates() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                mLocationRequest, this);
-    }
-
-    public void onLocationChanged(Location location) {
-        // Report to the UI that the location was updated
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-
     }
 
     /*
@@ -247,8 +244,8 @@ public class CreateGardenActivity extends AppCompatActivity implements
                 // Start an Activity that tries to resolve the error
                 connectionResult.startResolutionForResult(this,
                         CONNECTION_FAILURE_RESOLUTION_REQUEST);
-				/*
-				 * Thrown if Google Play services canceled the original
+                /*
+                 * Thrown if Google Play services canceled the original
 				 * PendingIntent
 				 */
             } catch (IntentSender.SendIntentException e) {
@@ -258,6 +255,15 @@ public class CreateGardenActivity extends AppCompatActivity implements
         } else {
             Toast.makeText(getApplicationContext(),
                     "Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnCreateGarden:
+                validateAndCreateGarden();
+                break;
         }
     }
 
@@ -283,6 +289,79 @@ public class CreateGardenActivity extends AppCompatActivity implements
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return mDialog;
         }
+    }
+
+    private void validateAndCreateGarden() {
+        String gardenName = etNameYourGarden.getText().toString();
+        if (!TextUtils.isEmpty(gardenName)) {
+            createGarden(gardenName);
+        } else {
+            Toast.makeText(CreateGardenActivity.this, getString(R.string.enter_garden_name),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void createGarden(String gardenName) {
+        WebService webService = new WebService(this);
+        webService.setProgressDialog();
+        webService.setUrl(Constants.CREATE_GARDEN);
+        webService.setBody(getBody(gardenName));
+        webService.POSTStringRequest(new ApiResponseInterface() {
+            @Override
+            public void onResponse(String response) {
+                CreateGardenModel createGardenModel = new Gson().fromJson(response,
+                        CreateGardenModel.class);
+                if (createGardenModel.getStatus() == Constants.RESPONSE_CODE_200) {
+                    if (sharedPreferenceManager == null) {
+                        sharedPreferenceManager = new SharedPreferenceManager
+                                (CreateGardenActivity.this);
+                    }
+                    sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_GARDEN_CREATED,
+                            true);
+                    gotoNextActivity();
+                } else {
+                    Toast.makeText(CreateGardenActivity.this, createGardenModel.getMessage(), Toast
+                            .LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+    }
+
+    private JSONObject getBody(String gardenName) {
+        LatLng centerLocation = map.getCameraPosition().target;
+        if (sharedPreferenceManager == null) {
+            sharedPreferenceManager = new SharedPreferenceManager(CreateGardenActivity.this);
+        }
+        UserModel userModel = sharedPreferenceManager.getObject(
+                Constants.KEY_PREF_USER, UserModel.class);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(Constants.REQUEST_KEY_NAME, gardenName);
+            jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER, userModel.getUser().getPhone_number());
+            jsonObject.put(Constants.REQUEST_KEY_DESCRIPTION, "Test"); //Not needed right now
+            jsonObject.put(Constants.REQUEST_KEY_GARDEN_TYPE, "Test"); //Not needed right now
+            jsonObject.put(Constants.REQUEST_KEY_LATITUDE,
+                    Double.toString(centerLocation.latitude));
+            jsonObject.put(Constants.REQUEST_KEY_LONGITUDE,
+                    Double.toString(centerLocation.longitude));
+            jsonObject.put(Constants.REQUEST_KEY_ADDRESS, "Test"); //Not needed right now
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LogUtils.LOGD(TAG, jsonObject.toString());
+        return jsonObject;
+    }
+
+    private void gotoNextActivity() {
+        Intent intent = new Intent(CreateGardenActivity.this, DashboardActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
 
