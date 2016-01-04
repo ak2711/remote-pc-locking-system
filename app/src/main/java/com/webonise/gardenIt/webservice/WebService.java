@@ -17,6 +17,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
+import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.LogUtils;
 import com.webonise.gardenIt.utilities.NetworkUtil;
 
@@ -136,7 +137,7 @@ public class WebService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 LogUtils.LOGD(TAG, "onErrorResponse :: " + error);
-                Toast.makeText(mContext, mContext.getString(R.string.error_msg), Toast.LENGTH_LONG);
+                Toast.makeText(mContext, mContext.getString(R.string.error_msg), Toast.LENGTH_LONG).show();
                 responseInterface.onError(error);
                 if (progressDialog != null)
                     progressDialog.dismiss();
@@ -147,7 +148,7 @@ public class WebService {
                 if (header != null)
                     return header;
                 else
-                    return super.getHeaders();
+                    return getDefaultHeaders();
             }
 
             @Override
@@ -237,5 +238,12 @@ public class WebService {
             }
         });
         addToRequestQueue(jsonArrayRequest);
+    }
+
+    private HashMap<String, String> getDefaultHeaders(){
+        header = new HashMap<>();
+        header.put(Constants.HEADER_CONTENT_TYPE, Constants.APPLICATION_JSON);
+        header.put(Constants.HEADER_ACCEPT, Constants.APPLICATION_JSON);
+        return header;
     }
 }

@@ -13,10 +13,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("../miles2share_keystore.jks")
-            storePassword "miles2share#"
-            keyAlias "miles2share"
-            keyPassword "miles2share#"
+            storeFile file("../gardenIt.jks")
+            storePassword "Webonise123#"
+            keyAlias "gardenIt"
+            keyPassword "Webonise123#"
         }
     }
     buildTypes {
@@ -46,4 +46,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.mcxiaoke.volley:library:1.0.17'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.google.android.gms:play-services:8.3.0'
 }

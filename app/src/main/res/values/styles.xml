@@ -41,4 +41,9 @@
         <item name="android:textColor">@color/text_color_white</item>
     </style>
 
+    <style name="ButtonStyleRed">
+        <item name="android:background">@color/button_background_light_red</item>
+        <item name="android:textColor">@color/text_color_white</item>
+    </style>
+
 </resources>

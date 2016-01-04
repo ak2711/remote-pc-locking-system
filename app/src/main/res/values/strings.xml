@@ -11,4 +11,6 @@
     <string name="enter_full_name">Please enter your Full Name.</string>
     <string name="enter_phone_number">Please enter your Phone Number.</string>
     <string name="create_garden">Create Garden</string>
+    <string name="name_your_garden">Name your garden</string>
+
 </resources>

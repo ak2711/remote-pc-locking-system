@@ -84,5 +84,10 @@
             android:layout_margin="15dp"
             android:text="@string/sign_up"/>
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:src="@drawable/bottom_background"/>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

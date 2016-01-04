@@ -24,51 +24,12 @@
             android:theme="@style/TextLabel">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/etFullName"
+                android:id="@+id/et"
                 style="@style/EditTextStyleBlack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/full_name"
-                android:inputType="textPersonName"/>
+                android:hint="@string/name_your_garden"/>
         </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:theme="@style/TextLabel">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/etPhoneNumber"
-                style="@style/EditTextStyleBlack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/phone_number"
-                android:inputType="phone"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:theme="@style/TextLabel">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/etEmailAddress"
-                style="@style/EditTextStyleBlack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/email_address"
-                android:inputType="textEmailAddress"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <Button
-            android:id="@+id/btnSignUp"
-            style="@style/ButtonStyleGreen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:text="@string/sign_up"/>
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
