@@ -22,7 +22,6 @@ import com.android.volley.VolleyError;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -304,7 +303,7 @@ public class CreateGardenActivity extends AppCompatActivity implements
     private void createGarden(String gardenName) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
-        webService.setUrl(Constants.CREATE_GARDEN);
+        webService.setUrl(Constants.CREATE_GARDEN_URL);
         webService.setBody(getBody(gardenName));
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
@@ -318,10 +317,12 @@ public class CreateGardenActivity extends AppCompatActivity implements
                     }
                     sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_GARDEN_CREATED,
                             true);
+                    sharedPreferenceManager.putObject(Constants.KEY_PREF_GARDEN_DETAILS,
+                            createGardenModel);
                     gotoNextActivity();
                 } else {
-                    Toast.makeText(CreateGardenActivity.this, createGardenModel.getMessage(), Toast
-                            .LENGTH_SHORT).show();
+                    Toast.makeText(CreateGardenActivity.this, createGardenModel.getMessage(),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -342,7 +343,8 @@ public class CreateGardenActivity extends AppCompatActivity implements
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_NAME, gardenName);
-            jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER, userModel.getUser().getPhone_number());
+            jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
+                    userModel.getUser().getPhone_number());
             jsonObject.put(Constants.REQUEST_KEY_DESCRIPTION, "Test"); //Not needed right now
             jsonObject.put(Constants.REQUEST_KEY_GARDEN_TYPE, "Test"); //Not needed right now
             jsonObject.put(Constants.REQUEST_KEY_LATITUDE,
@@ -359,7 +361,7 @@ public class CreateGardenActivity extends AppCompatActivity implements
     }
 
     private void gotoNextActivity() {
-        Intent intent = new Intent(CreateGardenActivity.this, DashboardActivity.class);
+        Intent intent = new Intent(CreateGardenActivity.this, AddPlantActivity.class);
         startActivity(intent);
         finish();
     }

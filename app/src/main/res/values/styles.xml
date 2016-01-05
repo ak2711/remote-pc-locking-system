@@ -20,9 +20,11 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
 
+    <style name="EditTextStyleBlackSingleLine" parent="EditTextStyleBlack">
+        <item name="android:singleLine">true</item>
+    </style>
     <style name="EditTextStyleBlack">
         <item name="android:layout_marginTop">10dp</item>
-        <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/text_color_black</item>
     </style>
 
@@ -42,8 +44,12 @@
     </style>
 
     <style name="ButtonStyleRed">
-        <item name="android:background">@color/button_background_light_red</item>
+        <item name="android:background">@drawable/button_background_red</item>
         <item name="android:textColor">@color/text_color_white</item>
     </style>
 
+    <style name="ButtonStyleWhite">
+        <item name="android:background">@drawable/button_background_white_with_green_border</item>
+        <item name="android:textColor">@color/text_color_green</item>
+    </style>
 </resources>

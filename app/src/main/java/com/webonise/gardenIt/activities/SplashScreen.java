@@ -44,8 +44,10 @@ public class SplashScreen extends AppCompatActivity {
         Intent intent = new Intent();
         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager
                 (SplashScreen.this);
-        if (sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_IS_GARDEN_CREATED)){
+        if (sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_IS_PLANT_ADDED)){
             intent.setClass(SplashScreen.this, DashboardActivity.class);
+        } else if (sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_IS_GARDEN_CREATED)){
+            intent.setClass(SplashScreen.this, AddPlantActivity.class);
         } else if (sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_IS_USER_LOGGED_IN)) {
             intent.setClass(SplashScreen.this, CreateGardenActivity.class);
         } else {

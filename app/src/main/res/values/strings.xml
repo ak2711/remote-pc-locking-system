@@ -13,4 +13,21 @@
     <string name="create_garden">Create Garden</string>
     <string name="name_your_garden">Name your garden</string>
     <string name="enter_garden_name">Please enter Garden Name</string>
+    <string name="add_plant">Add Plant</string>
+    <string name="add_new_plant">Add New Plant</string>
+    <string name="name_of_plant">Name of plant</string>
+    <string name="description">Description</string>
+    <string name="add_attachments">Add Attachments</string>
+    <string name="capture">Capture</string>
+    <string name="gallery">Gallery</string>
+    <string name="toast_pic_not_taken">Picture was not taken</string>
+    <string name="toast_online_image">Cannot read the image. Maybe the image is saved online or is corrupted. Please select locally saved images only.</string>
+    <string name="enter_plant_name">Please enter name of Plant.</string>
+    <string name="enter_description">Please provide some description.</string>
+    <string name="provide_image">Please add an image.</string>
+
+    <string name="my_garden">My Garden</string>
+    <string name="request_a_service">Request a service</string>
+    <string name="create_an_issue">Create an Issue</string>
+
 </resources>

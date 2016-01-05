@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class FileContentProvider extends ContentProvider {
     public static final String FILE_EXTENSION_JPEG = ".png";
-    public static final Uri CONTENT_URI = Uri.parse("content://com.miles2share.android/");
+    public static final Uri CONTENT_URI = Uri.parse("content://com.webonise.gardenIt/");
     private static final HashMap<String, String> MIME_TYPES = new HashMap<>();
 
     public static FileContentProvider contentProviderInstance;
@@ -44,15 +44,12 @@ public class FileContentProvider extends ContentProvider {
             if (!mFile.exists()) {
                 mFile.createNewFile();
             }
-
             getContext().getContentResolver().notifyChange(CONTENT_URI, null);
             return (true);
-
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
     @Override
@@ -92,9 +89,8 @@ public class FileContentProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+                        String sortOrder) {
         return null;
     }
-
-
 }

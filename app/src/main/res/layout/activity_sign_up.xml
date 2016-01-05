@@ -15,12 +15,11 @@
         android:layout_marginRight="10dp"
         android:orientation="vertical">
 
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@drawable/logo"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,7 +38,7 @@
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/etFullName"
-                style="@style/EditTextStyleBlack"
+                style="@style/EditTextStyleBlackSingleLine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/full_name"
@@ -54,7 +53,7 @@
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/etPhoneNumber"
-                style="@style/EditTextStyleBlack"
+                style="@style/EditTextStyleBlackSingleLine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/phone_number"
@@ -69,7 +68,7 @@
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/etEmailAddress"
-                style="@style/EditTextStyleBlack"
+                style="@style/EditTextStyleBlackSingleLine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email_address"
@@ -83,11 +82,11 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:text="@string/sign_up"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:src="@drawable/bottom_background"/>
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:src="@drawable/bottom_background"/>
 </android.support.design.widget.CoordinatorLayout>
