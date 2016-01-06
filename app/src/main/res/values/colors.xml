@@ -13,4 +13,5 @@
     <color name="text_color_white">#FFFFFFFF</color>
     <color name="color_green">#FF4DAF50</color>
     <color name="background_color_white">#FFFFFFFF</color>
+    <color name="background_color_light_grey">#FFEEEEEE</color>
 </resources>

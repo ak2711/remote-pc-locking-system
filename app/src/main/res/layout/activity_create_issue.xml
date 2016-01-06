@@ -16,18 +16,18 @@
         android:layout_marginTop="15dp">
 
         <Button
-            android:id="@+id/btnAddPlant"
+            android:id="@+id/btnCreateIssue"
             style="@style/ButtonStyleRed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="15dp"
-            android:text="@string/add_plant"/>
+            android:text="@string/create_issue"/>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/btnAddPlant"
+            android:layout_above="@id/btnCreateIssue"
             android:layout_alignParentTop="true">
 
             <LinearLayout
@@ -37,19 +37,40 @@
                 android:layout_marginRight="10dp"
                 android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@color/background_color_light_grey">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/icon_info"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="@string/create_issue_text"
+                        android:textColor="@color/text_color_grey"/>
+
+                </LinearLayout>
+
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/ftNameOfPlant"
+                    android:id="@+id/ftIssueTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:theme="@style/TextLabel">
 
                     <android.support.v7.widget.AppCompatEditText
-                        android:id="@+id/etNameOfPlant"
+                        android:id="@+id/etIssueTitle"
                         style="@style/EditTextStyleBlackSingleLine"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/name_of_plant"/>
+                        android:hint="@string/title_pest_weed"/>
                 </android.support.design.widget.TextInputLayout>
 
 
@@ -57,7 +78,7 @@
                     android:id="@+id/ftDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/ftNameOfPlant"
+                    android:layout_below="@id/ftIssueTitle"
                     android:layout_marginTop="10dp"
                     android:theme="@style/TextLabel">
 

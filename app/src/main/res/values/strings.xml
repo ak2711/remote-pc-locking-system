@@ -29,5 +29,17 @@
     <string name="my_garden">My Garden</string>
     <string name="request_a_service">Request a service</string>
     <string name="create_an_issue">Create an Issue</string>
+    <string name="send_request">Send Request</string>
+    <string name="create_issue">Create Issue</string>
+    <string name="title_mowing_cutting">Title (eg: Mowing, Cutting etc)</string>
+    <string name="request_service_text">We provide endless range of gardening services.\n
+        Lawn mowing, Pruning, Weedeating, Edge trimming, Section tidy-ups, Fertilising and Spraying,
+        Lawn care, Pots Tools.
+    </string>
 
+    <string name="title_pest_weed">Title (eg: Pests, Weed etc)</string>
+    <string name="create_issue_text">Be sure to regularly check your pots and plants for pests and
+        diseases. Protect from infestation. \nCheck for plant health at regular intervals to avoid
+        replacements.
+    </string>
 </resources>

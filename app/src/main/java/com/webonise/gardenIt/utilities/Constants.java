@@ -16,6 +16,8 @@ public class Constants {
     public static final String CREATE_GARDEN_URL = BASE_URL_API +  "create_garden";
     public static final String ADD_PLANT_URL = BASE_URL_API +  "create_plant";
     public static final String SIGN_IN_URL = BASE_URL_API +  "sign_in";
+    public static final String CREATE_ISSUE_URL = BASE_URL_API +  "create_issue";
+    public static final String REQUEST_SERVICE_URL = BASE_URL_API +  "request_gardener";
 
     public static final String REQUEST_KEY_EMAIl = "email";
     public static final String REQUEST_KEY_NAME = "name";
@@ -36,4 +38,8 @@ public class Constants {
 
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
     public static final int PICK_IMAGE = CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE + 1;
+
+    public static final String BUNDLE_KEY_SHOW_BACK_ICON = "show_back_icon";
+    public static final String BUNDLE_KEY_PLANT_ID = "plantId";
+    public static final String BUNDLE_KEY_GARDEN_ID = "gardenId";
 }

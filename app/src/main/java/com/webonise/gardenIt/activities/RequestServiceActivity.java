@@ -25,8 +25,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
-import com.webonise.gardenIt.models.AddPlantRequestModel;
 import com.webonise.gardenIt.models.CreateGardenModel;
+import com.webonise.gardenIt.models.CreateIssueRequestModel;
+import com.webonise.gardenIt.models.ServiceRequestModel;
 import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
@@ -45,7 +46,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class AddPlantActivity extends AppCompatActivity implements View.OnClickListener {
+public class RequestServiceActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final String TAG = this.getClass().getName();
 
@@ -53,8 +54,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     Toolbar toolbar;
     @Bind(R.id.tvTitle)
     TextView tvTitle;
-    @Bind(R.id.etNameOfPlant)
-    EditText etNameOfPlant;
+    @Bind(R.id.etServiceTitle)
+    EditText etServiceTitle;
     @Bind(R.id.etDescription)
     EditText etDescription;
     @Bind(R.id.ivToUpload)
@@ -63,22 +64,21 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
     RelativeLayout rlGallery;
-    @Bind(R.id.btnAddPlant)
-    Button btnAddPlant;
+    @Bind(R.id.btnRequestService)
+    Button btnRequestService;
 
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
-    private boolean showBackButton = false;
+    private int gardenId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_plant);
+        setContentView(R.layout.activity_request_service);
         ButterKnife.bind(this);
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
-        btnAddPlant.setOnClickListener(this);
-
+        btnRequestService.setOnClickListener(this);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
         super.onResume();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            showBackButton = bundle.getBoolean(Constants.BUNDLE_KEY_SHOW_BACK_ICON);
+            gardenId = bundle.getInt(Constants.BUNDLE_KEY_GARDEN_ID);
         }
         setToolbar();
     }
@@ -94,16 +94,14 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            tvTitle.setText(R.string.add_new_plant);
-            if (showBackButton) {
-                toolbar.setNavigationIcon(R.drawable.ic_action_back);
-                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onBackPressed();
-                    }
-                });
-            }
+            tvTitle.setText(R.string.request_a_service);
+            toolbar.setNavigationIcon(R.drawable.ic_action_back);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
         }
     }
 
@@ -118,8 +116,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                 Intent galleryIntent = new ImageUtil().getOpenGalleryIntent();
                 startActivityForResult(galleryIntent, Constants.PICK_IMAGE);
                 break;
-            case R.id.btnAddPlant:
-                validateAndAddPlant();
+            case R.id.btnRequestService:
+                validateAndRequestService();
                 break;
         }
     }
@@ -152,55 +150,49 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     }
 
     protected void showImage() {
-        AppController.setupUniversalImageLoader(AddPlantActivity.this);
+        AppController.setupUniversalImageLoader(RequestServiceActivity.this);
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
     }
 
-    private void validateAndAddPlant() {
-        String nameOfPlant, description;
-        nameOfPlant = etNameOfPlant.getText().toString();
+    private void validateAndRequestService() {
+        String title, description;
+        title = etServiceTitle.getText().toString();
         description = etDescription.getText().toString();
 
-        if (!TextUtils.isEmpty(nameOfPlant)) {
+        if (!TextUtils.isEmpty(title)) {
             if (!TextUtils.isEmpty(description)) {
                 if (image_file != null) {
-                    addPlant(nameOfPlant, description);
+                    requestService(title, description);
                 } else {
-                    Toast.makeText(AddPlantActivity.this, getString(R.string.provide_image),
+                    Toast.makeText(RequestServiceActivity.this, getString(R.string.provide_image),
                             Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(AddPlantActivity.this, getString(R.string.enter_description),
+                Toast.makeText(RequestServiceActivity.this, getString(R.string.enter_description),
                         Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(AddPlantActivity.this, getString(R.string.enter_plant_name), Toast
+            Toast.makeText(RequestServiceActivity.this, getString(R.string.enter_plant_name), Toast
                     .LENGTH_LONG).show();
         }
     }
 
-    private void addPlant(String nameOfPlant, String description) {
+    private void requestService(String title, String description) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
-        webService.setUrl(Constants.ADD_PLANT_URL);
-        webService.setBody(getBody(nameOfPlant, description));
+        webService.setUrl(Constants.REQUEST_SERVICE_URL);
+        webService.setBody(getBody(title, description));
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
             public void onResponse(String response) {
                 CreateGardenModel createGardenModel = new Gson().fromJson(response,
                         CreateGardenModel.class);
                 if (createGardenModel.getStatus() == Constants.RESPONSE_CODE_200) {
-                    if (sharedPreferenceManager == null) {
-                        sharedPreferenceManager = new SharedPreferenceManager
-                                (AddPlantActivity.this);
-                    }
-                    sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_PLANT_ADDED,
-                            true);
                     gotoNextActivity();
                 } else {
-                    Toast.makeText(AddPlantActivity.this, createGardenModel.getMessage(),
+                    Toast.makeText(RequestServiceActivity.this, createGardenModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -212,34 +204,35 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private JSONObject getBody(String nameOfPlant, String description) {
+    private JSONObject getBody(String title, String description) {
         if (sharedPreferenceManager == null) {
-            sharedPreferenceManager = new SharedPreferenceManager(AddPlantActivity.this);
+            sharedPreferenceManager = new SharedPreferenceManager(RequestServiceActivity.this);
         }
         UserModel userModel = sharedPreferenceManager.getObject(
                 Constants.KEY_PREF_USER, UserModel.class);
 
-        CreateGardenModel createGardenModel = sharedPreferenceManager.getObject(Constants
-                .KEY_PREF_GARDEN_DETAILS, CreateGardenModel.class);
-        AddPlantRequestModel addPlantRequestModel = new AddPlantRequestModel();
+        ServiceRequestModel serviceRequestModel = new ServiceRequestModel();
 
         try {
-            addPlantRequestModel.setName(nameOfPlant);
-            addPlantRequestModel.setDescription(description);
-            addPlantRequestModel.setPhoneNumber(userModel.getUser().getPhone_number());
-            addPlantRequestModel.setGardenId(createGardenModel.getGarden().getId());
+            serviceRequestModel.setTitle(title);
+            serviceRequestModel.setDescription(description);
+            serviceRequestModel.setPhoneNumber(userModel.getUser().getPhone_number());
 
-            List<AddPlantRequestModel.PlantImage> plantImages = new ArrayList<>();
+            if (gardenId > 0) {
+                serviceRequestModel.setGardenId(gardenId);
+            }
+            List<ServiceRequestModel.PlantImage> plantImages = new ArrayList<>();
 
-            AddPlantRequestModel.PlantImage plantImage = addPlantRequestModel.new PlantImage();
+            ServiceRequestModel.PlantImage plantImage = serviceRequestModel.new
+                    PlantImage();
             plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMTER_FOR_IMAGE
                     + getEncodedImage());
 
             plantImages.add(plantImage);
 
-            addPlantRequestModel.setPlantImage(plantImages);
+            serviceRequestModel.setPlantImage(plantImages);
 
-            return new JSONObject(new Gson().toJson(addPlantRequestModel));
+            return new JSONObject(new Gson().toJson(serviceRequestModel));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -248,7 +241,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void gotoNextActivity() {
-        Intent intent = new Intent(AddPlantActivity.this, DashboardActivity.class);
+        Intent intent = new Intent(RequestServiceActivity.this, DashboardActivity.class);
         startActivity(intent);
         finish();
     }

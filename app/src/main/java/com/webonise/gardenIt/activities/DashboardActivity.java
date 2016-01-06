@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.adapters.DashboardRecyclerViewAdapter;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
-import com.webonise.gardenIt.models.CreateGardenModel;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
@@ -40,9 +39,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView tvTitle;
     @Bind(R.id.rlAddNewPlant)
     RelativeLayout rlAddNewPlant;
-    @Bind(R.id.btnRequestService)
-    Button btnRequestService;
     @Bind(R.id.btnCreateIssue)
+    Button btnRequestService;
+    @Bind(R.id.btnRequestService)
     Button btnCreateIssue;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -70,15 +69,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent();
         switch (v.getId()) {
             case R.id.btnCreateIssue:
+                goToCreateIssueActivity();
                 break;
             case R.id.btnRequestService:
+                goToServiceRequestActivity();
                 break;
             case R.id.rlAddNewPlant:
-                intent.setClass(DashboardActivity.this, AddPlantActivity.class);
-                startActivity(intent);
+                goToAddNewPlantActivity();
                 break;
         }
     }
@@ -105,12 +104,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             = new DashboardRecyclerViewAdapter(DashboardActivity.this);
 
                     //Set Span count to 2 as Add Member has 2 items to show.
-                    GridLayoutManager gridLayoutManager = new GridLayoutManager(DashboardActivity
-                            .this, 2);
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(
+                            DashboardActivity.this, 2);
 
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(gridLayoutManager);
                     recyclerView.setAdapter(dashboardRecyclerViewAdapter);
+
                 } else {
                     Toast.makeText(DashboardActivity.this, userDashboardModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
@@ -139,4 +139,24 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         }
         return jsonObject;
     }
+
+    private void goToAddNewPlantActivity() {
+        Intent intent = new Intent();
+        intent.setClass(DashboardActivity.this, AddPlantActivity.class);
+        intent.putExtra(Constants.BUNDLE_KEY_SHOW_BACK_ICON, true);
+        startActivity(intent);
+    }
+
+    private void goToCreateIssueActivity() {
+        Intent intent = new Intent();
+        intent.setClass(DashboardActivity.this, CreateIssueActivity.class);
+        startActivity(intent);
+    }
+
+    private void goToServiceRequestActivity() {
+        Intent intent = new Intent();
+        intent.setClass(DashboardActivity.this, RequestServiceActivity.class);
+        startActivity(intent);
+    }
+
 }
