@@ -10,11 +10,12 @@ public class Constants {
     public static final String KEY_PREF_USER_GARDEN_PLANTS = "user_garden_plants";
 
 
-    public static final String BASE_URL = "http://test-uf.weboapps.com/apis/";
-    public static final String REGISTER_URL = BASE_URL +  "register";
-    public static final String CREATE_GARDEN_URL = BASE_URL +  "create_garden";
-    public static final String ADD_PLANT_URL = BASE_URL +  "create_plant";
-    public static final String SIGN_IN_URL = BASE_URL +  "sign_in";
+    public static final String BASE_URL = "http://test-uf.weboapps.com";
+    public static final String BASE_URL_API = BASE_URL + "/apis/";
+    public static final String REGISTER_URL = BASE_URL_API +  "register";
+    public static final String CREATE_GARDEN_URL = BASE_URL_API +  "create_garden";
+    public static final String ADD_PLANT_URL = BASE_URL_API +  "create_plant";
+    public static final String SIGN_IN_URL = BASE_URL_API +  "sign_in";
 
     public static final String REQUEST_KEY_EMAIl = "email";
     public static final String REQUEST_KEY_NAME = "name";

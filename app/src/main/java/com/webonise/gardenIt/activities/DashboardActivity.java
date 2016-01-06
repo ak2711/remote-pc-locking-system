@@ -1,5 +1,6 @@
 package com.webonise.gardenIt.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -69,13 +70,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-
+        Intent intent = new Intent();
         switch (v.getId()) {
             case R.id.btnCreateIssue:
                 break;
             case R.id.btnRequestService:
                 break;
             case R.id.rlAddNewPlant:
+                intent.setClass(DashboardActivity.this, AddPlantActivity.class);
+                startActivity(intent);
                 break;
         }
     }
