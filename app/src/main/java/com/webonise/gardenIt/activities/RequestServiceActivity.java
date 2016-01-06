@@ -27,6 +27,7 @@ import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.CreateGardenModel;
 import com.webonise.gardenIt.models.CreateIssueRequestModel;
+import com.webonise.gardenIt.models.ServiceModel;
 import com.webonise.gardenIt.models.ServiceRequestModel;
 import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
@@ -187,12 +188,12 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
             public void onResponse(String response) {
-                CreateGardenModel createGardenModel = new Gson().fromJson(response,
-                        CreateGardenModel.class);
-                if (createGardenModel.getStatus() == Constants.RESPONSE_CODE_200) {
+                ServiceModel serviceModel = new Gson().fromJson(response,
+                        ServiceModel.class);
+                if (serviceModel.getStatus() == Constants.RESPONSE_CODE_200) {
                     gotoNextActivity();
                 } else {
-                    Toast.makeText(RequestServiceActivity.this, createGardenModel.getMessage(),
+                    Toast.makeText(RequestServiceActivity.this, serviceModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -218,6 +219,12 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
             serviceRequestModel.setDescription(description);
             serviceRequestModel.setPhoneNumber(userModel.getUser().getPhone_number());
 
+            List<String> dummyItemList = new ArrayList<>();
+            dummyItemList.add("Gardening");
+            dummyItemList.add("Watering");
+            serviceRequestModel.setItemsList(dummyItemList);
+
+            serviceRequestModel.setAvailableTimings("10-7"); //TODO Remove later. For testing.
             if (gardenId > 0) {
                 serviceRequestModel.setGardenId(gardenId);
             }

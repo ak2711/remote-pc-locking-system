@@ -13,6 +13,26 @@ public class ServiceRequestModel {
     private String phoneNumber;
     @SerializedName("plant_image")
     private List<PlantImage> plantImage;
+    @SerializedName("items_list")
+    private List<String> itemsList;
+    @SerializedName("available_timings")
+    private String availableTimings;
+
+    public List<String> getItemsList() {
+        return itemsList;
+    }
+
+    public void setItemsList(List<String> itemsList) {
+        this.itemsList = itemsList;
+    }
+
+    public String getAvailableTimings() {
+        return availableTimings;
+    }
+
+    public void setAvailableTimings(String availableTimings) {
+        this.availableTimings = availableTimings;
+    }
 
     public String getTitle() {
         return title;

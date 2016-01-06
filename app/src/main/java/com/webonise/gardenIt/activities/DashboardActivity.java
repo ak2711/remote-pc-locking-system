@@ -26,6 +26,8 @@ import com.webonise.gardenIt.webservice.WebService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -47,6 +49,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     RecyclerView recyclerView;
 
     private SharedPreferenceManager sharedPreferenceManager;
+    private UserDashboardModel userDashboardModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
             public void onResponse(String response) {
-                UserDashboardModel userDashboardModel = new Gson().fromJson(response,
+                userDashboardModel = new Gson().fromJson(response,
                         UserDashboardModel.class);
                 if (userDashboardModel.getStatus() == Constants.RESPONSE_CODE_200) {
                     if (sharedPreferenceManager == null) {
@@ -156,7 +159,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private void goToServiceRequestActivity() {
         Intent intent = new Intent();
         intent.setClass(DashboardActivity.this, RequestServiceActivity.class);
+
+        if (userDashboardModel != null) {
+            List<UserDashboardModel.User.Gardens> gardensList
+                    = userDashboardModel.getUser().getGardens();
+            UserDashboardModel.User.Gardens lastGarden = gardensList.get(gardensList.size() - 1);
+            intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, lastGarden.getId());
+        }
         startActivity(intent);
     }
-
 }
