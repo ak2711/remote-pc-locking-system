@@ -186,7 +186,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
                 ServiceModel serviceModel = new Gson().fromJson(response,
                         ServiceModel.class);
                 if (serviceModel.getStatus() == Constants.RESPONSE_CODE_200) {
-                    gotoNextActivity();
+                    finish();
                 } else {
                     Toast.makeText(RequestServiceActivity.this, serviceModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
@@ -240,12 +240,6 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
             e.printStackTrace();
         }
         return null;
-    }
-
-    private void gotoNextActivity() {
-        Intent intent = new Intent(RequestServiceActivity.this, DashboardActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private String getEncodedImage() {

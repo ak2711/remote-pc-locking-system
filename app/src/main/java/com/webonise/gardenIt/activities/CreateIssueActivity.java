@@ -189,7 +189,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
                 CreateGardenModel createGardenModel = new Gson().fromJson(response,
                         CreateGardenModel.class);
                 if (createGardenModel.getStatus() == Constants.RESPONSE_CODE_200) {
-                    gotoNextActivity();
+                    finish();
                 } else {
                     Toast.makeText(CreateIssueActivity.this, createGardenModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
@@ -237,12 +237,6 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             e.printStackTrace();
         }
         return null;
-    }
-
-    private void gotoNextActivity() {
-        Intent intent = new Intent(CreateIssueActivity.this, DashboardActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private String getEncodedImage() {

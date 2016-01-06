@@ -66,7 +66,23 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         btnRequestService.setOnClickListener(this);
         btnCreateIssue.setOnClickListener(this);
         setToolbar();
+        setupNavigationDrawer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         fetchUserDashboardData();
+    }
+
+    private void setToolbar() {
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            tvTitle.setText(R.string.my_garden);
+        }
+    }
+
+    private void setupNavigationDrawer(){
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string
@@ -77,14 +93,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-
-    private void setToolbar() {
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            tvTitle.setText(R.string.my_garden);
-        }
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
