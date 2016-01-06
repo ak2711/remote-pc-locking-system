@@ -173,7 +173,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
                         Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_plant_name), Toast
+            Toast.makeText(CreateIssueActivity.this, getString(R.string.provide_title), Toast
                     .LENGTH_LONG).show();
         }
     }

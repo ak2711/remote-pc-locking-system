@@ -164,18 +164,13 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
 
         if (!TextUtils.isEmpty(title)) {
             if (!TextUtils.isEmpty(description)) {
-                if (image_file != null) {
                     requestService(title, description);
-                } else {
-                    Toast.makeText(RequestServiceActivity.this, getString(R.string.provide_image),
-                            Toast.LENGTH_LONG).show();
-                }
             } else {
                 Toast.makeText(RequestServiceActivity.this, getString(R.string.enter_description),
                         Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(RequestServiceActivity.this, getString(R.string.enter_plant_name), Toast
+            Toast.makeText(RequestServiceActivity.this, getString(R.string.provide_title), Toast
                     .LENGTH_LONG).show();
         }
     }

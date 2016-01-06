@@ -25,6 +25,7 @@
     <string name="enter_plant_name">Please enter name of Plant.</string>
     <string name="enter_description">Please provide some description.</string>
     <string name="provide_image">Please add an image.</string>
+    <string name="provide_title">Please provide title..</string>
 
     <string name="my_garden">My Garden</string>
     <string name="request_a_service">Request a service</string>
@@ -42,4 +43,8 @@
         diseases. Protect from infestation. \nCheck for plant health at regular intervals to avoid
         replacements.
     </string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
 </resources>
