@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +37,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     Toolbar toolbar;
     @Bind(R.id.tvTitle)
     TextView tvTitle;
-    @Bind(R.id.btnAddNewPlant)
-    Button btnAddNewPlant;
+    @Bind(R.id.rlAddNewPlant)
+    RelativeLayout rlAddNewPlant;
     @Bind(R.id.btnRequestService)
     Button btnRequestService;
     @Bind(R.id.btnCreateIssue)
@@ -52,7 +53,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         ButterKnife.bind(this);
-        btnAddNewPlant.setOnClickListener(this);
+        rlAddNewPlant.setOnClickListener(this);
         btnRequestService.setOnClickListener(this);
         btnCreateIssue.setOnClickListener(this);
         setToolbar();
@@ -74,7 +75,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.btnRequestService:
                 break;
-            case R.id.btnAddNewPlant:
+            case R.id.rlAddNewPlant:
                 break;
         }
     }

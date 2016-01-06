@@ -14,14 +14,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btnAddNewPlant"
-            style="@style/ButtonStyleWhite"
+        <RelativeLayout
+            android:id="@+id/rlAddNewPlant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_margin="10dp"
-            android:text="@string/add_new_plant"/>
+            android:background="@drawable/button_background_white_with_green_border">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:drawableLeft="@drawable/icon_add"
+                android:drawablePadding="5dp"
+                android:style="?android:attr/borderlessButtonStyle"
+                android:text="@string/add_new_plant"
+                android:textColor="@color/text_color_green"/>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/requestLayoutHolder"
