@@ -51,5 +51,5 @@
     <string name="dashboard">Dashboard</string>
     <string name="my_issues">My Issues</string>
     <string name="service_requests">Service Requests</string>
-    <string name="ime_option_go">Go</string>
+    <string name="please_try_again">Something went wrong. Please try again.</string>
 </resources>

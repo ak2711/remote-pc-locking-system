@@ -24,38 +24,41 @@
 
         <activity
             android:name="com.webonise.gardenIt.activities.SplashScreen"
-            android:label="@string/app_name"
-            >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.webonise.gardenIt.activities.SignUpActivity"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name="com.webonise.gardenIt.activities.CreateGardenActivity"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name="com.webonise.gardenIt.activities.AddPlantActivity"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name="com.webonise.gardenIt.activities.CreateIssueActivity"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name="com.webonise.gardenIt.activities.RequestServiceActivity"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name="com.webonise.gardenIt.activities.DashboardActivity"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name="com.webonise.gardenIt.activities.IssuesListActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name=".utilities.FileContentProvider"

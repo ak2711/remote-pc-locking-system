@@ -8,6 +8,7 @@ public class Constants {
     public static final String KEY_PREF_USER = "user";
     public static final String KEY_PREF_GARDEN_DETAILS = "garden";
     public static final String KEY_PREF_USER_GARDEN_PLANTS = "user_garden_plants";
+    public static final String KEY_PREF_USER_ISSUES = "user_issues";
 
 
     public static final String BASE_URL = "http://test-uf.weboapps.com";
@@ -18,6 +19,8 @@ public class Constants {
     public static final String SIGN_IN_URL = BASE_URL_API +  "sign_in";
     public static final String CREATE_ISSUE_URL = BASE_URL_API +  "create_issue";
     public static final String REQUEST_SERVICE_URL = BASE_URL_API +  "request_gardener";
+    public static final String REQUEST_LIST_URL = BASE_URL_API + "service_requests";
+    public static final String ISSUES_LIST_URL = BASE_URL_API + "issues";
 
     public static final String REQUEST_KEY_EMAIl = "email";
     public static final String REQUEST_KEY_NAME = "name";

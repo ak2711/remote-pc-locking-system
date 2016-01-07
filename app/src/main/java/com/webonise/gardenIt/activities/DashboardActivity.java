@@ -225,15 +225,18 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.editGarden:
+                break;
+            case R.id.dashboard:
+                break;
+            case R.id.myIssues:
+                Intent intent = new Intent(DashboardActivity.this, IssuesListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.serviceRequests:
 
-        if (id == R.id.editGarden) {
-            // Handle the camera action
-        } else if (id == R.id.dashboard) {
-
-        } else if (id == R.id.myIssues) {
-
-        } else if (id == R.id.serviceRequests) {
-
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
