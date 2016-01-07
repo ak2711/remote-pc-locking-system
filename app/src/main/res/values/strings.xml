@@ -47,4 +47,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="edit_my_garden">Edit My Garden</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="my_issues">My Issues</string>
+    <string name="service_requests">Service Requests</string>
+
 </resources>

@@ -54,19 +54,21 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
 
+    TextView tvUserName;
+
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard_new);
+        setContentView(R.layout.dashboard_main);
         ButterKnife.bind(this);
         rlAddNewPlant.setOnClickListener(this);
         btnRequestService.setOnClickListener(this);
         btnCreateIssue.setOnClickListener(this);
-        setToolbar();
         setupNavigationDrawer();
+        setToolbar();
     }
 
     @Override
@@ -79,10 +81,22 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             tvTitle.setText(R.string.my_garden);
+            toolbar.setNavigationIcon(R.drawable.icon_hamburger);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    if (drawer.isDrawerOpen(GravityCompat.START)) {
+                        drawer.closeDrawer(GravityCompat.START);
+                    } else {
+                        drawer.openDrawer(GravityCompat.START);
+                    }
+                }
+            });
         }
     }
 
-    private void setupNavigationDrawer(){
+    private void setupNavigationDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string
@@ -92,7 +106,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View view = navigationView.getHeaderView(0);
+        tvUserName = (TextView) view.findViewById(R.id.tvUserName);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -125,7 +143,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     }
                     sharedPreferenceManager.putObject(Constants.KEY_PREF_USER_GARDEN_PLANTS,
                             userDashboardModel);
-
+                    tvUserName.setText(userDashboardModel.getUser().getName());
                     DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
                             = new DashboardRecyclerViewAdapter(DashboardActivity.this);
 
@@ -208,22 +226,27 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
+        if (id == R.id.editGarden) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.dashboard) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.myIssues) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.serviceRequests) {
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
     }
 }
