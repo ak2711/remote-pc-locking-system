@@ -3,9 +3,10 @@ package com.webonise.gardenIt.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,6 +21,8 @@ import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.LogUtils;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.webservice.WebService;
+
+import android.widget.TextView.OnEditorActionListener;
 
 import org.json.JSONObject;
 
@@ -45,6 +48,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
         btnSignUp.setOnClickListener(this);
+        etEmailAddress.setOnEditorActionListener(new OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    validateDataAndSignUp();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -115,7 +128,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         return jsonObject;
     }
 
-    private void gotoNextActivity(){
+    private void gotoNextActivity() {
         Intent intent = new Intent(SignUpActivity.this, CreateGardenActivity.class);
         startActivity(intent);
         finish();

@@ -6,7 +6,7 @@
     <string name="error_msg">There might be a problem , Please try again !</string>
     <string name="sign_up">Sign Up</string>
     <string name="full_name">Full Name*</string>
-    <string name="phone_number">Phone Number*</string>
+    <string name="phone_number">Mobile Number*</string>
     <string name="email_address">Email Address</string>
     <string name="enter_full_name">Please enter your Full Name.</string>
     <string name="enter_phone_number">Please enter your Phone Number.</string>
@@ -51,5 +51,5 @@
     <string name="dashboard">Dashboard</string>
     <string name="my_issues">My Issues</string>
     <string name="service_requests">Service Requests</string>
-
+    <string name="ime_option_go">Go</string>
 </resources>

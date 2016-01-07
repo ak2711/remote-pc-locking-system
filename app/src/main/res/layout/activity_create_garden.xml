@@ -30,7 +30,8 @@
                 style="@style/EditTextStyleBlackSingleLine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/name_your_garden"/>
+                android:hint="@string/name_your_garden"
+                android:imeOptions="actionGo"/>
         </android.support.design.widget.TextInputLayout>
 
         <Button

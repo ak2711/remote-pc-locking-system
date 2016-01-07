@@ -41,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:background="@color/background_color_light_grey">
+                    android:background="@color/view_background_color_grey">
 
                     <ImageView
                         android:layout_width="wrap_content"
