@@ -243,7 +243,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
     }
 
     private String getEncodedImage() {
-        if (ivToUpload != null) {
+        if (image_file != null) {
             Bitmap bitmap = ((BitmapDrawable) ivToUpload.getDrawable()).getBitmap();
             return ImageUtil.encodeTobase64(bitmap);
         } else {
