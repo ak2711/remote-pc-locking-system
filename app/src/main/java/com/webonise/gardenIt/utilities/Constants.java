@@ -9,6 +9,7 @@ public class Constants {
     public static final String KEY_PREF_GARDEN_DETAILS = "garden";
     public static final String KEY_PREF_USER_GARDEN_PLANTS = "user_garden_plants";
     public static final String KEY_PREF_USER_ISSUES = "user_issues";
+    public static final String KEY_PREF_USER_REQUEST = "user_requests";
 
 
     public static final String BASE_URL = "http://test-uf.weboapps.com";
@@ -45,4 +46,7 @@ public class Constants {
     public static final String BUNDLE_KEY_SHOW_BACK_ICON = "show_back_icon";
     public static final String BUNDLE_KEY_PLANT_ID = "plantId";
     public static final String BUNDLE_KEY_GARDEN_ID = "gardenId";
+    public static final String BUNDLE_KEY_TYPE = "type";
+    public static final int CREATE_ISSUE = 0;
+    public static final int REQUEST_SERVICE = CREATE_ISSUE + 1;
 }

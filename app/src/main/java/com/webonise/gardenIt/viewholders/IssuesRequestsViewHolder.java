@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.webonise.gardenIt.R;
 
-public class IssuesViewHolder extends RecyclerView.ViewHolder {
+public class IssuesRequestsViewHolder extends RecyclerView.ViewHolder {
     private final String TAG = this.getClass().getName();
 
     private ImageView imageView;
@@ -15,7 +15,7 @@ public class IssuesViewHolder extends RecyclerView.ViewHolder {
     private TextView tvDescription;
     private TextView tvDate;
 
-    public IssuesViewHolder(View view) {
+    public IssuesRequestsViewHolder(View view) {
         super(view);
         imageView = (ImageView) view.findViewById(R.id.imageView);
         tvTitle = (TextView) view.findViewById(R.id.tvTitle);

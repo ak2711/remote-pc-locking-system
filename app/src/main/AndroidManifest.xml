@@ -57,7 +57,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name="com.webonise.gardenIt.activities.IssuesListActivity"
+            android:name=".activities.IssueServiceListActivity"
             android:screenOrientation="portrait"/>
 
         <provider

@@ -164,7 +164,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
 
         if (!TextUtils.isEmpty(title)) {
             if (!TextUtils.isEmpty(description)) {
-                    requestService(title, description);
+                requestService(title, description);
             } else {
                 Toast.makeText(RequestServiceActivity.this, getString(R.string.enter_description),
                         Toast.LENGTH_LONG).show();
@@ -243,7 +243,11 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
     }
 
     private String getEncodedImage() {
-        Bitmap bitmap = ((BitmapDrawable) ivToUpload.getDrawable()).getBitmap();
-        return ImageUtil.encodeTobase64(bitmap);
+        if (ivToUpload != null) {
+            Bitmap bitmap = ((BitmapDrawable) ivToUpload.getDrawable()).getBitmap();
+            return ImageUtil.encodeTobase64(bitmap);
+        } else {
+            return null;
+        }
     }
 }

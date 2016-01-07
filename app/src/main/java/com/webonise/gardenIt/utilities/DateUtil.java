@@ -9,7 +9,7 @@ import java.util.Date;
 public class DateUtil {
 
     private final String TAG = getClass().getName();
-    private final String DATE_FORMAT_TO_DISPLAY = "dd MMMM, yyyy";
+    private final String DATE_FORMAT_TO_DISPLAY = "dd MMM";
     private final String DATE_FORMAT_FROM_API = "yyyy-MM-dd'T'HH:mm:ss";
     private static final String TIME_FORMAT_FOR_LIST = "hh:mm a";
 

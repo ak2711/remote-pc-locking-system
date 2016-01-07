@@ -231,11 +231,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             case R.id.dashboard:
                 break;
             case R.id.myIssues:
-                Intent intent = new Intent(DashboardActivity.this, IssuesListActivity.class);
-                startActivity(intent);
+                Intent myIssuesIntent = new Intent(DashboardActivity.this,
+                        IssueServiceListActivity.class);
+                myIssuesIntent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.CREATE_ISSUE);
+                startActivity(myIssuesIntent);
                 break;
             case R.id.serviceRequests:
-
+                Intent serviceRequestIntent = new Intent(DashboardActivity.this,
+                        IssueServiceListActivity.class);
+                serviceRequestIntent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.REQUEST_SERVICE);
+                startActivity(serviceRequestIntent);
                 break;
         }
 

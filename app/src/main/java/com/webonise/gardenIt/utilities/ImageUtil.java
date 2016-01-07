@@ -102,7 +102,7 @@ public class ImageUtil {
     public static String encodeTobase64(Bitmap imageToEncode) {
         Bitmap bitmap = imageToEncode;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] b = baos.toByteArray();
         String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
 
