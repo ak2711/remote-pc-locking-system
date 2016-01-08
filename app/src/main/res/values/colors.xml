@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4DAF50</color>
     <color name="button_background_green">#FF4DAF50</color>
     <color name="button_background_white">#FFFFFFFF</color>
+    <color name="button_background_white_pressed">#FFD8D8D8</color>
     <color name="button_background_dark_red">#FFC43730</color>
     <color name="button_background_light_red">#FFEC4A41</color>
     <color name="text_color_green">#FF4DAF50</color>
