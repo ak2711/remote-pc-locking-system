@@ -75,7 +75,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String email = etEmailAddress.getText().toString();
         if (!TextUtils.isEmpty(fullName)) {
             if (!TextUtils.isEmpty(phoneNumber)) {
-                registerUser(fullName, phoneNumber, email);
+                if (phoneNumber.length() == 10) {
+                    registerUser(fullName, phoneNumber, email);
+                } else {
+                    Toast.makeText(SignUpActivity.this, getString(R.string.invalid_mobile_number_length), Toast
+                            .LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(SignUpActivity.this, getString(R.string.enter_phone_number), Toast
                         .LENGTH_SHORT).show();
