@@ -25,6 +25,7 @@ import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
+import com.webonise.gardenIt.utilities.RecyclerViewItemDecorator;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.webservice.WebService;
 
@@ -40,6 +41,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG = this.getClass().getName();
+    private final int SPAN_COUNT = 2;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -69,6 +71,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         btnCreateIssue.setOnClickListener(this);
         setupNavigationDrawer();
         setToolbar();
+        setUpRecyclerView();
     }
 
     @Override
@@ -77,6 +80,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         fetchUserDashboardData();
     }
 
+    private void setUpRecyclerView(){
+        int margin = getResources().getDimensionPixelSize(R.dimen.margin_10);
+        recyclerView.addItemDecoration(new RecyclerViewItemDecorator(SPAN_COUNT,
+                margin, false));
+        recyclerView.setHasFixedSize(true);
+    }
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -147,11 +156,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
                             = new DashboardRecyclerViewAdapter(DashboardActivity.this);
 
-                    //Set Span count to 2 as Add Member has 2 items to show.
+                    //Set Span count to 2 as 2 items to show in a row.
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(
-                            DashboardActivity.this, 2);
+                            DashboardActivity.this, SPAN_COUNT);
 
-                    recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(gridLayoutManager);
                     recyclerView.setAdapter(dashboardRecyclerViewAdapter);
 
