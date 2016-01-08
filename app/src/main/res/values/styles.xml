@@ -23,6 +23,7 @@
     <style name="EditTextStyleBlackSingleLine" parent="EditTextStyleBlack">
         <item name="android:singleLine">true</item>
     </style>
+
     <style name="EditTextStyleBlack">
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:textColor">@color/text_color_black</item>
@@ -52,4 +53,10 @@
         <item name="android:background">@drawable/button_background_white_with_green_border</item>
         <item name="android:textColor">@color/text_color_green</item>
     </style>
+
+    <style name="AppTheme.FloatingAccentButtonOverlay">
+        <item name="colorAccent">@color/button_background_dark_red</item>
+        <item name="backgroundTint">@color/button_background_dark_red</item>
+    </style>
+
 </resources>
