@@ -80,16 +80,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         fetchUserDashboardData();
     }
 
-    private void setUpRecyclerView(){
+    private void setUpRecyclerView() {
         int margin = getResources().getDimensionPixelSize(R.dimen.margin_10);
         recyclerView.addItemDecoration(new RecyclerViewItemDecorator(SPAN_COUNT,
                 margin, false));
         recyclerView.setHasFixedSize(true);
     }
+
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            tvTitle.setText(R.string.my_garden);
             toolbar.setNavigationIcon(R.drawable.icon_hamburger);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -152,6 +152,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     }
                     sharedPreferenceManager.putObject(Constants.KEY_PREF_USER_GARDEN_PLANTS,
                             userDashboardModel);
+                    setTitle();
                     tvUserName.setText(userDashboardModel.getUser().getName());
                     DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
                             = new DashboardRecyclerViewAdapter(DashboardActivity.this);
@@ -209,12 +210,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         Intent intent = new Intent();
         intent.setClass(DashboardActivity.this, RequestServiceActivity.class);
 
-        if (userDashboardModel != null) {
-            List<UserDashboardModel.User.Gardens> gardensList
-                    = userDashboardModel.getUser().getGardens();
-            UserDashboardModel.User.Gardens lastGarden = gardensList.get(gardensList.size() - 1);
+        UserDashboardModel.User.Gardens lastGarden = getLastGardenDetails();
+        if (lastGarden != null) {
             intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, lastGarden.getId());
         }
+
         startActivity(intent);
     }
 
@@ -264,5 +264,23 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
+    }
+
+    private void setTitle() {
+        UserDashboardModel.User.Gardens lastGarden = getLastGardenDetails();
+        if (lastGarden != null) {
+            tvTitle.setText(lastGarden.getName());
+        } else {
+            tvTitle.setText(getString(R.string.dashboard));
+        }
+    }
+
+    private UserDashboardModel.User.Gardens getLastGardenDetails() {
+        if (userDashboardModel != null) {
+            List<UserDashboardModel.User.Gardens> gardensList
+                    = userDashboardModel.getUser().getGardens();
+            return gardensList.get(gardensList.size() - 1);
+        }
+        return null;
     }
 }

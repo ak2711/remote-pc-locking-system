@@ -47,6 +47,7 @@ public class Constants {
     public static final String BUNDLE_KEY_PLANT_ID = "plantId";
     public static final String BUNDLE_KEY_GARDEN_ID = "gardenId";
     public static final String BUNDLE_KEY_TYPE = "type";
+    public static final String BUNDLE_KEY_POSITION = "position";
     public static final int CREATE_ISSUE = 0;
     public static final int REQUEST_SERVICE = CREATE_ISSUE + 1;
 }

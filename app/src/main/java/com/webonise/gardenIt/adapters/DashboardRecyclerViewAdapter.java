@@ -1,6 +1,7 @@
 package com.webonise.gardenIt.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
+import com.webonise.gardenIt.activities.PlantDescriptionActivity;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DisplayUtil;
@@ -74,7 +76,7 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     private void configureDashboardPlantsViewHolder(
-            DashboardPlantsViewHolder dashboardPlantsViewHolder, int position){
+            DashboardPlantsViewHolder dashboardPlantsViewHolder, final int position){
 
         UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
         dashboardPlantsViewHolder.getTvTitle().setText(plants.getName());
@@ -87,5 +89,14 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         ImageLoader.getInstance().displayImage(
                 Constants.BASE_URL+plants.getImages().get(0).getImage().getUrl(),
                 ivPlant, options, null);
+
+        dashboardPlantsViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PlantDescriptionActivity.class);
+                intent.putExtra(Constants.BUNDLE_KEY_POSITION, position);
+                context.startActivity(intent);
+            }
+        });
     }
 }

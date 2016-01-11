@@ -60,6 +60,10 @@
             android:name=".activities.IssueServiceListActivity"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".activities.PlantDescriptionActivity"
+            android:screenOrientation="portrait"/>
+
         <provider
             android:name=".utilities.FileContentProvider"
             android:authorities="com.webonise.gardenIt"
