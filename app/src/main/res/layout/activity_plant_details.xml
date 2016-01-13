@@ -55,7 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/request_a_service"/>
+            android:text="@string/add_log"/>
 
         <Button
             android:id="@+id/btnCreateIssue"

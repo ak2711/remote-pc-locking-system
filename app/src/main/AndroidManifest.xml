@@ -69,6 +69,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Transparent"/>
 
+        <activity
+            android:name=".activities.CreateLogActivity"
+            android:screenOrientation="portrait"/>
+
         <provider
             android:name=".utilities.FileContentProvider"
             android:authorities="com.webonise.gardenIt"

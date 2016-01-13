@@ -22,6 +22,7 @@ public class Constants {
     public static final String REQUEST_SERVICE_URL = BASE_URL_API +  "request_gardener";
     public static final String REQUEST_LIST_URL = BASE_URL_API + "service_requests";
     public static final String ISSUES_LIST_URL = BASE_URL_API + "issues";
+    public static final String ADD_LOG_URL = BASE_URL_API + "add_log";
 
     public static final String REQUEST_KEY_EMAIl = "email";
     public static final String REQUEST_KEY_NAME = "name";

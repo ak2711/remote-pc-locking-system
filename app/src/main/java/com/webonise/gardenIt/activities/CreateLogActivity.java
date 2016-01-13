@@ -27,6 +27,7 @@ import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.CreateGardenModel;
 import com.webonise.gardenIt.models.CreateIssueRequestModel;
+import com.webonise.gardenIt.models.CreateLogRequestModel;
 import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
@@ -45,7 +46,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CreateIssueActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreateLogActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final String TAG = this.getClass().getName();
 
@@ -53,18 +54,16 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     Toolbar toolbar;
     @Bind(R.id.tvTitle)
     TextView tvTitle;
-    @Bind(R.id.etIssueTitle)
-    EditText etIssueTitle;
-    @Bind(R.id.etDescription)
-    EditText etDescription;
+    @Bind(R.id.etLogTitle)
+    EditText etLogTitle;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
     RelativeLayout rlGallery;
-    @Bind(R.id.btnCreateIssue)
-    Button btnCreateIssue;
+    @Bind(R.id.btnAddLog)
+    Button btnAddLog;
 
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
@@ -73,11 +72,11 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_issue);
+        setContentView(R.layout.activity_create_log);
         ButterKnife.bind(this);
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
-        btnCreateIssue.setOnClickListener(this);
+        btnAddLog.setOnClickListener(this);
     }
 
     @Override
@@ -93,8 +92,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-
-            tvTitle.setText(getString(R.string.create_an_issue));
+            tvTitle.setText(getString(R.string.add_log));
             toolbar.setNavigationIcon(R.drawable.ic_action_back);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -116,8 +114,8 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
                 Intent galleryIntent = new ImageUtil().getOpenGalleryIntent();
                 startActivityForResult(galleryIntent, Constants.PICK_IMAGE);
                 break;
-            case R.id.btnCreateIssue:
-                validateAndCreateIssue();
+            case R.id.btnAddLog:
+                validateAndCreateLog();
                 break;
         }
     }
@@ -150,40 +148,29 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     }
 
     protected void showImage() {
-        AppController.setupUniversalImageLoader(CreateIssueActivity.this);
+        AppController.setupUniversalImageLoader(CreateLogActivity.this);
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
     }
 
-    private void validateAndCreateIssue() {
-        String title, description;
-        title = etIssueTitle.getText().toString();
-        description = etDescription.getText().toString();
+    private void validateAndCreateLog() {
+        String title;
+        title = etLogTitle.getText().toString();
 
         if (!TextUtils.isEmpty(title)) {
-            if (!TextUtils.isEmpty(description)) {
-                if (image_file != null) {
-                    createIssue(title, description);
-                } else {
-                    Toast.makeText(CreateIssueActivity.this, getString(R.string.provide_image),
-                            Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_description),
-                        Toast.LENGTH_LONG).show();
-            }
+            createLog(title);
         } else {
-            Toast.makeText(CreateIssueActivity.this, getString(R.string.provide_title), Toast
+            Toast.makeText(CreateLogActivity.this, getString(R.string.provide_title), Toast
                     .LENGTH_LONG).show();
         }
     }
 
-    private void createIssue(String title, String description) {
+    private void createLog(String title) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
-        webService.setUrl(Constants.CREATE_ISSUE_URL);
-        webService.setBody(getBody(title, description));
+        webService.setUrl(Constants.ADD_LOG_URL);
+        webService.setBody(getBody(title));
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
             public void onResponse(String response) {
@@ -192,7 +179,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
                 if (createGardenModel.getStatus() == Constants.RESPONSE_CODE_200) {
                     finish();
                 } else {
-                    Toast.makeText(CreateIssueActivity.this, createGardenModel.getMessage(),
+                    Toast.makeText(CreateLogActivity.this, createGardenModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -204,35 +191,37 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
-    private JSONObject getBody(String nameOfPlant, String description) {
+    private JSONObject getBody(String title) {
         if (sharedPreferenceManager == null) {
-            sharedPreferenceManager = new SharedPreferenceManager(CreateIssueActivity.this);
+            sharedPreferenceManager = new SharedPreferenceManager(CreateLogActivity.this);
         }
         UserModel userModel = sharedPreferenceManager.getObject(
                 Constants.KEY_PREF_USER, UserModel.class);
 
-        CreateIssueRequestModel createIssueRequestModel = new CreateIssueRequestModel();
+        CreateLogRequestModel createLogRequestModel = new CreateLogRequestModel();
 
         try {
-            createIssueRequestModel.setName(nameOfPlant);
-            createIssueRequestModel.setDescription(description);
-            createIssueRequestModel.setPhoneNumber(userModel.getUser().getPhone_number());
+            createLogRequestModel.setContent(title);
+            createLogRequestModel.setPhoneNumber(userModel.getUser().getPhone_number());
 
             if (plantId > 0) {
-                createIssueRequestModel.setPlantId(plantId);
+                createLogRequestModel.setPlantId(plantId);
             }
-            List<CreateIssueRequestModel.PlantImage> plantImages = new ArrayList<>();
 
-            CreateIssueRequestModel.PlantImage plantImage = createIssueRequestModel.new
-                    PlantImage();
-            plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMTER_FOR_IMAGE
-                    + getEncodedImage());
+            if (image_file != null) {
+                List<CreateLogRequestModel.PlantImage> plantImages = new ArrayList<>();
 
-            plantImages.add(plantImage);
+                CreateLogRequestModel.PlantImage plantImage = createLogRequestModel.new
+                        PlantImage();
+                plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMTER_FOR_IMAGE
+                        + getEncodedImage());
 
-            createIssueRequestModel.setPlantImage(plantImages);
+                plantImages.add(plantImage);
 
-            return new JSONObject(new Gson().toJson(createIssueRequestModel));
+                createLogRequestModel.setPlantImage(plantImages);
+            }
+
+            return new JSONObject(new Gson().toJson(createLogRequestModel));
 
         } catch (JSONException e) {
             e.printStackTrace();

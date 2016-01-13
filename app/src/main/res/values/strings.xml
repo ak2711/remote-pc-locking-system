@@ -53,4 +53,6 @@
     <string name="my_issues">My Issues</string>
     <string name="service_requests">Service Requests</string>
     <string name="please_try_again">Something went wrong. Please try again.</string>
+
+    <string name="title">Title</string>
 </resources>

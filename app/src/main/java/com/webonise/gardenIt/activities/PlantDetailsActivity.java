@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
+import com.webonise.gardenIt.models.CreateLogRequestModel;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DisplayUtil;
@@ -87,21 +88,20 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnCreateIssue:
-                goToCreateIssueActivity(getString(R.string.create_an_issue));
+                goToNextActivity(CreateIssueActivity.class);
                 break;
             case R.id.btnAddLog:
-                goToCreateIssueActivity(getString(R.string.add_log));
+                goToNextActivity(CreateLogActivity.class);
                 break;
         }
     }
 
-    private void goToCreateIssueActivity(String title) {
+    private void goToNextActivity(Class clazz) {
         Intent intent = new Intent();
-        intent.setClass(PlantDetailsActivity.this, CreateIssueActivity.class);
+        intent.setClass(PlantDetailsActivity.this, clazz);
         if (plantId > 0) {
             intent.putExtra(Constants.BUNDLE_KEY_PLANT_ID, plantId);
         }
-        intent.putExtra(Constants.BUNDLE_KEY_TITLE, title);
         startActivity(intent);
     }
 
