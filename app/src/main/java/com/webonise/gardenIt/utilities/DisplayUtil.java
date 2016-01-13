@@ -21,7 +21,6 @@ public class DisplayUtil {
      * @return height of image in dp
      */
     public int getImageHeight() {
-
         int height;
         height = Integer.valueOf((getDeviceWidth() * 9) / 16);
         return height;

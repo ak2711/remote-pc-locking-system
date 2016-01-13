@@ -80,7 +80,7 @@ public class PlantDescriptionActivity extends AppCompatActivity implements View.
             sharedPreferenceManager = new SharedPreferenceManager
                     (PlantDescriptionActivity.this);
         }
-        position = getIntent().getIntExtra(Constants.BUNDLE_KEY_POSITION,0);
+        position = getIntent().getIntExtra(Constants.BUNDLE_KEY_POSITION, 0);
         setToolbar();
         setPlantDetails();
     }
@@ -143,11 +143,11 @@ public class PlantDescriptionActivity extends AppCompatActivity implements View.
 
         AppController.getInstance().setupUniversalImageLoader(PlantDescriptionActivity.this);
 
-        UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        final UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 new DisplayUtil(PlantDescriptionActivity.this).getImageHeight());
-        ivPlantImage.setLayoutParams(params);
+        ivPlantImage.setLayoutParams(layoutParams);
         ImageLoader.getInstance().displayImage(
                 Constants.BASE_URL + plants.getImages().get(0).getImage().getUrl(),
                 ivPlantImage, options, null);
@@ -157,5 +157,31 @@ public class PlantDescriptionActivity extends AppCompatActivity implements View.
 
         plantId = plants.getId();
         gardenId = plants.getGardenId();
+
+        ivPlantImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PlantDescriptionActivity.this, ActivityImageView.class);
+                // Interesting data to pass across are the thumbnail size/location, the
+                // resourceId of the source bitmap, the picture description, and the
+                // orientation (to avoid returning back to an obsolete configuration if
+                // the device rotates again in the meantime)
+
+                int[] screenLocation = new int[2];
+                ivPlantImage.getLocationOnScreen(screenLocation);
+
+                //Pass the image title and url to DetailsActivity
+                intent.putExtra(Constants.BUNDLE_KEY_LEFT, screenLocation[0]).
+                        putExtra(Constants.BUNDLE_KEY_TOP, screenLocation[1]).
+                        putExtra(Constants.BUNDLE_KEY_WIDTH, ivPlantImage.getWidth()).
+                        putExtra(Constants.BUNDLE_KEY_HEIGHT, ivPlantImage.getHeight()).
+                        putExtra(Constants.BUNDLE_KEY_TITLE, plants.getName()).
+                        putExtra(Constants.BUNDLE_KEY_IMAGE_URL,
+                                Constants.BASE_URL + plants.getImages().get(0).getImage().getUrl());
+
+                //Start details activity
+                startActivity(intent);
+            }
+        });
     }
 }

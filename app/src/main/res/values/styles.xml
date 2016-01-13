@@ -59,4 +59,7 @@
         <item name="backgroundTint">@color/button_background_dark_red</item>
     </style>
 
+    <style name="Transparent" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

@@ -48,6 +48,13 @@ public class Constants {
     public static final String BUNDLE_KEY_GARDEN_ID = "gardenId";
     public static final String BUNDLE_KEY_TYPE = "type";
     public static final String BUNDLE_KEY_POSITION = "position";
+    public static final String BUNDLE_KEY_TOP = "top";
+    public static final String BUNDLE_KEY_WIDTH = "width";
+    public static final String BUNDLE_KEY_LEFT = "left";
+    public static final String BUNDLE_KEY_HEIGHT = "height";
+    public static final String BUNDLE_KEY_TITLE = "title";
+    public static final String BUNDLE_KEY_IMAGE_URL = "image_url";
+
     public static final int CREATE_ISSUE = 0;
     public static final int REQUEST_SERVICE = CREATE_ISSUE + 1;
 }

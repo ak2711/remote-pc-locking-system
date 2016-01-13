@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
@@ -48,7 +49,7 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .considerExifParams(true)
-                .displayer(new SimpleBitmapDisplayer())
+                .displayer(new FadeInBitmapDisplayer(500))
                 .build();
 
         AppController.getInstance().setupUniversalImageLoader(context);

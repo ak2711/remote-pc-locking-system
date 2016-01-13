@@ -64,6 +64,11 @@
             android:name=".activities.PlantDescriptionActivity"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".activities.ActivityImageView"
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparent"/>
+
         <provider
             android:name=".utilities.FileContentProvider"
             android:authorities="com.webonise.gardenIt"
