@@ -69,6 +69,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
     private int plantId;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             plantId = bundle.getInt(Constants.BUNDLE_KEY_PLANT_ID);
+            title = bundle.getString(Constants.BUNDLE_KEY_TITLE);
         }
         setToolbar();
     }
@@ -93,7 +95,8 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            tvTitle.setText(R.string.create_an_issue);
+
+            tvTitle.setText(title != null ? title : getString(R.string.create_an_issue));
             toolbar.setNavigationIcon(R.drawable.ic_action_back);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override

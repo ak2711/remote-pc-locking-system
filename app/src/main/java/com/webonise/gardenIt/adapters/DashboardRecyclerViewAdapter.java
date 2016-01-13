@@ -12,10 +12,9 @@ import android.widget.LinearLayout;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
-import com.webonise.gardenIt.activities.PlantDescriptionActivity;
+import com.webonise.gardenIt.activities.PlantDetailsActivity;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DisplayUtil;
@@ -94,7 +93,7 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         dashboardPlantsViewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, PlantDescriptionActivity.class);
+                Intent intent = new Intent(context, PlantDetailsActivity.class);
                 intent.putExtra(Constants.BUNDLE_KEY_POSITION, position);
                 context.startActivity(intent);
             }

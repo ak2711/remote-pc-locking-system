@@ -61,7 +61,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".activities.PlantDescriptionActivity"
+            android:name=".activities.PlantDetailsActivity"
             android:screenOrientation="portrait"/>
 
         <activity

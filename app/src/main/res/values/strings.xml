@@ -28,8 +28,8 @@
     <string name="provide_image">Please add an image.</string>
     <string name="provide_title">Please provide title..</string>
 
-    <string name="my_garden">My Garden</string>
     <string name="request_a_service">Request a service</string>
+    <string name="add_log">Add Log</string>
     <string name="create_an_issue">Create an Issue</string>
     <string name="send_request">Send Request</string>
     <string name="create_issue">Create Issue</string>

@@ -50,7 +50,7 @@
         android:weightSum="2">
 
         <Button
-            android:id="@+id/btnRequestService"
+            android:id="@+id/btnAddLog"
             style="@style/ButtonStyleRed"
             android:layout_width="0dp"
             android:layout_height="match_parent"
