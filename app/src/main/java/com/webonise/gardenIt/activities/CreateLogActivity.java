@@ -213,7 +213,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
 
                 CreateLogRequestModel.PlantImage plantImage = createLogRequestModel.new
                         PlantImage();
-                plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMTER_FOR_IMAGE
+                plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
                         + getEncodedImage());
 
                 plantImages.add(plantImage);

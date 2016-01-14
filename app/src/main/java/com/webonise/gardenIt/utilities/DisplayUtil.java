@@ -26,8 +26,12 @@ public class DisplayUtil {
         return height;
     }
 
-    private int pxToDp(int px) {
+    public int pxToDp(int px) {
         return (int) (px / context.getResources().getSystem().getDisplayMetrics().density);
+    }
+
+    public int dpToPx(int dp) {
+        return (int) (dp * context.getResources().getSystem().getDisplayMetrics().density);
     }
 
     private int getDeviceWidth() {

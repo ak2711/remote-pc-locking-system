@@ -37,6 +37,13 @@
                 android:layout_marginTop="15dp"
                 android:textColor="@color/text_color_grey"
                 android:textSize="16sp"/>
+
+            <LinearLayout
+                android:id="@+id/llLogHolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"/>
         </LinearLayout>
 
     </ScrollView>

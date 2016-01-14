@@ -225,7 +225,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
 
             CreateIssueRequestModel.PlantImage plantImage = createIssueRequestModel.new
                     PlantImage();
-            plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMTER_FOR_IMAGE
+            plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
                     + getEncodedImage());
 
             plantImages.add(plantImage);

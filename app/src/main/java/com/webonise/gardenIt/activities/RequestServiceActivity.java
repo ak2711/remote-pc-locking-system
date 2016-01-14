@@ -227,7 +227,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
 
             ServiceRequestModel.PlantImage plantImage = serviceRequestModel.new
                     PlantImage();
-            plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMTER_FOR_IMAGE
+            plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
                     + getEncodedImage());
 
             plantImages.add(plantImage);

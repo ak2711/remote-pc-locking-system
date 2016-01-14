@@ -384,12 +384,36 @@ public class UserDashboardModel {
                     @SerializedName("loggable_id")
                     private int loggableId;
                     @SerializedName("loggable_type")
-                    private int loggableType;
+                    private String loggableType;
                     @SerializedName("created_at")
-                    private int createdAt;
+                    private String createdAt;
                     @SerializedName("updated_at")
-                    private int updatedAt;
+                    private String updatedAt;
                     private List<Images> images;
+
+                    public String getLoggableType() {
+                        return loggableType;
+                    }
+
+                    public void setLoggableType(String loggableType) {
+                        this.loggableType = loggableType;
+                    }
+
+                    public String getCreatedAt() {
+                        return createdAt;
+                    }
+
+                    public void setCreatedAt(String createdAt) {
+                        this.createdAt = createdAt;
+                    }
+
+                    public String getUpdatedAt() {
+                        return updatedAt;
+                    }
+
+                    public void setUpdatedAt(String updatedAt) {
+                        this.updatedAt = updatedAt;
+                    }
 
                     public int getId() {
                         return id;
@@ -415,29 +439,7 @@ public class UserDashboardModel {
                         this.loggableId = loggableId;
                     }
 
-                    public int getLoggableType() {
-                        return loggableType;
-                    }
 
-                    public void setLoggableType(int loggableType) {
-                        this.loggableType = loggableType;
-                    }
-
-                    public int getCreatedAt() {
-                        return createdAt;
-                    }
-
-                    public void setCreatedAt(int createdAt) {
-                        this.createdAt = createdAt;
-                    }
-
-                    public int getUpdatedAt() {
-                        return updatedAt;
-                    }
-
-                    public void setUpdatedAt(int updatedAt) {
-                        this.updatedAt = updatedAt;
-                    }
 
                     public List<Images> getImages() {
                         return images;
