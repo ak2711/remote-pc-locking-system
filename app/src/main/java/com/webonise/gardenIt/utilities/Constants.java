@@ -26,6 +26,7 @@ public class Constants {
 
     public static final String REQUEST_KEY_EMAIl = "email";
     public static final String REQUEST_KEY_NAME = "name";
+    public static final String REQUEST_KEY_REFERRED_BY = "referred_by";
     public static final String REQUEST_KEY_PHONE_NUMBER = "phone_number";
     public static final String REQUEST_KEY_DESCRIPTION = "description";
     public static final String REQUEST_KEY_LATITUDE = "latitude";

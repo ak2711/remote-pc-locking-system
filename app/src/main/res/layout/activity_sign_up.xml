@@ -77,6 +77,22 @@
                 android:inputType="textEmailAddress"/>
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:theme="@style/TextLabel">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/etReferredBy"
+                style="@style/EditTextStyleBlackSingleLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone_number"
+                android:inputType="phone"
+                android:maxLength="10"/>
+        </android.support.design.widget.TextInputLayout>
+
         <Button
             android:id="@+id/btnSignUp"
             style="@style/ButtonStyleGreen"

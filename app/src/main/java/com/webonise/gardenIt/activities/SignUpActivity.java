@@ -39,6 +39,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText etPhoneNumber;
     @Bind(R.id.etEmailAddress)
     EditText etEmailAddress;
+    @Bind(R.id.etReferredBy)
+    EditText etReferredBy;
     @Bind(R.id.btnSignUp)
     Button btnSignUp;
 
@@ -70,32 +72,41 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void validateDataAndSignUp() {
-        String fullName = etFullName.getText().toString();
-        String phoneNumber = etPhoneNumber.getText().toString();
-        String email = etEmailAddress.getText().toString();
+        String fullName = etFullName.getText().toString().trim();
+        String phoneNumber = etPhoneNumber.getText().toString().trim();
+        String email = etEmailAddress.getText().toString().trim();
+        String referredBy = etReferredBy.getText().toString().trim();
         if (!TextUtils.isEmpty(fullName)) {
             if (!TextUtils.isEmpty(phoneNumber)) {
                 if (phoneNumber.length() == 10) {
-                    registerUser(fullName, phoneNumber, email);
+                    if (!TextUtils.isEmpty(phoneNumber) && referredBy.length() == 10) {
+                        registerUser(fullName, phoneNumber, email, referredBy);
+                    } else {
+                        Toast.makeText(SignUpActivity.this,
+                                getString(R.string.enter_referral_mobile_number),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(SignUpActivity.this, getString(R.string.invalid_mobile_number_length), Toast
-                            .LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this,
+                            getString(R.string.invalid_mobile_number_length),
+                            Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(SignUpActivity.this, getString(R.string.enter_phone_number), Toast
-                        .LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, getString(R.string.enter_phone_number),
+                        Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(SignUpActivity.this, getString(R.string.enter_full_name), Toast
-                    .LENGTH_SHORT).show();
+            Toast.makeText(SignUpActivity.this, getString(R.string.enter_full_name),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void registerUser(String fullName, final String phoneNumber, String email) {
+    private void registerUser(String fullName, final String phoneNumber, String email,
+                              String referredBy) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
         webService.setUrl(Constants.REGISTER_URL);
-        webService.setBody(getBody(fullName, phoneNumber, email));
+        webService.setBody(getBody(fullName, phoneNumber, email, referredBy));
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
             public void onResponse(String response) {
@@ -120,12 +131,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
-    private JSONObject getBody(String fullName, String phoneNumber, String email) {
+    private JSONObject getBody(String fullName, String phoneNumber, String email,
+                               String referredBy) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_NAME, fullName);
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER, phoneNumber);
             jsonObject.put(Constants.REQUEST_KEY_EMAIl, email);
+            jsonObject.put(Constants.REQUEST_KEY_REFERRED_BY, referredBy);
         } catch (Exception e) {
             e.printStackTrace();
         }

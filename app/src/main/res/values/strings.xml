@@ -7,6 +7,8 @@
     <string name="sign_up">Sign Up</string>
     <string name="full_name">Full Name*</string>
     <string name="phone_number">Mobile Number*</string>
+    <string name="referred_by">Referred By (Mobile Number)*</string>
+    <string name="enter_referral_mobile_number">Please enter mobile number of person who referred you.</string>
     <string name="email_address">Email Address</string>
     <string name="enter_full_name">Please enter your Full Name.</string>
     <string name="enter_phone_number">Please enter your Mobile Number.</string>

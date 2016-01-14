@@ -3,7 +3,6 @@ package com.webonise.gardenIt.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
-import com.webonise.gardenIt.adapters.DashboardRecyclerViewAdapter;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
-import com.webonise.gardenIt.models.CreateLogRequestModel;
 import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.models.UserModel;
@@ -38,6 +34,9 @@ import com.webonise.gardenIt.webservice.WebService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -126,6 +125,68 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
         startActivity(intent);
     }
 
+    private List<Object> sortLogsAndIssues() {
+        List<Object> sortedList = new ArrayList<>();
+
+        PlantDetailsModel.Plant plant = plantDetailsModel.getPlant();
+        List<PlantDetailsModel.Plant.Logs> logsList = plant.getLogs();
+        if (logsList != null && logsList.size() > 0) {
+            for (PlantDetailsModel.Plant.Logs logs : logsList) {
+                sortedList.add(logs);
+            }
+        }
+
+        List<PlantDetailsModel.Plant.Issues> issuesList = plant.getIssues();
+        if (issuesList != null && issuesList.size() > 0) {
+            for (PlantDetailsModel.Plant.Issues issues : issuesList) {
+                sortedList.add(issues);
+            }
+        }
+
+        Collections.sort(sortedList, new Comparator<Object>() {
+            @Override
+            public int compare(Object lhs, Object rhs) {
+
+                DateUtil dateUtil = new DateUtil();
+                if (lhs instanceof PlantDetailsModel.Plant.Logs && rhs instanceof
+                        PlantDetailsModel.Plant.Logs) {
+                    long lhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
+                            ((PlantDetailsModel.Plant.Logs) lhs).getCreatedAt());
+
+                    long rhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
+                            ((PlantDetailsModel.Plant.Logs) rhs).getCreatedAt());
+                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? 0 : 1;
+                } else if (lhs instanceof PlantDetailsModel.Plant.Issues && rhs instanceof
+                        PlantDetailsModel.Plant.Issues) {
+                    long lhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
+                            ((PlantDetailsModel.Plant.Issues) lhs).getCreatedAt());
+
+                    long rhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
+                            ((PlantDetailsModel.Plant.Issues) rhs).getCreatedAt());
+                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? 0 : 1;
+                } else if (lhs instanceof PlantDetailsModel.Plant.Issues && rhs instanceof
+                        PlantDetailsModel.Plant.Logs) {
+                    long lhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
+                            ((PlantDetailsModel.Plant.Issues) lhs).getCreatedAt());
+
+                    long rhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
+                            ((PlantDetailsModel.Plant.Logs) rhs).getCreatedAt());
+                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? 0 : 1;
+                } else if (lhs instanceof PlantDetailsModel.Plant.Logs && rhs instanceof
+                        PlantDetailsModel.Plant.Issues) {
+                    long lhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
+                            ((PlantDetailsModel.Plant.Logs) lhs).getCreatedAt());
+
+                    long rhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
+                            ((PlantDetailsModel.Plant.Issues) rhs).getCreatedAt());
+                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? 0 : 1;
+                }
+                return 0;
+            }
+        });
+        return sortedList;
+    }
+
     private void setPlantDetails() {
 
         final PlantDetailsModel.Plant plant = plantDetailsModel.getPlant();
@@ -181,32 +242,63 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             }
         });
 
-        List<PlantDetailsModel.Plant.Logs> logsList = plant.getLogs();
-        if (logsList.size() > 0) {
+        List<Object> sortedList = sortLogsAndIssues();
+
+        if (sortedList != null && sortedList.size() > 0) {
             TextView textView = new TextView(this);
             textView.setText(getString(R.string.logs));
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setTextColor(getResources().getColor(R.color.text_color_green));
             textView.setTextSize(new DisplayUtil(PlantDetailsActivity.this).dpToPx(8));
             llLogHolder.addView(textView);
+            View view = null;
+            for (int i = 0; i < sortedList.size(); i++) {
+                if (sortedList.get(i) instanceof PlantDetailsModel.Plant.Logs) {
+                    PlantDetailsModel.Plant.Logs logs
+                            = (PlantDetailsModel.Plant.Logs) sortedList.get(i);
 
-            for (PlantDetailsModel.Plant.Logs logs : logsList) {
-                View view = LayoutInflater.from(PlantDetailsActivity.this).inflate(R.layout
-                        .log_list_item, null);
+                    view = LayoutInflater.from(PlantDetailsActivity.this)
+                            .inflate(R.layout.log_list_item, null);
 
-                TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-                tvTitle.setText(logs.getContent());
+                    TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+                    tvTitle.setText(logs.getContent());
 
-                TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
-                tvDate.setText(new DateUtil().getFormattedDateFromTimeStamp(logs.getUpdatedAt()));
+                    TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+                    tvDate.setText(new DateUtil()
+                            .getFormattedDateFromTimeStamp(logs.getUpdatedAt()));
 
-                ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
-                if (logs.getImages().size() > 0) {
-                    ImageLoader.getInstance().displayImage(
-                            Constants.BASE_URL + logs.getImages().get(0).getImage().getUrl(),
-                            imageView, options, null);
+                    ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+                    if (logs.getImages().size() > 0) {
+                        ImageLoader.getInstance().displayImage(
+                                Constants.BASE_URL + logs.getImages().get(0).getImage().getUrl(),
+                                imageView, options, null);
+                    }
+                } else if (sortedList.get(i) instanceof PlantDetailsModel.Plant.Issues) {
+                    PlantDetailsModel.Plant.Issues issues
+                            = (PlantDetailsModel.Plant.Issues) sortedList.get(i);
+                    view = LayoutInflater.from(PlantDetailsActivity.this)
+                            .inflate(R.layout.image_text_list_item, null);
+
+                    TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+                    tvTitle.setText(issues.getTitle());
+
+                    TextView tvDescription = (TextView) view.findViewById(R.id.tvDescription);
+                    tvDescription.setText(issues.getDescription());
+
+                    TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+                    tvDate.setText(new DateUtil()
+                            .getFormattedDateFromTimeStamp(issues.getUpdatedAt()));
+
+                    ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+                    if (issues.getImages().size() > 0) {
+                        ImageLoader.getInstance().displayImage(
+                                Constants.BASE_URL + issues.getImages().get(0).getImage().getUrl(),
+                                imageView, options, null);
+                    }
                 }
-                llLogHolder.addView(view);
+                if (view != null) {
+                    llLogHolder.addView(view);
+                }
             }
         }
     }
