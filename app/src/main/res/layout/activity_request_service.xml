@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color_light_grey"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".SplashScreen">
@@ -119,11 +120,11 @@
                         android:background="@drawable/button_background_white_with_green_border">
 
                         <Button
-                            android:background="@null"
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
+                            android:background="@null"
                             android:clickable="false"
                             android:drawableLeft="@drawable/icon_camera"
                             android:drawablePadding="5dp"
@@ -141,11 +142,11 @@
                         android:background="@drawable/button_background_white_with_green_border">
 
                         <Button
-                            android:background="@null"
                             style="?android:attr/borderlessButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
+                            android:background="@null"
                             android:clickable="false"
                             android:drawableLeft="@drawable/icon_gallery"
                             android:drawablePadding="5dp"
