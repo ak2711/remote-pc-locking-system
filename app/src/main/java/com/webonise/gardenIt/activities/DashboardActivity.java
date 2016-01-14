@@ -56,7 +56,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
 
-    TextView tvUserName;
+    TextView tvUserName, tvMobileNumber;
 
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
@@ -118,6 +118,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         View view = navigationView.getHeaderView(0);
         tvUserName = (TextView) view.findViewById(R.id.tvUserName);
+        tvMobileNumber = (TextView)view.findViewById(R.id.tvMobileNumber);
     }
 
     @Override
@@ -154,6 +155,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             userDashboardModel);
                     setTitle();
                     tvUserName.setText(userDashboardModel.getUser().getName());
+                    tvMobileNumber.setText(userDashboardModel.getUser().getPhoneNumber());
                     DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
                             = new DashboardRecyclerViewAdapter(DashboardActivity.this);
 
