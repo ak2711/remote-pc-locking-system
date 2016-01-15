@@ -210,7 +210,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                     }
                     sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_PLANT_ADDED,
                             true);
-                    gotoNextActivity();
+                    finish();
                 } else {
                     Toast.makeText(AddPlantActivity.this, createGardenModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
@@ -257,12 +257,6 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             e.printStackTrace();
         }
         return null;
-    }
-
-    private void gotoNextActivity() {
-        Intent intent = new Intent(AddPlantActivity.this, DashboardActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private String getEncodedImage() {

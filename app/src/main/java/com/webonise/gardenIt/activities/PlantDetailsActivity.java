@@ -155,7 +155,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
                     long rhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
                             ((PlantDetailsModel.Plant.Logs) rhs).getCreatedAt());
-                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? 0 : 1;
+                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? -1 : 1;
                 } else if (lhs instanceof PlantDetailsModel.Plant.Issues && rhs instanceof
                         PlantDetailsModel.Plant.Issues) {
                     long lhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
@@ -163,7 +163,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
                     long rhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
                             ((PlantDetailsModel.Plant.Issues) rhs).getCreatedAt());
-                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? 0 : 1;
+                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? -1 : 1;
                 } else if (lhs instanceof PlantDetailsModel.Plant.Issues && rhs instanceof
                         PlantDetailsModel.Plant.Logs) {
                     long lhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
@@ -171,7 +171,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
                     long rhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
                             ((PlantDetailsModel.Plant.Logs) rhs).getCreatedAt());
-                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? 0 : 1;
+                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? -1 : 1;
                 } else if (lhs instanceof PlantDetailsModel.Plant.Logs && rhs instanceof
                         PlantDetailsModel.Plant.Issues) {
                     long lhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
@@ -179,7 +179,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
                     long rhsCreatedTimeInMillis = dateUtil.getTimeInMillisFromTimeStamp(
                             ((PlantDetailsModel.Plant.Issues) rhs).getCreatedAt());
-                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? 0 : 1;
+                    return lhsCreatedTimeInMillis > rhsCreatedTimeInMillis ? -1 : 1;
                 }
                 return 0;
             }
@@ -245,6 +245,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
         List<Object> sortedList = sortLogsAndIssues();
 
         if (sortedList != null && sortedList.size() > 0) {
+            llLogHolder.removeAllViews();
             TextView textView = new TextView(this);
             textView.setText(getString(R.string.logs));
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
