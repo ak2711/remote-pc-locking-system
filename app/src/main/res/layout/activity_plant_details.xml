@@ -20,8 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="45dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_marginTop="15dp"
             android:scrollbars="none"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -35,12 +33,16 @@
                     android:id="@+id/ivPlantImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
                     android:scaleType="centerCrop"/>
 
                 <TextView
                     android:id="@+id/tvDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
                     android:layout_marginTop="15dp"
                     android:textColor="@color/text_color_grey"
                     android:textSize="16sp"/>
