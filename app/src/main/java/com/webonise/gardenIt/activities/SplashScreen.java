@@ -4,19 +4,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.google.android.gms.analytics.Tracker;
+import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
+import com.google.android.gms.analytics.HitBuilders;
 
 public class SplashScreen extends AppCompatActivity {
 
     private boolean isActivityStopped = false;
-
+    private Tracker mTracker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
+        // Obtain the shared Tracker instance.
+        AppController application =  AppController.getInstance();
+        mTracker = application.getDefaultTracker();
     }
 
     @Override
@@ -25,6 +32,8 @@ public class SplashScreen extends AppCompatActivity {
         isActivityStopped = false;
         Thread sleeper = new Thread(sleepRunnable);
         sleeper.start();
+        mTracker.setScreenName(Constants.ScreenName.SPLASH_SCREEN);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     public Runnable sleepRunnable = new Runnable() {

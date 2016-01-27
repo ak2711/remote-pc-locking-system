@@ -60,4 +60,8 @@ public class Constants {
 
     public static final int CREATE_ISSUE = 0;
     public static final int REQUEST_SERVICE = CREATE_ISSUE + 1;
+
+    public static class ScreenName{
+        public static final String SPLASH_SCREEN = "Splash Screen";
+    }
 }
