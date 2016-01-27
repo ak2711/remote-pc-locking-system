@@ -32,9 +32,9 @@
 
     <string name="request_a_service">Request a service</string>
     <string name="add_log">Add Log</string>
-    <string name="create_an_issue">Create an Issue</string>
+    <string name="create_an_issue">Get Advice</string>
     <string name="send_request">Send Request</string>
-    <string name="create_issue">Create Issue</string>
+    <string name="create_issue">Get Advice</string>
     <string name="title_mowing_cutting">Title (eg: Mowing, Cutting etc)</string>
     <string name="request_service_text">We provide endless range of gardening services.\n
         Lawn mowing, Pruning, Weedeating, Edge trimming, Section tidy-ups, Fertilising and Spraying,
@@ -52,7 +52,7 @@
 
     <string name="edit_my_garden">Edit My Garden</string>
     <string name="dashboard">Dashboard</string>
-    <string name="my_issues">My Issues</string>
+    <string name="my_issues">Advices</string>
     <string name="service_requests">Service Requests</string>
     <string name="please_try_again">Something went wrong. Please try again.</string>
 
