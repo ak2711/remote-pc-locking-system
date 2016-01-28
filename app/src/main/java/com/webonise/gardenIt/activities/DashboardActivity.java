@@ -241,8 +241,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
-            case R.id.editGarden:
-                break;
+            /*case R.id.editGarden:
+                break;*/
             case R.id.dashboard:
                 break;
             case R.id.myIssues:

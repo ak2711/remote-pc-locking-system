@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
+        <!--<item
             android:id="@+id/editGarden"
             android:icon="@drawable/icon_edit_garden"
-            android:title="@string/edit_my_garden"/>
+            android:title="@string/edit_my_garden"/>-->
         <item
             android:id="@+id/dashboard"
             android:icon="@drawable/icon_dashboard"
