@@ -153,6 +153,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     }
                     sharedPreferenceManager.putObject(Constants.KEY_PREF_USER_GARDEN_PLANTS,
                             userDashboardModel);
+                    sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
+                            userDashboardModel.getUser().getPhoneNumber());
                     setTitle();
                     tvUserName.setText(userDashboardModel.getUser().getName());
                     tvMobileNumber.setText(userDashboardModel.getUser().getPhoneNumber());
@@ -175,6 +177,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onError(VolleyError error) {
                 error.printStackTrace();
+
+                Toast.makeText(DashboardActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -183,12 +188,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(DashboardActivity.this);
         }
-        UserModel userModel = sharedPreferenceManager.getObject(
-                Constants.KEY_PREF_USER, UserModel.class);
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
-                    userModel.getUser().getPhone_number());
+                    phoneNumber);
         } catch (JSONException jsonException) {
             jsonException.printStackTrace();
         }

@@ -339,6 +339,8 @@ public class CreateGardenActivity extends AppCompatActivity implements
             @Override
             public void onError(VolleyError error) {
                 error.printStackTrace();
+                Toast.makeText(CreateGardenActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

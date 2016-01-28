@@ -326,6 +326,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onError(VolleyError error) {
                 error.printStackTrace();
+                Toast.makeText(PlantDetailsActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

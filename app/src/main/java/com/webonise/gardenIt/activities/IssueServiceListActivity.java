@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
@@ -149,6 +150,9 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
                     @Override
                     public void onError(VolleyError error) {
                         error.printStackTrace();
+
+                        Toast.makeText(IssueServiceListActivity.this, getString(R.string.error_msg),
+                                Toast.LENGTH_LONG).show();
                     }
                 }
 

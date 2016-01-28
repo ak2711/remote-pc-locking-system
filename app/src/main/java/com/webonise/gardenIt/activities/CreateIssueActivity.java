@@ -200,6 +200,8 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onError(VolleyError error) {
                 error.printStackTrace();
+                Toast.makeText(CreateIssueActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

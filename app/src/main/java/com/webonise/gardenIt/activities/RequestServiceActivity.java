@@ -196,6 +196,8 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
             @Override
             public void onError(VolleyError error) {
                 error.printStackTrace();
+                Toast.makeText(RequestServiceActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

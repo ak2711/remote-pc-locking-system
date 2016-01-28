@@ -220,6 +220,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onError(VolleyError error) {
                 error.printStackTrace();
+                Toast.makeText(AddPlantActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

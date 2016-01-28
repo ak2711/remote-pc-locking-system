@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.webonise.gardenIt.R;
@@ -39,6 +40,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText etPhoneNumber;
     @Bind(R.id.etEmailAddress)
     EditText etEmailAddress;
+    @Bind(R.id.etPassword)
+    EditText etPassword;
+    @Bind(R.id.etConfirmPassword)
+    EditText etConfirmPassword;
+    @Bind(R.id.tvAlreadyAnUser)
+    TextView tvAlreadyAnUser;
     @Bind(R.id.etReferredBy)
     EditText etReferredBy;
     @Bind(R.id.btnSignUp)
@@ -50,7 +57,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
         btnSignUp.setOnClickListener(this);
-        etEmailAddress.setOnEditorActionListener(new OnEditorActionListener() {
+        tvAlreadyAnUser.setOnClickListener(this);
+        etReferredBy.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -68,6 +76,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.btnSignUp:
                 validateDataAndSignUp();
                 break;
+
+            case R.id.tvAlreadyAnUser:
+                gotoNextActivity(SignInActivity.class);
+                break;
         }
     }
 
@@ -76,16 +88,32 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String phoneNumber = etPhoneNumber.getText().toString().trim();
         String email = etEmailAddress.getText().toString().trim();
         String referredBy = etReferredBy.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+        String confirmPassword = (etConfirmPassword).getText().toString().trim();
         if (!TextUtils.isEmpty(fullName)) {
             if (!TextUtils.isEmpty(phoneNumber)) {
                 if (phoneNumber.length() == 10) {
-                    if (!TextUtils.isEmpty(phoneNumber) && referredBy.length() == 10) {
-                        registerUser(fullName, phoneNumber, email, referredBy);
+                    if (!TextUtils.isEmpty(password)) {
+                        if (password.equals(confirmPassword)) {
+                            if (!TextUtils.isEmpty(referredBy) && referredBy.length() == 10) {
+                                registerUser(fullName, phoneNumber, email, referredBy, password);
+                            } else {
+                                Toast.makeText(SignUpActivity.this,
+                                        getString(R.string.enter_referral_mobile_number),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(SignUpActivity.this,
+                                    getString(R.string.password_does_not_match),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
                     } else {
                         Toast.makeText(SignUpActivity.this,
-                                getString(R.string.enter_referral_mobile_number),
+                                getString(R.string.enter_password),
                                 Toast.LENGTH_SHORT).show();
                     }
+
                 } else {
                     Toast.makeText(SignUpActivity.this,
                             getString(R.string.invalid_mobile_number_length),
@@ -102,11 +130,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void registerUser(String fullName, final String phoneNumber, String email,
-                              String referredBy) {
+                              String referredBy, String password) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
         webService.setUrl(Constants.REGISTER_URL);
-        webService.setBody(getBody(fullName, phoneNumber, email, referredBy));
+        webService.setBody(getBody(fullName, phoneNumber, email, referredBy, password));
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
             public void onResponse(String response) {
@@ -117,28 +145,39 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     sharedPreferenceManager.putObject(Constants.KEY_PREF_USER, userModel);
                     sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_USER_LOGGED_IN,
                             true);
-                    gotoNextActivity();
+                    gotoNextActivity(CreateGardenActivity.class);
                 } else {
-                    Toast.makeText(SignUpActivity.this, userModel.getMessage(), Toast
-                            .LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, userModel.getMessage(),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onError(VolleyError error) {
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 400: //Already Exists
+                            Toast.makeText(SignUpActivity.this,
+                                    getString(R.string.user_does_not_exists),
+                                    Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
                 error.printStackTrace();
             }
         });
     }
 
     private JSONObject getBody(String fullName, String phoneNumber, String email,
-                               String referredBy) {
+                               String referredBy, String password) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_NAME, fullName);
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER, phoneNumber);
             jsonObject.put(Constants.REQUEST_KEY_EMAIl, email);
             jsonObject.put(Constants.REQUEST_KEY_REFERRED_BY, referredBy);
+            //jsonObject.put(Constants.REQUEST_KEY_PASSWORD, password);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -146,8 +185,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         return jsonObject;
     }
 
-    private void gotoNextActivity() {
-        Intent intent = new Intent(SignUpActivity.this, CreateGardenActivity.class);
+    private void gotoNextActivity(Class clazz) {
+        Intent intent = new Intent(SignUpActivity.this, clazz);
         startActivity(intent);
         finish();
     }

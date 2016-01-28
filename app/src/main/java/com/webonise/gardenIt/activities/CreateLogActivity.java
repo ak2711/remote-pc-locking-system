@@ -187,6 +187,8 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onError(VolleyError error) {
                 error.printStackTrace();
+                Toast.makeText(CreateLogActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }

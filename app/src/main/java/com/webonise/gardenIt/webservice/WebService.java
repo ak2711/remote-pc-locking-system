@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
@@ -137,7 +138,6 @@ public class WebService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 LogUtils.LOGD(TAG, "onErrorResponse :: " + error);
-                Toast.makeText(mContext, mContext.getString(R.string.error_msg), Toast.LENGTH_LONG).show();
                 responseInterface.onError(error);
                 if (progressDialog != null)
                     progressDialog.dismiss();
@@ -170,7 +170,7 @@ public class WebService {
             @Override
             protected VolleyError parseNetworkError(VolleyError volleyError) {
                 if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
-                    return new VolleyError(new String(volleyError.networkResponse.data));
+                    return super.parseNetworkError(volleyError);
                 }
                 return super.parseNetworkError(volleyError);
             }

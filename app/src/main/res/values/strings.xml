@@ -5,6 +5,7 @@
     <string name="loading">Loading...</string>
     <string name="error_msg">There might be a problem , Please try again !</string>
     <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
     <string name="full_name">Full Name*</string>
     <string name="phone_number">Mobile Number*</string>
     <string name="referred_by">Referred By (Mobile Number)*</string>
@@ -58,4 +59,13 @@
 
     <string name="title">Title</string>
     <string name="logs">Activity/Logs</string>
+
+    <string name="already_an_user"><u>Already an User? Sign In</u></string>
+    <string name="new_user"><u>New User? Sign Up</u></string>
+    <string name="password">Password*</string>
+    <string name="confirm_password">Confirm Password*</string>
+    <string name="enter_password">Please enter password</string>
+    <string name="password_does_not_match">Password doesn\'t match. Please check again</string>
+    <string name="user_does_not_exists">User doesn\'t exists. Please check Mobile number and password</string>
+    <string name="user_already_exists">User already exists. Please check Mobile number.</string>
 </resources>

@@ -8,6 +8,7 @@ public class Constants {
     public static final String KEY_PREF_USER = "user";
     public static final String KEY_PREF_GARDEN_DETAILS = "garden";
     public static final String KEY_PREF_USER_GARDEN_PLANTS = "user_garden_plants";
+    public static final String KEY_PREF_USER_PHONE_NUMBER = "user_phone_number";
     public static final String KEY_PREF_USER_ISSUES = "user_issues";
     public static final String KEY_PREF_USER_REQUEST = "user_requests";
 
@@ -37,6 +38,7 @@ public class Constants {
     public static final String REQUEST_KEY_PLANT_IMAGE = "plant_image";
     public static final String REQUEST_KEY_PLANT_ID = "plant_id";
     public static final String REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE = "data:image/jpeg;base64,";
+    public static final String REQUEST_KEY_PASSWORD = "password";
     public static final int RESPONSE_CODE_200 = 200;
 
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
@@ -61,7 +63,4 @@ public class Constants {
     public static final int CREATE_ISSUE = 0;
     public static final int REQUEST_SERVICE = CREATE_ISSUE + 1;
 
-    public static class ScreenName{
-        public static final String SPLASH_SCREEN = "Splash Screen";
-    }
 }
