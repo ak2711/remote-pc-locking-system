@@ -13,7 +13,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("../gardenIt.jks")
+            storeFile file("../app/gardenIt.jks")
             storePassword "Webonise123#"
             keyAlias "gardenIt"
             keyPassword "Webonise123#"
@@ -28,7 +28,7 @@ android {
                 variant.outputs.each { output ->
                     output.outputFile = new File(output.outputFile.parent,
                             output.outputFile.name.replace("app-release.apk",
-                                    "GardenIt_V" + versionName + ".apk"))
+                                    "GardenIt_release_V" + versionName + ".apk"))
 
                 }
             }

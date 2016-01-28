@@ -219,6 +219,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                     }
                     sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_PLANT_ADDED,
                             true);
+                    Intent intent = new Intent(AddPlantActivity.this, DashboardActivity.class);
+                    startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(AddPlantActivity.this, createGardenModel.getMessage(),
