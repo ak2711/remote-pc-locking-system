@@ -143,6 +143,10 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                     getString(R.string.user_does_not_exists),
                                     Toast.LENGTH_SHORT).show();
                             break;
+                        default:
+                            Toast.makeText(SignInActivity.this, getString(R.string.error_msg),
+                                    Toast.LENGTH_LONG).show();
+                            break;
                     }
                 }
                 error.printStackTrace();
@@ -154,7 +158,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER, phoneNumber);
-            //jsonObject.put(Constants.REQUEST_KEY_PASSWORD, password);
+            jsonObject.put(Constants.REQUEST_KEY_PASSWORD, password);
         } catch (Exception e) {
             e.printStackTrace();
         }
