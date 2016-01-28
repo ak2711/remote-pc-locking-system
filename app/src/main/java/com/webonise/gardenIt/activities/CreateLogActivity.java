@@ -32,6 +32,7 @@ import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
+import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.utilities.UriManager;
 import com.webonise.gardenIt.webservice.WebService;
@@ -58,6 +59,8 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     EditText etLogTitle;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
+    @Bind(R.id.ivShare)
+    ImageView ivShare;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
@@ -68,6 +71,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
     private int plantId;
+    private ShareUtil shareUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +81,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
         btnAddLog.setOnClickListener(this);
+        ivShare.setOnClickListener(this);
     }
 
     @Override
@@ -117,6 +122,10 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
             case R.id.btnAddLog:
                 validateAndCreateLog();
                 break;
+            case R.id.ivShare:
+                shareUtil = new ShareUtil(this);
+                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivToUpload));
+                break;
         }
     }
 
@@ -152,6 +161,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
+        ivShare.setVisibility(View.VISIBLE);
     }
 
     private void validateAndCreateLog() {
@@ -161,8 +171,8 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         if (!TextUtils.isEmpty(title)) {
             createLog(title);
         } else {
-            Toast.makeText(CreateLogActivity.this, getString(R.string.provide_title), Toast
-                    .LENGTH_LONG).show();
+            Toast.makeText(CreateLogActivity.this, getString(R.string.provide_title),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -197,14 +207,14 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(CreateLogActivity.this);
         }
-        UserModel userModel = sharedPreferenceManager.getObject(
-                Constants.KEY_PREF_USER, UserModel.class);
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
 
         CreateLogRequestModel createLogRequestModel = new CreateLogRequestModel();
 
         try {
             createLogRequestModel.setContent(title);
-            createLogRequestModel.setPhoneNumber(userModel.getUser().getPhone_number());
+            createLogRequestModel.setPhoneNumber(phoneNumber);
 
             if (plantId > 0) {
                 createLogRequestModel.setPlantId(plantId);
@@ -234,5 +244,13 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     private String getEncodedImage() {
         Bitmap bitmap = ((BitmapDrawable) ivToUpload.getDrawable()).getBitmap();
         return ImageUtil.encodeTobase64(bitmap);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (shareUtil != null) {
+            shareUtil.deleteImageFile();
+        }
     }
 }

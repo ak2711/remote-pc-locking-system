@@ -336,12 +336,12 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(PlantDetailsActivity.this);
         }
-        UserModel userModel = sharedPreferenceManager.getObject(
-                Constants.KEY_PREF_USER, UserModel.class);
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
-                    userModel.getUser().getPhone_number());
+                    phoneNumber);
             jsonObject.put(Constants.REQUEST_KEY_PLANT_ID, plantId);
         } catch (JSONException jsonException) {
             jsonException.printStackTrace();

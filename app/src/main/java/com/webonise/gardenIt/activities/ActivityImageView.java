@@ -2,8 +2,10 @@ package com.webonise.gardenIt.activities;
 
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewTreeObserver;
@@ -171,5 +173,6 @@ public class ActivityImageView extends AppCompatActivity {
             }
         });
     }
+
 }
 

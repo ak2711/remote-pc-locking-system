@@ -1,6 +1,7 @@
 package com.webonise.gardenIt.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -33,6 +34,7 @@ import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
+import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.utilities.UriManager;
 import com.webonise.gardenIt.webservice.WebService;
@@ -61,6 +63,8 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
     EditText etDescription;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
+    @Bind(R.id.ivShare)
+    ImageView ivShare;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
@@ -71,6 +75,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
     private int gardenId;
+    private ShareUtil shareUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +85,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
         btnRequestService.setOnClickListener(this);
+        ivShare.setOnClickListener(this);
     }
 
     @Override
@@ -120,6 +126,10 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
             case R.id.btnRequestService:
                 validateAndRequestService();
                 break;
+            case R.id.ivShare:
+                shareUtil = new ShareUtil(this);
+                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivToUpload));
+                break;
         }
     }
 
@@ -155,6 +165,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
+        ivShare.setVisibility(View.VISIBLE);
     }
 
     private void validateAndRequestService() {
@@ -206,15 +217,14 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(RequestServiceActivity.this);
         }
-        UserModel userModel = sharedPreferenceManager.getObject(
-                Constants.KEY_PREF_USER, UserModel.class);
-
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
         ServiceRequestModel serviceRequestModel = new ServiceRequestModel();
 
         try {
             serviceRequestModel.setTitle(title);
             serviceRequestModel.setDescription(description);
-            serviceRequestModel.setPhoneNumber(userModel.getUser().getPhone_number());
+            serviceRequestModel.setPhoneNumber(phoneNumber);
 
             List<String> dummyItemList = new ArrayList<>();
             dummyItemList.add("Gardening");
@@ -250,6 +260,14 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
             return ImageUtil.encodeTobase64(bitmap);
         } else {
             return null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (shareUtil != null) {
+            shareUtil.deleteImageFile();
         }
     }
 }

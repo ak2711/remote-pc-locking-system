@@ -163,12 +163,12 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(IssueServiceListActivity.this);
         }
-        UserModel userModel = sharedPreferenceManager.getObject(
-                Constants.KEY_PREF_USER, UserModel.class);
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
-                    userModel.getUser().getPhone_number());
+                    phoneNumber);
         } catch (JSONException jsonException) {
             jsonException.printStackTrace();
         }

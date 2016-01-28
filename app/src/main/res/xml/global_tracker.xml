@@ -5,7 +5,7 @@
 
     <!--Enable automatic activity tracking-->
     <!--TODO Enable Activity Tracking -->
-    <bool name="ga_autoActivityTracking">false</bool>
+    <bool name="ga_autoActivityTracking">true</bool>
 
     <!--Enable automatic exception tracking-->
     <bool name="ga_reportUncaughtExceptions">true</bool>

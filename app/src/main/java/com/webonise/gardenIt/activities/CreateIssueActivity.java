@@ -31,6 +31,7 @@ import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
+import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.utilities.UriManager;
 import com.webonise.gardenIt.webservice.WebService;
@@ -59,6 +60,8 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     EditText etDescription;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
+    @Bind(R.id.ivShare)
+    ImageView ivShare;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
@@ -69,6 +72,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
     private int plantId;
+    private ShareUtil shareUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
         btnCreateIssue.setOnClickListener(this);
+        ivShare.setOnClickListener(this);
     }
 
     @Override
@@ -119,6 +124,10 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             case R.id.btnCreateIssue:
                 validateAndCreateIssue();
                 break;
+            case R.id.ivShare:
+                shareUtil = new ShareUtil(this);
+                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivToUpload));
+                break;
         }
     }
 
@@ -154,6 +163,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
+        ivShare.setVisibility(View.VISIBLE);
     }
 
     private void validateAndCreateIssue() {
@@ -210,15 +220,15 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(CreateIssueActivity.this);
         }
-        UserModel userModel = sharedPreferenceManager.getObject(
-                Constants.KEY_PREF_USER, UserModel.class);
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
 
         CreateIssueRequestModel createIssueRequestModel = new CreateIssueRequestModel();
 
         try {
             createIssueRequestModel.setName(nameOfPlant);
             createIssueRequestModel.setDescription(description);
-            createIssueRequestModel.setPhoneNumber(userModel.getUser().getPhone_number());
+            createIssueRequestModel.setPhoneNumber(phoneNumber);
 
             if (plantId > 0) {
                 createIssueRequestModel.setPlantId(plantId);
@@ -245,5 +255,13 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private String getEncodedImage() {
         Bitmap bitmap = ((BitmapDrawable) ivToUpload.getDrawable()).getBitmap();
         return ImageUtil.encodeTobase64(bitmap);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (shareUtil != null) {
+            shareUtil.deleteImageFile();
+        }
     }
 }

@@ -115,6 +115,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             userDashboardModel);
                     sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_USER_LOGGED_IN,
                             true);
+                    sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_PLANT_ADDED,
+                            true);
                     sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
                             userDashboardModel.getUser().getPhoneNumber());
                     if (userDashboardModel.getUser().getGardens() != null
@@ -158,7 +160,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER, phoneNumber);
-            jsonObject.put(Constants.REQUEST_KEY_PASSWORD, password);
+            //TODO uncomment after API change
+            //jsonObject.put(Constants.REQUEST_KEY_PASSWORD, password);
         } catch (Exception e) {
             e.printStackTrace();
         }

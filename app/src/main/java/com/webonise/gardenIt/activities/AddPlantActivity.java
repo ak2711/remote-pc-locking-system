@@ -33,6 +33,7 @@ import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
+import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.utilities.UriManager;
 import com.webonise.gardenIt.webservice.WebService;
@@ -61,12 +62,15 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     EditText etDescription;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
+    @Bind(R.id.ivShare)
+    ImageView ivShare;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
     RelativeLayout rlGallery;
     @Bind(R.id.btnAddPlant)
     Button btnAddPlant;
+    private ShareUtil shareUtil;
 
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
@@ -80,7 +84,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
         btnAddPlant.setOnClickListener(this);
-
+        ivShare.setOnClickListener(this);
         etDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -133,6 +137,10 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnAddPlant:
                 validateAndAddPlant();
                 break;
+            case R.id.ivShare:
+                shareUtil = new ShareUtil(this);
+                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivToUpload));
+                break;
         }
     }
 
@@ -168,6 +176,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
+        ivShare.setVisibility(View.VISIBLE);
     }
 
     private void validateAndAddPlant() {
@@ -264,5 +273,13 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     private String getEncodedImage() {
         Bitmap bitmap = ((BitmapDrawable) ivToUpload.getDrawable()).getBitmap();
         return ImageUtil.encodeTobase64(bitmap);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (shareUtil != null) {
+            shareUtil.deleteImageFile();
+        }
     }
 }
