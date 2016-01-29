@@ -28,7 +28,7 @@ android {
                 variant.outputs.each { output ->
                     output.outputFile = new File(output.outputFile.parent,
                             output.outputFile.name.replace("app-release.apk",
-                                    "GardenIt_release_V" + versionName + ".apk"))
+                                    "FarmerCity_release_V" + versionName + ".apk"))
 
                 }
             }
