@@ -107,6 +107,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             tvTitle.setText(R.string.request_a_service);
             toolbar.setNavigationIcon(R.drawable.ic_action_back);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

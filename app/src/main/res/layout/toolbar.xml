@@ -21,6 +21,8 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
             android:singleLine="true"
             android:textColor="@color/text_color_green"
             android:textSize="18sp"/>

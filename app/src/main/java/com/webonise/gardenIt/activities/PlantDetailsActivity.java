@@ -100,6 +100,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             toolbar.setNavigationIcon(R.drawable.ic_action_back);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override

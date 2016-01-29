@@ -101,6 +101,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             toolbar.setNavigationIcon(R.drawable.icon_hamburger);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override

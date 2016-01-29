@@ -58,6 +58,7 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             tvTitle.setText(type == Constants.CREATE_ISSUE ? R.string.my_issues
                     : R.string.service_requests);
             toolbar.setNavigationIcon(R.drawable.ic_action_back);

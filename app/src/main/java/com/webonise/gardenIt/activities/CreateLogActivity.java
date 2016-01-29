@@ -103,6 +103,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             tvTitle.setText(getString(R.string.add_log));
             toolbar.setNavigationIcon(R.drawable.ic_action_back);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {

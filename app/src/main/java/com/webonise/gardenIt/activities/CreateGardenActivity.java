@@ -122,6 +122,7 @@ public class CreateGardenActivity extends AppCompatActivity implements
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             tvTitle.setText(R.string.create_garden);
         }
     }

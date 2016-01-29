@@ -116,6 +116,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     private void setToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             tvTitle.setText(R.string.add_new_plant);
             if (showBackButton) {
                 toolbar.setNavigationIcon(R.drawable.ic_action_back);
