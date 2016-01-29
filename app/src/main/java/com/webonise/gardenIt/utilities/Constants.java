@@ -9,17 +9,18 @@ public class Constants {
     public static final String KEY_PREF_GARDEN_DETAILS = "garden";
     public static final String KEY_PREF_USER_GARDEN_PLANTS = "user_garden_plants";
     public static final String KEY_PREF_USER_PHONE_NUMBER = "user_phone_number";
+    public static final String KEY_PREF_USER_PASSWORD = "password";
     public static final String KEY_PREF_USER_ISSUES = "user_issues";
     public static final String KEY_PREF_USER_REQUEST = "user_requests";
 
     public static final String BASE_URL = "http://test-uf.weboapps.com";
     public static final String BASE_URL_API = BASE_URL + "/apis/";
-    public static final String REGISTER_URL = BASE_URL_API +  "register";
-    public static final String CREATE_GARDEN_URL = BASE_URL_API +  "create_garden";
-    public static final String ADD_PLANT_URL = BASE_URL_API +  "create_plant";
-    public static final String SIGN_IN_URL = BASE_URL_API +  "sign_in";
-    public static final String CREATE_ISSUE_URL = BASE_URL_API +  "create_issue";
-    public static final String REQUEST_SERVICE_URL = BASE_URL_API +  "request_gardener";
+    public static final String REGISTER_URL = BASE_URL_API + "register";
+    public static final String CREATE_GARDEN_URL = BASE_URL_API + "create_garden";
+    public static final String ADD_PLANT_URL = BASE_URL_API + "create_plant";
+    public static final String SIGN_IN_URL = BASE_URL_API + "sign_in";
+    public static final String CREATE_ISSUE_URL = BASE_URL_API + "create_issue";
+    public static final String REQUEST_SERVICE_URL = BASE_URL_API + "request_gardener";
     public static final String REQUEST_LIST_URL = BASE_URL_API + "service_requests";
     public static final String ISSUES_LIST_URL = BASE_URL_API + "issues";
     public static final String ADD_LOG_URL = BASE_URL_API + "add_log";
@@ -63,4 +64,19 @@ public class Constants {
     public static final int CREATE_ISSUE = 0;
     public static final int REQUEST_SERVICE = CREATE_ISSUE + 1;
 
+
+    public static class ScreenName {
+        public static final String SPLASH_SCREEN = "Splash Screen";
+        public static final String SIGN_IN_SCREEN = "Sign In Screen";
+        public static final String SIGN_UP_SCREEN = "Sign Up Screen";
+        public static final String CREATE_GARDEN_SCREEN = "Create Garden Screen";
+        public static final String ADD_PLANT_SCREEN = "Add Plant Screen";
+        public static final String REQUEST_SERVICE_SCREEN = "Request Service Screen";
+        public static final String GET_ADVICE_SCREEN = "Get Advice Screen";
+        public static final String ADD_LOGS_SCREEN = "Add Logs Screen";
+        public static final String DASHBOARD_SCREEN = "Dashboard Screen";
+        public static final String PLANT_DETAILS_SCREEN = "Plant Details Screen";
+        public static final String ADVICE_LIST_SCREEN = "Advice List Screen";
+        public static final String REQUESTED_SERVICE_LIST_SCREEN = "Requested Service ListScreen";
+    }
 }

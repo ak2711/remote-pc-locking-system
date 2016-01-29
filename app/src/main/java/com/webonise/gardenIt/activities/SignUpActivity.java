@@ -14,7 +14,10 @@ import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
+import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.UserModel;
@@ -68,6 +71,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Obtain the shared Tracker instance.
+        AppController application =  AppController.getInstance();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName(Constants.ScreenName.SIGN_UP_SCREEN);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override
@@ -130,7 +143,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void registerUser(String fullName, final String phoneNumber, String email,
-                              String referredBy, String password) {
+                              String referredBy, final String password) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
         webService.setUrl(Constants.REGISTER_URL);
@@ -145,6 +158,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     sharedPreferenceManager.putObject(Constants.KEY_PREF_USER, userModel);
                     sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_USER_LOGGED_IN,
                             true);
+                    sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
+                            phoneNumber);
+                    sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PASSWORD,
+                            password);
                     gotoNextActivity(CreateGardenActivity.class);
                 } else {
                     Toast.makeText(SignUpActivity.this, userModel.getMessage(),
@@ -159,7 +176,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     switch (response.statusCode) {
                         case 400: //Already Exists
                             Toast.makeText(SignUpActivity.this,
-                                    getString(R.string.user_does_not_exists),
+                                    getString(R.string.user_already_exists),
                                     Toast.LENGTH_SHORT).show();
                             break;
                         default:

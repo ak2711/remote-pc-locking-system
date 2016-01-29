@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,6 +34,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.CreateGardenModel;
@@ -105,6 +108,15 @@ public class CreateGardenActivity extends AppCompatActivity implements
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppController application =  AppController.getInstance();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName(Constants.ScreenName.CREATE_GARDEN_SCREEN);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     private void setToolbar() {

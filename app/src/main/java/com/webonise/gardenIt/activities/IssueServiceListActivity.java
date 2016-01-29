@@ -12,7 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
+import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.adapters.IssuesServicesRecyclerViewAdapter;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
@@ -77,6 +80,12 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
         setToolbar();
         fab.setOnClickListener(this);
         fetchUseIssues();
+        AppController application = AppController.getInstance();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName(type == Constants.CREATE_ISSUE ?
+                Constants.ScreenName.ADVICE_LIST_SCREEN
+                : Constants.ScreenName.REQUESTED_SERVICE_LIST_SCREEN);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     @Override

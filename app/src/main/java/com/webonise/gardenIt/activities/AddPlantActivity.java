@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -105,6 +107,10 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             showBackButton = bundle.getBoolean(Constants.BUNDLE_KEY_SHOW_BACK_ICON);
         }
         setToolbar();
+        AppController application =  AppController.getInstance();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName(Constants.ScreenName.ADD_PLANT_SCREEN);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     private void setToolbar() {
@@ -220,7 +226,9 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                     sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_PLANT_ADDED,
                             true);
                     Intent intent = new Intent(AddPlantActivity.this, DashboardActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
+
                     finish();
                 } else {
                     Toast.makeText(AddPlantActivity.this, createGardenModel.getMessage(),

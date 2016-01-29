@@ -1,6 +1,7 @@
 package com.webonise.gardenIt.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
+import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.adapters.DashboardRecyclerViewAdapter;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
@@ -60,6 +65,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
+    private String shopNowLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +83,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
+        // Obtain the shared Tracker instance.
+        AppController application =  AppController.getInstance();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName(Constants.ScreenName.DASHBOARD_SCREEN);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         fetchUserDashboardData();
     }
 
@@ -158,6 +169,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     setTitle();
                     tvUserName.setText(userDashboardModel.getUser().getName());
                     tvMobileNumber.setText(userDashboardModel.getUser().getPhoneNumber());
+                    try {
+                        shopNowLink = userDashboardModel.getUser().getLinks().getStoreLink();
+                    } catch (NullPointerException npe){
+                        npe.printStackTrace();
+                    }
                     DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
                             = new DashboardRecyclerViewAdapter(DashboardActivity.this);
 
@@ -190,10 +206,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         }
         String phoneNumber = sharedPreferenceManager
                 .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
+        String password = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PASSWORD);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
                     phoneNumber);
+            jsonObject.put(Constants.REQUEST_KEY_PASSWORD, password);
         } catch (JSONException jsonException) {
             jsonException.printStackTrace();
         }
@@ -256,6 +275,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                         IssueServiceListActivity.class);
                 serviceRequestIntent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.REQUEST_SERVICE);
                 startActivity(serviceRequestIntent);
+                break;
+            case R.id.shopNow:
+                if (!TextUtils.isEmpty(shopNowLink)) {
+                    Intent shopNowIntent = new Intent(Intent.ACTION_VIEW);
+                    shopNowIntent.setData(Uri.parse(shopNowLink));
+                    startActivity(shopNowIntent);
+                } else {
+                    Toast.makeText(this, getString(R.string.yet_to_be_implemented),
+                            Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
 

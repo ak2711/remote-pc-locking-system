@@ -45,6 +45,15 @@ public class UserDashboardModel {
         @SerializedName("updated_at")
         private String updatedAt;
         private List<Gardens> gardens;
+        private Links links;
+
+        public Links getLinks() {
+            return links;
+        }
+
+        public void setLinks(Links links) {
+            this.links = links;
+        }
 
         public int getId() {
             return id;
@@ -102,6 +111,18 @@ public class UserDashboardModel {
             this.gardens = gardens;
         }
 
+        public class Links {
+            @SerializedName("store_link")
+            private String storeLink;
+
+            public String getStoreLink() {
+                return storeLink;
+            }
+
+            public void setStoreLink(String storeLink) {
+                this.storeLink = storeLink;
+            }
+        }
         public class Gardens {
 
             private int id;

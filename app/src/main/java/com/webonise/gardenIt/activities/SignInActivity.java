@@ -15,7 +15,10 @@ import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
+import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.UserDashboardModel;
@@ -63,6 +66,16 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Obtain the shared Tracker instance.
+        AppController application =  AppController.getInstance();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName(Constants.ScreenName.SIGN_IN_SCREEN);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnSignIn:
@@ -98,7 +111,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void signIn(final String phoneNumber, String password) {
+    private void signIn(final String phoneNumber, final String password) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
         webService.setUrl(Constants.SIGN_IN_URL);
@@ -119,6 +132,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                             true);
                     sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
                             userDashboardModel.getUser().getPhoneNumber());
+                    sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PASSWORD,
+                            password);
                     if (userDashboardModel.getUser().getGardens() != null
                             && userDashboardModel.getUser().getGardens().size() > 0) {
                         sharedPreferenceManager.setBooleanValue(
@@ -160,8 +175,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER, phoneNumber);
-            //TODO uncomment after API change
-            //jsonObject.put(Constants.REQUEST_KEY_PASSWORD, password);
+            jsonObject.put(Constants.REQUEST_KEY_PASSWORD, password);
         } catch (Exception e) {
             e.printStackTrace();
         }

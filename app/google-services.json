@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_id": "gardenit-1180",
-    "project_number": "258556959013",
-    "name": "GardenIt"
+    "project_id": "gardenit-77736",
+    "project_number": "68184886221",
+    "name": "GardenIT"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:258556959013:android:db99e2b95a9efed5",
+        "mobilesdk_app_id": "1:68184886221:android:db99e2b95a9efed5",
         "client_id": "android:com.webonise.gardenIt",
         "client_type": 1,
         "android_client_info": {
@@ -20,7 +20,7 @@
         "analytics_service": {
           "status": 2,
           "analytics_property": {
-            "tracking_id": "UA-50392279-2"
+            "tracking_id": "UA-72986008-1"
           }
         },
         "cloud_messaging_service": {

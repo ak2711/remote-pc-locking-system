@@ -18,6 +18,10 @@
             android:id="@+id/serviceRequests"
             android:icon="@drawable/icon_service_request"
             android:title="@string/service_requests"/>
-    </group>
+        <item
+            android:id="@+id/shopNow"
+            android:icon="@drawable/icon_edit_garden"
+            android:title="@string/shop_now"/>
 
+    </group>
 </menu>
