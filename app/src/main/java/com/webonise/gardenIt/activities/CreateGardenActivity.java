@@ -228,13 +228,12 @@ public class CreateGardenActivity extends AppCompatActivity implements
         // Display the connection status
         location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
-            Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             map.animateCamera(cameraUpdate);
         } else {
-            Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast
-                    .LENGTH_SHORT).show();
+            Toast.makeText(this, "Location not found. Please make sure location services is on.",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
