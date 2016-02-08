@@ -95,7 +95,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             plantId = bundle.getInt(Constants.BUNDLE_KEY_PLANT_ID);
         }
         setToolbar();
-        AppController application =  AppController.getInstance();
+        AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(Constants.ScreenName.GET_ADVICE_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -179,19 +179,14 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
 
         if (!TextUtils.isEmpty(title)) {
             if (!TextUtils.isEmpty(description)) {
-                if (image_file != null) {
-                    createIssue(title, description);
-                } else {
-                    Toast.makeText(CreateIssueActivity.this, getString(R.string.provide_image),
-                            Toast.LENGTH_LONG).show();
-                }
+                createIssue(title, description);
             } else {
                 Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_description),
                         Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(CreateIssueActivity.this, getString(R.string.provide_title), Toast
-                    .LENGTH_LONG).show();
+            Toast.makeText(CreateIssueActivity.this, getString(R.string.provide_title),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -259,8 +254,12 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     }
 
     private String getEncodedImage() {
-        Bitmap bitmap = ((BitmapDrawable) ivToUpload.getDrawable()).getBitmap();
-        return ImageUtil.encodeTobase64(bitmap);
+        if (image_file != null) {
+            Bitmap bitmap = ((BitmapDrawable) ivToUpload.getDrawable()).getBitmap();
+            return ImageUtil.encodeTobase64(bitmap);
+        } else {
+            return null;
+        }
     }
 
     @Override
