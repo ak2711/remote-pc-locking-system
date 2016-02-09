@@ -369,13 +369,10 @@ public class CreateGardenActivity extends AppCompatActivity implements
             jsonObject.put(Constants.REQUEST_KEY_NAME, gardenName);
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
                     userModel.getUser().getPhone_number());
-            jsonObject.put(Constants.REQUEST_KEY_DESCRIPTION, "Test"); //Not needed right now
-            jsonObject.put(Constants.REQUEST_KEY_GARDEN_TYPE, "Test"); //Not needed right now
             jsonObject.put(Constants.REQUEST_KEY_LATITUDE,
                     Double.toString(centerLocation.latitude));
             jsonObject.put(Constants.REQUEST_KEY_LONGITUDE,
                     Double.toString(centerLocation.longitude));
-            jsonObject.put(Constants.REQUEST_KEY_ADDRESS, "Test"); //Not needed right now
 
         } catch (Exception e) {
             e.printStackTrace();
