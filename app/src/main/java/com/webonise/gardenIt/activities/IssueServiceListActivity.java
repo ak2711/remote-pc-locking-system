@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +22,6 @@ import com.webonise.gardenIt.adapters.IssuesServicesRecyclerViewAdapter;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.IssuesListModel;
 import com.webonise.gardenIt.models.ServiceListModel;
-import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.webservice.WebService;
@@ -36,10 +36,6 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
 
     @Bind(R.id.fab)
     FloatingActionButton fab;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.tvTitle)
-    TextView tvTitle;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
 
@@ -56,9 +52,11 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
     }
 
     private void setToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+            TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
             tvTitle.setText(type == Constants.CREATE_ISSUE ? R.string.my_issues
                     : R.string.service_requests);
             toolbar.setNavigationIcon(R.drawable.ic_action_back);
@@ -118,43 +116,40 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
                                     IssuesListModel.class);
                             if (issuesListModel.getStatus() == Constants
                                     .RESPONSE_CODE_200) {
-                                if (sharedPreferenceManager == null) {
-                                    sharedPreferenceManager = new
-                                            SharedPreferenceManager
-                                            (IssueServiceListActivity.this);
+                                if (issuesListModel.getIssues().size() > 0) {
+                                    if (sharedPreferenceManager == null) {
+                                        sharedPreferenceManager = new
+                                                SharedPreferenceManager
+                                                (IssueServiceListActivity.this);
+                                    }
+                                    sharedPreferenceManager.putObject(Constants
+                                                    .KEY_PREF_USER_ISSUES,
+
+                                            issuesListModel);
+                                } else {
+                                    showEmptyView();
+                                    return;
                                 }
-                                sharedPreferenceManager.putObject(Constants
-                                                .KEY_PREF_USER_ISSUES,
-                                        issuesListModel);
                             }
                         } else {
                             serviceListModel = new Gson().fromJson(response,
                                     ServiceListModel.class);
-                            if (serviceListModel.getStatus() == Constants
-                                    .RESPONSE_CODE_200) {
-                                if (sharedPreferenceManager == null) {
-                                    sharedPreferenceManager = new
-                                            SharedPreferenceManager
-                                            (IssueServiceListActivity.this);
+                            if (serviceListModel.getStatus() == Constants.RESPONSE_CODE_200) {
+                                if (serviceListModel.getRequests().size() > 0) {
+                                    if (sharedPreferenceManager == null) {
+                                        sharedPreferenceManager = new SharedPreferenceManager
+                                                (IssueServiceListActivity.this);
+                                    }
+                                    sharedPreferenceManager.putObject(Constants
+                                                    .KEY_PREF_USER_REQUEST,
+                                            serviceListModel);
+                                } else {
+                                    showEmptyView();
+                                    return;
                                 }
-                                sharedPreferenceManager.putObject(Constants
-                                                .KEY_PREF_USER_REQUEST,
-                                        serviceListModel);
                             }
                         }
-                        IssuesServicesRecyclerViewAdapter issuesServicesRecyclerViewAdapter
-                                = new IssuesServicesRecyclerViewAdapter
-                                (IssueServiceListActivity.this, type);
-
-                        LinearLayoutManager linearLayoutManager = new
-                                LinearLayoutManager(
-                                IssueServiceListActivity.this,
-                                LinearLayoutManager.VERTICAL, false);
-
-                        recyclerView.setHasFixedSize(true);
-                        recyclerView.setLayoutManager(linearLayoutManager);
-                        recyclerView.setAdapter(issuesServicesRecyclerViewAdapter);
-
+                        setDataInAdapter();
                     }
 
                     @Override
@@ -183,5 +178,50 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
             jsonException.printStackTrace();
         }
         return jsonObject;
+    }
+
+    /**
+     * Method to show Empty view in case of no issues or service requests.
+     */
+    private void showEmptyView() {
+        setContentView(R.layout.empty_issue_or_service_view);
+        setToolbar();
+
+        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        TextView textView1 = (TextView) findViewById(R.id.textView1);
+        TextView textView2 = (TextView) findViewById(R.id.textView2);
+
+        if (type == Constants.CREATE_ISSUE) {
+            imageView.setImageResource(R.drawable.empty_issue_icon);
+            textView1.setText(R.string.no_issues);
+            textView2.setText(R.string.no_issues_desc);
+
+        } else {
+            imageView.setImageResource(R.drawable.empty_service_request_icon);
+            textView1.setText(R.string.no_service);
+            textView2.setText(R.string.no_service_desc);
+        }
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+    }
+
+    /**
+     * Method to initialize and set Data in adapter
+     */
+    private void setDataInAdapter() {
+        IssuesServicesRecyclerViewAdapter
+                issuesServicesRecyclerViewAdapter
+                = new IssuesServicesRecyclerViewAdapter
+                (IssueServiceListActivity.this, type);
+
+        LinearLayoutManager linearLayoutManager = new
+                LinearLayoutManager(
+                IssueServiceListActivity.this,
+                LinearLayoutManager.VERTICAL, false);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(issuesServicesRecyclerViewAdapter);
     }
 }

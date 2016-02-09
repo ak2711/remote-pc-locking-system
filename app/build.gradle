@@ -5,11 +5,11 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.webonise.gardenIt"
+        applicationId "com.applications.farmercity"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 6
-        versionName "1.0.5"
+        versionCode 1
+        versionName "1.0.0"
     }
     signingConfigs {
         release {

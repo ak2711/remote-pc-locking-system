@@ -70,4 +70,10 @@
     <string name="user_already_exists">User already exists. Please check Mobile number.</string>
     <string name="share">Share</string>
     <string name="yet_to_be_implemented">Yet to be implemented</string>
+    <string name="no_issues">Whoa! No issues in your garden</string>
+    <string name="no_issues_desc">Issues include all problems of pests, bugs, plant health, cultivation etc.</string>
+    <string name="tap_below">Tap below to create one</string>
+    <string name="no_service">You\'ve not requested for any service</string>
+    <string name="no_service_desc">Service include the request of pots, tools, gardener, manure, etc.</string>
+
 </resources>
