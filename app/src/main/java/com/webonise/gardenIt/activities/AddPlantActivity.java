@@ -33,6 +33,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
+import com.webonise.gardenIt.models.AddPlantModel;
 import com.webonise.gardenIt.models.AddPlantRequestModel;
 import com.webonise.gardenIt.models.CreateGardenModel;
 import com.webonise.gardenIt.utilities.Constants;
@@ -227,9 +228,9 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                 Thread sleeper = new Thread(sleepRunnable);
                 sleeper.start();
 
-                CreateGardenModel createGardenModel = new Gson().fromJson(response,
-                        CreateGardenModel.class);
-                if (createGardenModel.getStatus() == Constants.RESPONSE_CODE_200) {
+                AddPlantModel addPlantModel = new Gson().fromJson(response,
+                        AddPlantModel.class);
+                if (addPlantModel.getStatus() == Constants.RESPONSE_CODE_200) {
                     if (sharedPreferenceManager == null) {
                         sharedPreferenceManager = new SharedPreferenceManager
                                 (AddPlantActivity.this);
@@ -237,7 +238,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                     sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_PLANT_ADDED,
                             true);
                 } else {
-                    Toast.makeText(AddPlantActivity.this, createGardenModel.getMessage(),
+                    Toast.makeText(AddPlantActivity.this, addPlantModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
