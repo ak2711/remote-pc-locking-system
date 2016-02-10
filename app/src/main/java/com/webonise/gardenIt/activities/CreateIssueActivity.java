@@ -10,10 +10,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +31,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
-import com.webonise.gardenIt.models.CreateGardenModel;
+import com.webonise.gardenIt.models.CreateIssueModel;
 import com.webonise.gardenIt.models.CreateIssueRequestModel;
-import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
@@ -71,6 +74,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     @Bind(R.id.btnCreateIssue)
     Button btnCreateIssue;
 
+    private PopupWindow popupWindow;
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
     private int plantId;
@@ -198,12 +202,14 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
             public void onResponse(String response) {
-                CreateGardenModel createGardenModel = new Gson().fromJson(response,
-                        CreateGardenModel.class);
-                if (createGardenModel.getStatus() == Constants.RESPONSE_CODE_200) {
-                    finish();
+                CreateIssueModel createIssueModel = new Gson().fromJson(response,
+                        CreateIssueModel.class);
+                if (createIssueModel.getStatus() == Constants.RESPONSE_CODE_200) {
+                    showSuccessPopUp();
+                    Thread sleeper = new Thread(sleepRunnable);
+                    sleeper.start();
                 } else {
-                    Toast.makeText(CreateIssueActivity.this, createGardenModel.getMessage(),
+                    Toast.makeText(CreateIssueActivity.this, createIssueModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -269,4 +275,51 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             shareUtil.deleteImageFile();
         }
     }
+
+    private void showSuccessPopUp() {
+        LayoutInflater layoutInflater
+                = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.success_view,
+                (ViewGroup) findViewById(R.id.popupWindow));
+
+        popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        ImageView imageView = (ImageView) popupView.findViewById(R.id.imageView);
+        imageView.setImageResource(R.drawable.success_create_issue_icon);
+
+        TextView textView1 = (TextView) popupView.findViewById(R.id.textView1);
+        textView1.setText(R.string.success_issue);
+
+        TextView textView2 = (TextView) popupView.findViewById(R.id.textView2);
+        textView2.setText(R.string.success_issue_desc);
+
+    }
+
+    private void dismissPopupWindow() {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
+    }
+
+    public Runnable sleepRunnable = new Runnable() {
+        public void run() {
+            try {
+                Thread.sleep(Constants.SUCCESS_STATE_VISIBLE_TIME);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dismissPopupWindow();
+                        finish();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }

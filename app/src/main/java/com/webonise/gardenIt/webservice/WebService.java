@@ -112,7 +112,8 @@ public class WebService {
         makeRequest(responseInterface, Method.GET);
     }
 
-    public void JSONRequest(ApiResponseInterface responseInterface, JSONObject jsonRequestParam, int type) {
+    public void JSONRequest(ApiResponseInterface responseInterface, JSONObject jsonRequestParam,
+                            int type) {
         if (NetworkUtil.checkNetwork(mContext, true)) {
             if (progressDialog != null)
                 progressDialog.show();
@@ -130,17 +131,18 @@ public class WebService {
                     @Override
                     public void onResponse(String response) {
                         LogUtils.LOGD(TAG, "onResponse :: " + response);
-                        responseInterface.onResponse(response);
                         if (progressDialog != null)
                             progressDialog.dismiss();
+                        responseInterface.onResponse(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 LogUtils.LOGD(TAG, "onErrorResponse :: " + error);
-                responseInterface.onError(error);
                 if (progressDialog != null)
                     progressDialog.dismiss();
+                responseInterface.onError(error);
+
             }
         }) {
             @Override
@@ -169,7 +171,8 @@ public class WebService {
 
             @Override
             protected VolleyError parseNetworkError(VolleyError volleyError) {
-                if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                if (volleyError.networkResponse != null && volleyError.networkResponse.data !=
+                        null) {
                     return super.parseNetworkError(volleyError);
                 }
                 return super.parseNetworkError(volleyError);
@@ -180,13 +183,16 @@ public class WebService {
     }
 
     private void addToRequestQueue(Request request) {
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy
+                .DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         request.setRetryPolicy(policy);
         AppController.getInstance().addToRequestQueue(request);
     }
 
-    private void makeJsonRequest(final ApiResponseInterface responseInterface, JSONObject requestJson) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, requestJson, new Response.Listener<JSONObject>() {
+    private void makeJsonRequest(final ApiResponseInterface responseInterface, JSONObject
+            requestJson) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, requestJson, new
+                Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (progressDialog != null)
@@ -203,7 +209,8 @@ public class WebService {
             public void onErrorResponse(VolleyError error) {
                 LogUtils.LOGD(TAG, "onErrorResponse :: " + error);
 
-                Toast.makeText(mContext, mContext.getString(R.string.error_msg), Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, mContext.getString(R.string.error_msg), Toast
+                        .LENGTH_LONG).show();
                 responseInterface.onError(error);
                 if (progressDialog != null)
                     progressDialog.dismiss();
@@ -212,9 +219,11 @@ public class WebService {
         addToRequestQueue(jsonObjectRequest);
     }
 
-    private void makeJsonArrayRequest(final ApiResponseInterface responseInterface, JSONObject requestJson) {
+    private void makeJsonArrayRequest(final ApiResponseInterface responseInterface, JSONObject
+            requestJson) {
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Method.POST, url, requestJson, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Method.POST, url, requestJson,
+                new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 if (progressDialog != null)
@@ -231,7 +240,8 @@ public class WebService {
             public void onErrorResponse(VolleyError error) {
                 LogUtils.LOGD(TAG, "onErrorResponse :: " + error);
 
-                Toast.makeText(mContext, mContext.getString(R.string.error_msg), Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, mContext.getString(R.string.error_msg), Toast
+                        .LENGTH_LONG).show();
                 responseInterface.onError(error);
                 if (progressDialog != null)
                     progressDialog.dismiss();
@@ -240,7 +250,7 @@ public class WebService {
         addToRequestQueue(jsonArrayRequest);
     }
 
-    private HashMap<String, String> getDefaultHeaders(){
+    private HashMap<String, String> getDefaultHeaders() {
         header = new HashMap<>();
         header.put(Constants.HEADER_CONTENT_TYPE, Constants.APPLICATION_JSON);
         header.put(Constants.HEADER_ACCEPT, Constants.APPLICATION_JSON);

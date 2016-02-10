@@ -10,12 +10,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +35,6 @@ import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.AddPlantRequestModel;
 import com.webonise.gardenIt.models.CreateGardenModel;
-import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
@@ -78,6 +81,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     private SharedPreferenceManager sharedPreferenceManager;
     private boolean showBackButton = false;
 
+    private PopupWindow popupWindow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +112,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             showBackButton = bundle.getBoolean(Constants.BUNDLE_KEY_SHOW_BACK_ICON);
         }
         setToolbar();
-        AppController application =  AppController.getInstance();
+        AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(Constants.ScreenName.ADD_PLANT_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -217,6 +222,11 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
             public void onResponse(String response) {
+
+                showSuccessPopUp();
+                Thread sleeper = new Thread(sleepRunnable);
+                sleeper.start();
+
                 CreateGardenModel createGardenModel = new Gson().fromJson(response,
                         CreateGardenModel.class);
                 if (createGardenModel.getStatus() == Constants.RESPONSE_CODE_200) {
@@ -226,11 +236,6 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                     }
                     sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_PLANT_ADDED,
                             true);
-                    Intent intent = new Intent(AddPlantActivity.this, DashboardActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    startActivity(intent);
-
-                    finish();
                 } else {
                     Toast.makeText(AddPlantActivity.this, createGardenModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
@@ -250,18 +255,16 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(AddPlantActivity.this);
         }
-        UserModel userModel = sharedPreferenceManager.getObject(
-                Constants.KEY_PREF_USER, UserModel.class);
 
-        CreateGardenModel createGardenModel = sharedPreferenceManager.getObject(Constants
-                .KEY_PREF_GARDEN_DETAILS, CreateGardenModel.class);
+        int gardenId = sharedPreferenceManager.getIntValue(Constants.KEY_PREF_GARDEN_ID);
         AddPlantRequestModel addPlantRequestModel = new AddPlantRequestModel();
 
         try {
             addPlantRequestModel.setName(nameOfPlant);
             addPlantRequestModel.setDescription(description);
-            addPlantRequestModel.setPhoneNumber(userModel.getUser().getPhone_number());
-            addPlantRequestModel.setGardenId(createGardenModel.getGarden().getId());
+            addPlantRequestModel.setPhoneNumber(sharedPreferenceManager
+                    .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER));
+            addPlantRequestModel.setGardenId(gardenId);
 
             List<AddPlantRequestModel.PlantImage> plantImages = new ArrayList<>();
 
@@ -293,4 +296,51 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             shareUtil.deleteImageFile();
         }
     }
+
+    private void showSuccessPopUp() {
+        LayoutInflater layoutInflater
+                = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.success_view,
+                (ViewGroup) findViewById(R.id.popupWindow));
+
+        popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        ImageView imageView = (ImageView) popupView.findViewById(R.id.imageView);
+        imageView.setImageResource(R.drawable.add_plant_success_icon);
+
+        TextView textView1 = (TextView) popupView.findViewById(R.id.textView1);
+        textView1.setText(R.string.success_plant);
+
+        TextView textView2 = (TextView) popupView.findViewById(R.id.textView2);
+        textView2.setText(R.string.success_plant_desc);
+
+    }
+
+    private void dismissPopupWindow() {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
+    }
+
+    public Runnable sleepRunnable = new Runnable() {
+        public void run() {
+            try {
+                Thread.sleep(Constants.SUCCESS_STATE_VISIBLE_TIME);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dismissPopupWindow();
+                        finish();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }

@@ -1,7 +1,6 @@
 package com.webonise.gardenIt.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -11,10 +10,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,11 +31,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
-import com.webonise.gardenIt.models.CreateGardenModel;
-import com.webonise.gardenIt.models.CreateIssueRequestModel;
 import com.webonise.gardenIt.models.ServiceModel;
 import com.webonise.gardenIt.models.ServiceRequestModel;
-import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
@@ -74,6 +74,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
     @Bind(R.id.btnRequestService)
     Button btnRequestService;
 
+    private PopupWindow popupWindow;
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
     private int gardenId;
@@ -204,7 +205,9 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
                 ServiceModel serviceModel = new Gson().fromJson(response,
                         ServiceModel.class);
                 if (serviceModel.getStatus() == Constants.RESPONSE_CODE_200) {
-                    finish();
+                    showSuccessPopUp();
+                    Thread sleeper = new Thread(sleepRunnable);
+                    sleeper.start();
                 } else {
                     Toast.makeText(RequestServiceActivity.this, serviceModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
@@ -233,12 +236,6 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
             serviceRequestModel.setDescription(description);
             serviceRequestModel.setPhoneNumber(phoneNumber);
 
-            List<String> dummyItemList = new ArrayList<>();
-            dummyItemList.add("Gardening");
-            dummyItemList.add("Watering");
-            serviceRequestModel.setItemsList(dummyItemList);
-
-            serviceRequestModel.setAvailableTimings("10-7"); //TODO Remove later. For testing.
             if (gardenId > 0) {
                 serviceRequestModel.setGardenId(gardenId);
             }
@@ -277,4 +274,51 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
             shareUtil.deleteImageFile();
         }
     }
+
+    private void showSuccessPopUp() {
+        LayoutInflater layoutInflater
+                = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.success_view,
+                (ViewGroup) findViewById(R.id.popupWindow));
+
+        popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        ImageView imageView = (ImageView) popupView.findViewById(R.id.imageView);
+        imageView.setImageResource(R.drawable.success_service_request_icon);
+
+        TextView textView1 = (TextView) popupView.findViewById(R.id.textView1);
+        textView1.setText(R.string.success_service);
+
+        TextView textView2 = (TextView) popupView.findViewById(R.id.textView2);
+        textView2.setText(R.string.success_service_desc);
+
+    }
+
+    private void dismissPopupWindow() {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
+    }
+
+    public Runnable sleepRunnable = new Runnable() {
+        public void run() {
+            try {
+                Thread.sleep(Constants.SUCCESS_STATE_VISIBLE_TIME);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dismissPopupWindow();
+                        finish();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }

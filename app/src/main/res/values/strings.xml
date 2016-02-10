@@ -75,5 +75,10 @@
     <string name="tap_below">Tap below to create one</string>
     <string name="no_service">You\'ve not requested for any service</string>
     <string name="no_service_desc">Service include the request of pots, tools, gardener, manure, etc.</string>
-
+    <string name="success_plant">Lively! Your Garden has a New Plant</string>
+    <string name="success_plant_desc">Keep cultivating more</string>
+    <string name="success_issue">Got it! We will advice soon</string>
+    <string name="success_issue_desc">Keep gardening</string>
+    <string name="success_service">Obliged! We\'ll cater your request soon</string>
+    <string name="success_service_desc">Keep gardening</string>
 </resources>

@@ -12,6 +12,7 @@ public class Constants {
     public static final String KEY_PREF_USER_PASSWORD = "password";
     public static final String KEY_PREF_USER_ISSUES = "user_issues";
     public static final String KEY_PREF_USER_REQUEST = "user_requests";
+    public static final String KEY_PREF_GARDEN_ID = "gardenID";
 
     public static final String BASE_URL = "http://test-uf.weboapps.com";
     public static final String BASE_URL_API = BASE_URL + "/apis/";
@@ -79,4 +80,6 @@ public class Constants {
         public static final String ADVICE_LIST_SCREEN = "Advice List Screen";
         public static final String REQUESTED_SERVICE_LIST_SCREEN = "Requested Service ListScreen";
     }
+
+    public static final int SUCCESS_STATE_VISIBLE_TIME = 3000; //3 seconds
 }

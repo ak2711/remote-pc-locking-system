@@ -84,7 +84,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     protected void onResume() {
         super.onResume();
         // Obtain the shared Tracker instance.
-        AppController application =  AppController.getInstance();
+        AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(Constants.ScreenName.DASHBOARD_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -130,7 +130,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         View view = navigationView.getHeaderView(0);
         tvUserName = (TextView) view.findViewById(R.id.tvUserName);
-        tvMobileNumber = (TextView)view.findViewById(R.id.tvMobileNumber);
+        tvMobileNumber = (TextView) view.findViewById(R.id.tvMobileNumber);
     }
 
     @Override
@@ -167,12 +167,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             userDashboardModel);
                     sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
                             userDashboardModel.getUser().getPhoneNumber());
+                    sharedPreferenceManager.setIntValue(Constants.KEY_PREF_GARDEN_ID,
+                            userDashboardModel.getUser().getGardens().get(0).getId());
                     setTitle();
                     tvUserName.setText(userDashboardModel.getUser().getName());
                     tvMobileNumber.setText(userDashboardModel.getUser().getPhoneNumber());
                     try {
                         shopNowLink = userDashboardModel.getUser().getLinks().getStoreLink();
-                    } catch (NullPointerException npe){
+                    } catch (NullPointerException npe) {
                         npe.printStackTrace();
                     }
                     DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
