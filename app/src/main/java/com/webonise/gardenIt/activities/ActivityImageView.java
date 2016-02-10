@@ -140,7 +140,7 @@ public class ActivityImageView extends AppCompatActivity {
                 translationX(0).translationY(0).setInterpolator(sDecelerator);
 
         // Fade in the black background
-        ObjectAnimator bgAnim = ObjectAnimator.ofInt(colorDrawable, ALPHA, 0, 255);
+        ObjectAnimator bgAnim = ObjectAnimator.ofInt(colorDrawable, ALPHA, 255, 255);
         bgAnim.setDuration(ANIM_DURATION);
         bgAnim.start();
     }
@@ -160,7 +160,7 @@ public class ActivityImageView extends AppCompatActivity {
                 .setInterpolator(sInterpolator).withEndAction(endAction);
 
         // Fade out background
-        ObjectAnimator bgAnim = ObjectAnimator.ofInt(colorDrawable, ALPHA, 0);
+        ObjectAnimator bgAnim = ObjectAnimator.ofInt(colorDrawable, ALPHA, 255);
         bgAnim.setDuration(ANIM_DURATION);
         bgAnim.start();
     }
