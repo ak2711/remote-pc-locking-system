@@ -3,11 +3,15 @@ package com.webonise.gardenIt.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -113,7 +117,15 @@ public class CreateGardenActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        AppController application =  AppController.getInstance();
+
+        final LocationManager manager = (LocationManager)
+                this.getSystemService(Context.LOCATION_SERVICE);
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+        }
+
+        AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(Constants.ScreenName.CREATE_GARDEN_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -385,6 +397,28 @@ public class CreateGardenActivity extends AppCompatActivity implements
         Intent intent = new Intent(CreateGardenActivity.this, AddPlantActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, please enable it.")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings
+                                .ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 }
 
