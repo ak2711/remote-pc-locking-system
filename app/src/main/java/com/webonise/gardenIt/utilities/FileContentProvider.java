@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class FileContentProvider extends ContentProvider {
     public static final String FILE_EXTENSION_JPEG = ".png";
-    public static final Uri CONTENT_URI = Uri.parse("content://com.webonise.gardenIt/");
+    public static final Uri CONTENT_URI = Uri.parse("content://com.applications.farmercity/");
     private static final HashMap<String, String> MIME_TYPES = new HashMap<>();
 
     public static FileContentProvider contentProviderInstance;

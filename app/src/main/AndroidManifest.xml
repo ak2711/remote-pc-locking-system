@@ -81,9 +81,9 @@
 
         <provider
             android:name=".utilities.FileContentProvider"
-            android:authorities="com.webonise.gardenIt"
+            android:authorities="com.applications.farmercity"
             android:enabled="true"
-            android:exported="false"
+            android:exported="true"
             android:grantUriPermissions="true" />
     </application>
 
