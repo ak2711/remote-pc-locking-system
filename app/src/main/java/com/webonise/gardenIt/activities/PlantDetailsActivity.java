@@ -257,7 +257,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             textView.setText(getString(R.string.logs));
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setTextColor(getResources().getColor(R.color.text_color_green));
-            textView.setTextSize(new DisplayUtil(PlantDetailsActivity.this).dpToPx(6));
+            //textView.setTextSize(new DisplayUtil(PlantDetailsActivity.this).dpToPx(6));
+            textView.setTextAppearance(this, android.R.style.TextAppearance_Large);
             llLogHolder.addView(textView);
             View view = null;
             for (int i = 0; i < sortedList.size(); i++) {
