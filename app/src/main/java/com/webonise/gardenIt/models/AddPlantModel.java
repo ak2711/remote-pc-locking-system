@@ -43,9 +43,6 @@ public class AddPlantModel {
         @SerializedName("updated_at")
         private String updatedAt;
 
-        private Images images;
-        private Logs logs;
-
         public int getId() {
             return id;
         }
@@ -94,28 +91,5 @@ public class AddPlantModel {
             this.updatedAt = updatedAt;
         }
 
-        public Images getImages() {
-            return images;
-        }
-
-        public void setImages(Images images) {
-            this.images = images;
-        }
-
-        public Logs getLogs() {
-            return logs;
-        }
-
-        public void setLogs(Logs logs) {
-            this.logs = logs;
-        }
-
-        public class Images{
-
-        }
-
-        public class Logs{
-
-        }
     }
 }

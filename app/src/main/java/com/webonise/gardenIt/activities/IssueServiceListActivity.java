@@ -42,13 +42,12 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
     private SharedPreferenceManager sharedPreferenceManager;
     private IssuesListModel issuesListModel;
     private ServiceListModel serviceListModel;
-    private int type;
+    private static int type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_service_issues_list);
-        ButterKnife.bind(this);
+        setListView();
     }
 
     private void setToolbar() {
@@ -76,9 +75,7 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
         if (bundle != null) {
             type = bundle.getInt(Constants.BUNDLE_KEY_TYPE);
         }
-        setToolbar();
-        fab.setOnClickListener(this);
-        fetchUseIssues();
+        fetchUserIssues();
         AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(type == Constants.CREATE_ISSUE ?
@@ -100,7 +97,7 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
         }
     }
 
-    private void fetchUseIssues() {
+    private void fetchUserIssues() {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
         webService.setUrl(type == Constants.CREATE_ISSUE
@@ -149,6 +146,7 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
                                 }
                             }
                         }
+                        setListView();
                         setDataInAdapter();
                     }
 
@@ -223,5 +221,12 @@ public class IssueServiceListActivity extends AppCompatActivity implements View.
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(issuesServicesRecyclerViewAdapter);
+    }
+
+    private void setListView(){
+        setContentView(R.layout.activity_service_issues_list);
+        setToolbar();
+        ButterKnife.bind(this);
+        fab.setOnClickListener(this);
     }
 }

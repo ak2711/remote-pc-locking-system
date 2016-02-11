@@ -69,7 +69,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     protected void onResume() {
         super.onResume();
         // Obtain the shared Tracker instance.
-        AppController application =  AppController.getInstance();
+        AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(Constants.ScreenName.SIGN_IN_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -139,6 +139,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         sharedPreferenceManager.setBooleanValue(
                                 Constants.KEY_PREF_IS_GARDEN_CREATED,
                                 true);
+                        sharedPreferenceManager.setIntValue(Constants.KEY_PREF_GARDEN_ID,
+                                userDashboardModel.getUser().getGardens().get(0).getId());
                         gotoNextActivity(DashboardActivity.class);
                     } else {
                         gotoNextActivity(CreateGardenActivity.class);

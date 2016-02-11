@@ -167,15 +167,17 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             userDashboardModel);
                     sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
                             userDashboardModel.getUser().getPhoneNumber());
-                    sharedPreferenceManager.setIntValue(Constants.KEY_PREF_GARDEN_ID,
-                            userDashboardModel.getUser().getGardens().get(0).getId());
                     setTitle();
                     tvUserName.setText(userDashboardModel.getUser().getName());
                     tvMobileNumber.setText(userDashboardModel.getUser().getPhoneNumber());
                     try {
+                        sharedPreferenceManager.setIntValue(Constants.KEY_PREF_GARDEN_ID,
+                                userDashboardModel.getUser().getGardens().get(0).getId());
                         shopNowLink = userDashboardModel.getUser().getLinks().getStoreLink();
                     } catch (NullPointerException npe) {
                         npe.printStackTrace();
+                    } catch (ArrayIndexOutOfBoundsException indexOutOfBoundException){
+                        indexOutOfBoundException.printStackTrace();
                     }
                     DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
                             = new DashboardRecyclerViewAdapter(DashboardActivity.this);
@@ -316,9 +318,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private UserDashboardModel.User.Gardens getLastGardenDetails() {
         if (userDashboardModel != null) {
-            List<UserDashboardModel.User.Gardens> gardensList
-                    = userDashboardModel.getUser().getGardens();
-            return gardensList.get(gardensList.size() - 1);
+            try{
+                List<UserDashboardModel.User.Gardens> gardensList
+                        = userDashboardModel.getUser().getGardens();
+                return gardensList.get(gardensList.size() - 1);
+            } catch (Exception e){
+               e.printStackTrace();
+                return null;
+            }
         }
         return null;
     }

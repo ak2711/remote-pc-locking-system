@@ -143,7 +143,11 @@ public class CreateGardenActivity extends AppCompatActivity implements
         map = googleMap;
         if (map != null) {
             // Map is ready
-            map.setMyLocationEnabled(true);
+            try {
+                map.setMyLocationEnabled(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             // Now that map has loaded, let's get our location!
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
@@ -238,7 +242,11 @@ public class CreateGardenActivity extends AppCompatActivity implements
     @Override
     public void onConnected(Bundle dataBundle) {
         // Display the connection status
-        location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        try {
+            location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (location != null) {
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
@@ -353,6 +361,8 @@ public class CreateGardenActivity extends AppCompatActivity implements
                             true);
                     sharedPreferenceManager.putObject(Constants.KEY_PREF_GARDEN_DETAILS,
                             createGardenModel);
+                    sharedPreferenceManager.setIntValue(Constants.KEY_PREF_GARDEN_ID,
+                            createGardenModel.getGarden().getId());
                     gotoNextActivity();
                 } else {
                     Toast.makeText(CreateGardenActivity.this, createGardenModel.getMessage(),
@@ -374,13 +384,13 @@ public class CreateGardenActivity extends AppCompatActivity implements
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(CreateGardenActivity.this);
         }
-        UserModel userModel = sharedPreferenceManager.getObject(
-                Constants.KEY_PREF_USER, UserModel.class);
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_NAME, gardenName);
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
-                    userModel.getUser().getPhone_number());
+                    phoneNumber);
             jsonObject.put(Constants.REQUEST_KEY_LATITUDE,
                     Double.toString(centerLocation.latitude));
             jsonObject.put(Constants.REQUEST_KEY_LONGITUDE,

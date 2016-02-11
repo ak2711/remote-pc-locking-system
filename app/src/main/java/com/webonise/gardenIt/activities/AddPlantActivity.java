@@ -336,6 +336,10 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void run() {
                         dismissPopupWindow();
+                        Intent intent = new Intent(AddPlantActivity.this, DashboardActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                         finish();
                     }
                 });
