@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/background_color_light_grey"
     android:fitsSystemWindows="true"
-    tools:context=".Plant">
+    tools:context=".activities.PlantDetailsActivity">
 
     <include layout="@layout/toolbar"/>
 

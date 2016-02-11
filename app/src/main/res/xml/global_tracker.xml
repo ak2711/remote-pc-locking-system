@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--TODO Replace placeholder ID with your tracking ID-->
-    <string name="ga_trackingId">UA-72986008-1</string>
+    <string name="ga_trackingId">UA-66679124-3</string>
 
     <!--Enable automatic activity tracking-->
     <!--TODO Enable Activity Tracking -->

@@ -1,17 +1,17 @@
 {
   "project_info": {
-    "project_id": "gardenit-77736",
-    "project_number": "68184886221",
-    "name": "GardenIT"
+    "project_id": "farmer-city",
+    "project_number": "676527630821",
+    "name": "Farmer City"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:68184886221:android:db99e2b95a9efed5",
-        "client_id": "android:com.webonise.gardenIt",
+        "mobilesdk_app_id": "1:676527630821:android:4cc5b94cde7feaf9",
+        "client_id": "android:com.applications.farmercity",
         "client_type": 1,
         "android_client_info": {
-          "package_name": "com.webonise.gardenIt"
+          "package_name": "com.applications.farmercity"
         }
       },
       "oauth_client": [],
@@ -20,7 +20,7 @@
         "analytics_service": {
           "status": 2,
           "analytics_property": {
-            "tracking_id": "UA-72986008-1"
+            "tracking_id": "UA-66679124-3"
           }
         },
         "cloud_messaging_service": {
