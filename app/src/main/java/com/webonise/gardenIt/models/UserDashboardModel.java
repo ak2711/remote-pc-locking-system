@@ -149,6 +149,8 @@ public class UserDashboardModel {
             private String createdAt;
             @SerializedName("updated_at")
             private String updatedAt;
+            @SerializedName("gardner_name")
+            private String gardnerName;
             private List<Plants> plants;
 
             public int getId() {
@@ -229,6 +231,14 @@ public class UserDashboardModel {
 
             public void setUpdatedAt(String updatedAt) {
                 this.updatedAt = updatedAt;
+            }
+
+            public String getGardnerName() {
+                return gardnerName;
+            }
+
+            public void setGardnerName(String gardnerName) {
+                this.gardnerName = gardnerName;
             }
 
             public List<Plants> getPlants() {

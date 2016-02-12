@@ -30,17 +30,21 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     private DisplayImageOptions options;
     private Context context;
 
-    public DashboardRecyclerViewAdapter(Context context) {
+    public DashboardRecyclerViewAdapter(Context context,
+                                        List<UserDashboardModel.User.Gardens> allGardens,
+                                        int gardenId) {
         this.context = context;
         sharedPreferenceManager = new SharedPreferenceManager(context);
-        UserDashboardModel userDashboardModel =
-                sharedPreferenceManager.getObject(Constants.KEY_PREF_USER_GARDEN_PLANTS,
-                        UserDashboardModel.class);
+        UserDashboardModel.User.Gardens gardens = null;
+        if (allGardens != null && allGardens.size() > 0) {
+            for (int i = 0; i < allGardens.size(); i++) {
+                if (gardenId == allGardens.get(i).getId()) {
+                    gardens = allGardens.get(i);
+                }
+            }
 
-        List<UserDashboardModel.User.Gardens> gardensList = userDashboardModel.getUser()
-                .getGardens();
-        UserDashboardModel.User.Gardens gardens = gardensList.get(gardensList.size() - 1);
-        plantsList = gardens.getPlants();
+            plantsList = gardens.getPlants();
+        }
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.logo)
                 .showImageForEmptyUri(R.drawable.logo)
@@ -66,17 +70,17 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        DashboardPlantsViewHolder dashboardPlantsViewHolder = (DashboardPlantsViewHolder)holder;
+        DashboardPlantsViewHolder dashboardPlantsViewHolder = (DashboardPlantsViewHolder) holder;
         configureDashboardPlantsViewHolder(dashboardPlantsViewHolder, position);
     }
 
     @Override
     public int getItemCount() {
-        return plantsList.size();
+        return plantsList != null ? plantsList.size() : 0;
     }
 
     private void configureDashboardPlantsViewHolder(
-            DashboardPlantsViewHolder dashboardPlantsViewHolder, final int position){
+            DashboardPlantsViewHolder dashboardPlantsViewHolder, final int position) {
 
         UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
         dashboardPlantsViewHolder.getTvTitle().setText(plants.getName());
@@ -87,7 +91,7 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
                 new DisplayUtil(context).getImageHeight());
         ivPlant.setLayoutParams(params);
         ImageLoader.getInstance().displayImage(
-                Constants.BASE_URL+plants.getImages().get(0).getImage().getUrl(),
+                Constants.BASE_URL + plants.getImages().get(0).getImage().getUrl(),
                 ivPlant, options, null);
 
         dashboardPlantsViewHolder.getView().setOnClickListener(new View.OnClickListener() {

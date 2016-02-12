@@ -72,8 +72,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
     private String shopNowLink;
-
     private int selectedGardenId;
+    private String selectedGardenName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +175,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             userDashboardModel);
                     sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
                             userDashboardModel.getUser().getPhoneNumber());
-                    setTitle();
                     tvUserName.setText(userDashboardModel.getUser().getName());
                     tvMobileNumber.setText(userDashboardModel.getUser().getPhoneNumber());
                     try {
@@ -190,20 +189,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
                     setupSpinner();
 
-                    DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
-                            = new DashboardRecyclerViewAdapter(DashboardActivity.this);
-
-                    //Set Span count to 2 as 2 items to show in a row.
-                    GridLayoutManager gridLayoutManager = new GridLayoutManager(
-                            DashboardActivity.this, SPAN_COUNT);
-
-                    recyclerView.setLayoutManager(gridLayoutManager);
-                    recyclerView.setAdapter(dashboardRecyclerViewAdapter);
-
                 } else {
                     Toast.makeText(DashboardActivity.this, userDashboardModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
+                setTitle();
             }
 
             @Override
@@ -252,10 +242,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         Intent intent = new Intent();
         intent.setClass(DashboardActivity.this, RequestServiceActivity.class);
 
-        UserDashboardModel.User.Gardens lastGarden = getLastGardenDetails();
-        if (lastGarden != null) {
-            intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, lastGarden.getId());
-        }
+        intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, selectedGardenId);
 
         startActivity(intent);
     }
@@ -319,29 +306,28 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void setTitle() {
-        UserDashboardModel.User.Gardens lastGarden = getLastGardenDetails();
-        if (lastGarden != null) {
-            tvTitle.setText(lastGarden.getName());
-        } else {
-            tvTitle.setText(getString(R.string.dashboard));
-        }
-    }
-
-    private UserDashboardModel.User.Gardens getLastGardenDetails() {
-        List<UserDashboardModel.User.Gardens> gardensList
-                = getAllGardens();
-        return gardensList.get(gardensList.size() - 1);
-
+        tvTitle.setText(!TextUtils.isEmpty(selectedGardenName)
+                ? selectedGardenName : getString(R.string.dashboard));
     }
 
     private void setupSpinner() {
+
         final List<UserDashboardModel.User.Gardens> gardensList
                 = getAllGardens();
 
+        final List<UserDashboardModel.User.Gardens> supportedGardenList
+                = getSupportedGardens();
+
+        final List<UserDashboardModel.User.Gardens> allGardens = new ArrayList<>();
+
+        allGardens.addAll(gardensList);
+        allGardens.addAll(supportedGardenList);
+
         ArrayList gardenNames = new ArrayList();
-        for (UserDashboardModel.User.Gardens gardens : gardensList) {
+        for (UserDashboardModel.User.Gardens gardens : allGardens) {
             gardenNames.add(gardens.getName());
         }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(DashboardActivity.this,
                 android.R.layout.simple_spinner_item, gardenNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -350,7 +336,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         spinnerGarden.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedGardenId = gardensList.get(position).getId();
+                UserDashboardModel.User.Gardens garden = allGardens.get(position);
+                selectedGardenName = garden.getGardnerName() + "\'s " + garden.getName();
+                setDataInRecyclerView(allGardens, garden.getId());
             }
 
             @Override
@@ -358,6 +346,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
             }
         });
+
+        UserDashboardModel.User.Gardens garden = allGardens.get(0);
+        selectedGardenName = garden.getGardnerName() + "\'s " + garden.getName();
+        setDataInRecyclerView(allGardens, garden.getId());
     }
 
     private List<UserDashboardModel.User.Gardens> getAllGardens() throws NullPointerException {
@@ -372,7 +364,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         return null;
     }
 
-    private List<UserDashboardModel.User.Gardens> getSupportedGardens() throws NullPointerException {
+    private List<UserDashboardModel.User.Gardens> getSupportedGardens() throws
+            NullPointerException {
         if (userDashboardModel != null) {
             try {
                 return userDashboardModel.getUser().getSupportedGardens();
@@ -382,5 +375,21 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
         }
         return null;
+    }
+
+    private void setDataInRecyclerView(List<UserDashboardModel.User.Gardens> allGardens,
+                                       int gardenId) {
+        selectedGardenId = gardenId;
+        DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
+                = new DashboardRecyclerViewAdapter(DashboardActivity.this, allGardens,
+                gardenId);
+
+        //Set Span count to 2 as 2 items to show in a row.
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(
+                DashboardActivity.this, SPAN_COUNT);
+
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setAdapter(dashboardRecyclerViewAdapter);
+        dashboardRecyclerViewAdapter.notifyDataSetChanged();
     }
 }
