@@ -1,4 +1,83 @@
 <resources>
-    <string name="app_name">Urban Farmers</string>
+    <string name="app_name">FarmerCity</string>
     <string name="action_settings">Settings</string>
+    <string name="toast_no_network">Please check your internet connection</string>
+    <string name="loading">Loading...</string>
+    <string name="error_msg">There might be a problem , Please try again !</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
+    <string name="full_name">Full Name*</string>
+    <string name="phone_number">Mobile Number*</string>
+    <string name="referred_by">Referred By (Mobile Number)*</string>
+    <string name="enter_referral_mobile_number">Please enter mobile number of person who referred you.</string>
+    <string name="email_address">Email Address</string>
+    <string name="enter_full_name">Please enter your Full Name.</string>
+    <string name="enter_phone_number">Please enter your Mobile Number.</string>
+    <string name="invalid_mobile_number_length">Invalid Mobile Number. Please provide correct one.</string>
+    <string name="create_garden">Create Garden</string>
+    <string name="name_your_garden">Name your garden</string>
+    <string name="enter_garden_name">Please enter Garden Name</string>
+    <string name="add_plant">Add Plant</string>
+    <string name="add_new_plant">Add New Plant</string>
+    <string name="name_of_plant">Name of plant</string>
+    <string name="description">Description</string>
+    <string name="add_attachments">Add Attachments</string>
+    <string name="capture">Capture</string>
+    <string name="gallery">Gallery</string>
+    <string name="toast_pic_not_taken">Picture was not taken</string>
+    <string name="toast_online_image">Cannot read the image. Maybe the image is saved online or is corrupted. Please select locally saved images only.</string>
+    <string name="enter_plant_name">Please enter name of Plant.</string>
+    <string name="enter_description">Please provide some description.</string>
+    <string name="provide_image">Please add an image.</string>
+    <string name="provide_title">Please provide title..</string>
+
+    <string name="request_a_service">Request a service</string>
+    <string name="add_log">Add Log</string>
+    <string name="create_an_issue">Get Advice</string>
+    <string name="send_request">Send Request</string>
+    <string name="create_issue">Get Advice</string>
+    <string name="title_mowing_cutting">Title (eg: Mowing, Cutting etc)</string>
+    <string name="request_service_text">We provide endless range of gardening services.\nLawn mowing, Pruning, Weedeating, Edge trimming, Section tidy-ups, Fertilising and Spraying,
+        Lawn care, Pots Tools.
+    </string>
+
+    <string name="title_pest_weed">Title (eg: Pests, Weed etc)</string>
+    <string name="create_issue_text">Be sure to regularly check your pots and plants for pests and
+        diseases. Protect from infestation. \nCheck for plant health at regular intervals to avoid
+        replacements.
+    </string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="shop_now">Shop Now</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="my_issues">Advices</string>
+    <string name="service_requests">Service Requests</string>
+    <string name="please_try_again">Something went wrong. Please try again.</string>
+
+    <string name="title">Title</string>
+    <string name="logs">Activity/Logs</string>
+
+    <string name="already_an_user"><u>Already an User? Sign In</u></string>
+    <string name="new_user"><u>New User? Sign Up</u></string>
+    <string name="password">Password*</string>
+    <string name="confirm_password">Confirm Password*</string>
+    <string name="enter_password">Please enter password</string>
+    <string name="password_does_not_match">Password doesn\'t match. Please check again</string>
+    <string name="user_does_not_exists">User doesn\'t exists. Please check Mobile number and password</string>
+    <string name="user_already_exists">User already exists. Please check Mobile number.</string>
+    <string name="share">Share</string>
+    <string name="yet_to_be_implemented">Yet to be implemented</string>
+    <string name="no_issues">Whoa! No issues in your garden</string>
+    <string name="no_issues_desc">Issues include all problems of pests, bugs, plant health, cultivation etc.</string>
+    <string name="tap_below">Tap below to create one</string>
+    <string name="no_service">You\'ve not requested for any service</string>
+    <string name="no_service_desc">Service include the request of pots, tools, gardener, manure, etc.</string>
+    <string name="success_plant">Lively! Your Garden has a New Plant</string>
+    <string name="success_plant_desc">Keep cultivating more</string>
+    <string name="success_issue">Got it! We will advice soon</string>
+    <string name="success_issue_desc">Keep gardening</string>
+    <string name="success_service">Obliged! We\'ll cater your request soon</string>
+    <string name="success_service_desc">Keep gardening</string>
 </resources>
