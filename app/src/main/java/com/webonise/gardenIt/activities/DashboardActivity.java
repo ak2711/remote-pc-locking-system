@@ -14,8 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +40,7 @@ import com.webonise.gardenIt.webservice.WebService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -60,12 +64,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     Button btnCreateIssue;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
+    @Bind(R.id.spinnerGarden)
+    Spinner spinnerGarden;
 
     TextView tvUserName, tvMobileNumber;
 
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
     private String shopNowLink;
+
+    private int selectedGardenId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,9 +184,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                         shopNowLink = userDashboardModel.getUser().getLinks().getStoreLink();
                     } catch (NullPointerException npe) {
                         npe.printStackTrace();
-                    } catch (ArrayIndexOutOfBoundsException indexOutOfBoundException){
+                    } catch (ArrayIndexOutOfBoundsException indexOutOfBoundException) {
                         indexOutOfBoundException.printStackTrace();
                     }
+
+                    setupSpinner();
+
                     DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
                             = new DashboardRecyclerViewAdapter(DashboardActivity.this);
 
@@ -317,13 +328,56 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
     private UserDashboardModel.User.Gardens getLastGardenDetails() {
+        List<UserDashboardModel.User.Gardens> gardensList
+                = getAllGardens();
+        return gardensList.get(gardensList.size() - 1);
+
+    }
+
+    private void setupSpinner() {
+        final List<UserDashboardModel.User.Gardens> gardensList
+                = getAllGardens();
+
+        ArrayList gardenNames = new ArrayList();
+        for (UserDashboardModel.User.Gardens gardens : gardensList) {
+            gardenNames.add(gardens.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(DashboardActivity.this,
+                android.R.layout.simple_spinner_item, gardenNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGarden.setAdapter(adapter);
+
+        spinnerGarden.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedGardenId = gardensList.get(position).getId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private List<UserDashboardModel.User.Gardens> getAllGardens() throws NullPointerException {
         if (userDashboardModel != null) {
-            try{
-                List<UserDashboardModel.User.Gardens> gardensList
-                        = userDashboardModel.getUser().getGardens();
-                return gardensList.get(gardensList.size() - 1);
-            } catch (Exception e){
-               e.printStackTrace();
+            try {
+                return userDashboardModel.getUser().getGardens();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private List<UserDashboardModel.User.Gardens> getSupportedGardens() throws NullPointerException {
+        if (userDashboardModel != null) {
+            try {
+                return userDashboardModel.getUser().getSupportedGardens();
+            } catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
         }

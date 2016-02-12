@@ -46,6 +46,8 @@ public class UserDashboardModel {
         private String updatedAt;
         private List<Gardens> gardens;
         private Links links;
+        @SerializedName("supported_gardens")
+        private List<Gardens> supportedGardens;
 
         public Links getLinks() {
             return links;
@@ -109,6 +111,14 @@ public class UserDashboardModel {
 
         public void setGardens(List<Gardens> gardens) {
             this.gardens = gardens;
+        }
+
+        public List<Gardens> getSupportedGardens() {
+            return supportedGardens;
+        }
+
+        public void setSupportedGardens(List<Gardens> supportedGardens) {
+            this.supportedGardens = supportedGardens;
         }
 
         public class Links {
