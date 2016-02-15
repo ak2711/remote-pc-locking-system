@@ -22,6 +22,9 @@
             android:id="@+id/shopNow"
             android:icon="@drawable/icon_edit_garden"
             android:title="@string/shop_now"/>
+        <item
+            android:id="@+id/logout"
+            android:title="@string/logout"/>
 
     </group>
 </menu>

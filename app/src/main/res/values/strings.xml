@@ -80,4 +80,6 @@
     <string name="success_issue_desc">Keep gardening</string>
     <string name="success_service">Obliged! We\'ll cater your request soon</string>
     <string name="success_service_desc">Keep gardening</string>
+    <string name="logout">Logout</string>
+    <string name="logout_confirmation_message">Are you sure you want to logout?</string>
 </resources>
