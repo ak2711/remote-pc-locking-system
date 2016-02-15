@@ -28,6 +28,7 @@ import com.webonise.gardenIt.utilities.LogUtils;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.webservice.WebService;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.Bind;
@@ -158,9 +159,17 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
                         case 401: //Unauthorized
-                            Toast.makeText(SignInActivity.this,
-                                    getString(R.string.user_does_not_exists),
-                                    Toast.LENGTH_SHORT).show();
+                            try {
+                                JSONObject jsonObject = new JSONObject(new String(response.data));
+                                Toast.makeText(SignInActivity.this,
+                                        jsonObject.getString(Constants.RESPONSE_KEY_ERROR_MESSAGE),
+                                        Toast.LENGTH_SHORT).show();
+                            } catch (JSONException je) {
+                                je.printStackTrace();
+                                Toast.makeText(SignInActivity.this, getString(R.string.error_msg),
+                                        Toast.LENGTH_LONG).show();
+                            }
+
                             break;
                         default:
                             Toast.makeText(SignInActivity.this, getString(R.string.error_msg),

@@ -1,5 +1,6 @@
 package com.webonise.gardenIt.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +34,7 @@ import com.webonise.gardenIt.adapters.DashboardRecyclerViewAdapter;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.models.UserModel;
+import com.webonise.gardenIt.utilities.CommonUtils;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.RecyclerViewItemDecorator;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
@@ -67,7 +70,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     @Bind(R.id.spinnerGarden)
     Spinner spinnerGarden;
 
-    TextView tvUserName, tvMobileNumber;
+    private TextView tvUserName, tvMobileNumber;
 
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
@@ -153,6 +156,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             case R.id.rlAddNewPlant:
                 goToAddNewPlantActivity();
                 break;
+
         }
     }
 
@@ -289,6 +293,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
+
+            case R.id.logout:
+                closeDrawer();
+                buildAlertDialogForLogout();
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -299,10 +308,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onStop() {
         super.onStop();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
+        closeDrawer();
     }
 
     private void setTitle() {
@@ -353,7 +359,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
     private List<UserDashboardModel.User.Gardens> getAllGardens() throws NullPointerException {
-        if (userDashboardModel != null) {
+        if (!CommonUtils.isEmpty(userDashboardModel)) {
             try {
                 return userDashboardModel.getUser().getGardens();
             } catch (Exception e) {
@@ -366,7 +372,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private List<UserDashboardModel.User.Gardens> getSupportedGardens() throws
             NullPointerException {
-        if (userDashboardModel != null) {
+        if (!CommonUtils.isEmpty(userDashboardModel)) {
             try {
                 return userDashboardModel.getUser().getSupportedGardens();
             } catch (Exception e) {
@@ -391,5 +397,39 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(dashboardRecyclerViewAdapter);
         dashboardRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    private void closeDrawer() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    private void buildAlertDialogForLogout() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.logout_confirmation_message))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        logout();
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void logout() {
+        new SharedPreferenceManager(DashboardActivity.this).clearSharedPreference();
+        finish();
     }
 }

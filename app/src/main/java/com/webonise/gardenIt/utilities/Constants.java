@@ -82,4 +82,5 @@ public class Constants {
     }
 
     public static final int SUCCESS_STATE_VISIBLE_TIME = 3000; //3 seconds
+    public static final String RESPONSE_KEY_ERROR_MESSAGE = "message";
 }
