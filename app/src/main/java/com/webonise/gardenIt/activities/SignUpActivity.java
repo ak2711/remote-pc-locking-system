@@ -175,10 +175,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
-                        case 400: //Already Exists
+                        case 400: //Already Exists, Invalid Referral
                             try {
                                 JSONObject jsonObject = new JSONObject(new String(response.data));
-                                Toast.makeText(SignUpActivity.this, jsonObject.getString("message"),
+                                Toast.makeText(SignUpActivity.this,
+                                        jsonObject.getString(Constants.RESPONSE_KEY_ERROR_MESSAGE),
                                         Toast.LENGTH_SHORT).show();
                             } catch (JSONException je){
                                 je.printStackTrace();
