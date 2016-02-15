@@ -29,6 +29,7 @@ import com.webonise.gardenIt.adapters.DashboardRecyclerViewAdapter;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.models.UserModel;
+import com.webonise.gardenIt.utilities.CommonUtils;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.RecyclerViewItemDecorator;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
@@ -176,7 +177,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                         shopNowLink = userDashboardModel.getUser().getLinks().getStoreLink();
                     } catch (NullPointerException npe) {
                         npe.printStackTrace();
-                    } catch (ArrayIndexOutOfBoundsException indexOutOfBoundException){
+                    } catch (ArrayIndexOutOfBoundsException indexOutOfBoundException) {
                         indexOutOfBoundException.printStackTrace();
                     }
                     DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
@@ -317,13 +318,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
     private UserDashboardModel.User.Gardens getLastGardenDetails() {
-        if (userDashboardModel != null) {
-            try{
+        if (!CommonUtils.isEmpty(userDashboardModel)) {
+            try {
                 List<UserDashboardModel.User.Gardens> gardensList
                         = userDashboardModel.getUser().getGardens();
                 return gardensList.get(gardensList.size() - 1);
-            } catch (Exception e){
-               e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
         }

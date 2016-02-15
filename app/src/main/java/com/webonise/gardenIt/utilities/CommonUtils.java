@@ -1,22 +1,16 @@
 package com.webonise.gardenIt.utilities;
 
-import android.app.Activity;
-import android.content.Context;
+import java.util.Collection;
 
 public class CommonUtils {
 
-    private Context context;
-
-    public CommonUtils(Context context) {
-
-        this.context = context;
+    public static <E> boolean isEmpty(final Collection<E> list)
+    {
+        return list == null || list.isEmpty();
     }
 
-    public int pxToDp(int px) {
-        return (int) (px / context.getResources().getSystem().getDisplayMetrics().density);
-    }
-
-    public int getDeviceWidth(){
-        return ((Activity)context).getWindowManager().getDefaultDisplay().getWidth();
+    public static <E> boolean isEmpty(final Object object)
+    {
+        return object == null;
     }
 }
