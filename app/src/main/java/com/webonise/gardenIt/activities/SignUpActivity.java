@@ -28,6 +28,7 @@ import com.webonise.gardenIt.webservice.WebService;
 
 import android.widget.TextView.OnEditorActionListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.Bind;
@@ -175,9 +176,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
                         case 400: //Already Exists
-                            Toast.makeText(SignUpActivity.this,
-                                    getString(R.string.user_already_exists),
-                                    Toast.LENGTH_SHORT).show();
+                            try {
+                                JSONObject jsonObject = new JSONObject(new String(response.data));
+                                Toast.makeText(SignUpActivity.this, jsonObject.getString("message"),
+                                        Toast.LENGTH_SHORT).show();
+                            } catch (JSONException je){
+                                je.printStackTrace();
+                                Toast.makeText(SignUpActivity.this, getString(R.string.error_msg),
+                                        Toast.LENGTH_LONG).show();
+                            }
                             break;
                         default:
                             Toast.makeText(SignUpActivity.this, getString(R.string.error_msg),
