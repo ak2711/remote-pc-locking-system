@@ -331,7 +331,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         ArrayList gardenNames = new ArrayList();
         for (UserDashboardModel.User.Gardens gardens : allGardens) {
-            gardenNames.add(gardens.getName());
+            gardenNames.add(gardens.getGardnerName() + "\'s " + gardens.getName());
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(DashboardActivity.this,
