@@ -345,6 +345,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 UserDashboardModel.User.Gardens garden = allGardens.get(position);
                 selectedGardenName = garden.getGardnerName() + "\'s " + garden.getName();
                 setDataInRecyclerView(allGardens, garden.getId());
+                sharedPreferenceManager.setIntValue(Constants.KEY_PREF_GARDEN_ID, garden.getId());
             }
 
             @Override
@@ -430,6 +431,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private void logout() {
         new SharedPreferenceManager(DashboardActivity.this).clearSharedPreference();
+        Intent intent = new Intent(DashboardActivity.this, SignInActivity.class);
+        startActivity(intent);
         finish();
     }
 }
