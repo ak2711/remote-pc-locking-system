@@ -68,7 +68,6 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
     private PlantDetailsModel plantDetailsModel;
     private DisplayImageOptions options;
 
-    private int position;
     private int gardenId, plantId;
 
     @Override
@@ -87,9 +86,9 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             sharedPreferenceManager = new SharedPreferenceManager
                     (PlantDetailsActivity.this);
         }
-        position = getIntent().getIntExtra(Constants.BUNDLE_KEY_POSITION, 0);
+        plantId = getIntent().getIntExtra(Constants.BUNDLE_KEY_PLANT_ID, 0);
         setToolbar();
-        setPlantId();
+        //setPlantId();
         getPlantDetails();
         AppController application =  AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
@@ -355,17 +354,5 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             jsonException.printStackTrace();
         }
         return jsonObject;
-    }
-
-    private void setPlantId() {
-        userDashboardModel = sharedPreferenceManager.getObject(Constants
-                .KEY_PREF_USER_GARDEN_PLANTS, UserDashboardModel.class);
-
-        List<UserDashboardModel.User.Gardens> gardensList = userDashboardModel.getUser()
-                .getGardens();
-        UserDashboardModel.User.Gardens gardens = gardensList.get(gardensList.size() - 1);
-        List<UserDashboardModel.User.Gardens.Plants> plantsList = gardens.getPlants();
-        UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
-        plantId = plants.getId();
     }
 }

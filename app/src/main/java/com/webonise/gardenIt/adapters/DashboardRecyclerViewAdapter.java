@@ -80,9 +80,9 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     private void configureDashboardPlantsViewHolder(
-            DashboardPlantsViewHolder dashboardPlantsViewHolder, final int position) {
+            DashboardPlantsViewHolder dashboardPlantsViewHolder, int position) {
 
-        UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
+        final UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
         dashboardPlantsViewHolder.getTvTitle().setText(plants.getName());
         dashboardPlantsViewHolder.getTvDescription().setText(plants.getDescription());
         ImageView ivPlant = dashboardPlantsViewHolder.getIvPlant();
@@ -98,7 +98,7 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PlantDetailsActivity.class);
-                intent.putExtra(Constants.BUNDLE_KEY_POSITION, position);
+                intent.putExtra(Constants.BUNDLE_KEY_PLANT_ID, plants.getId());
                 context.startActivity(intent);
             }
         });
