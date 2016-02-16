@@ -1,6 +1,8 @@
 package com.webonise.gardenIt.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
+import com.webonise.gardenIt.activities.GeneralDetailsActivity;
 import com.webonise.gardenIt.models.IssuesListModel;
 import com.webonise.gardenIt.models.ServiceListModel;
 import com.webonise.gardenIt.utilities.Constants;
@@ -85,25 +88,54 @@ public class IssuesServicesRecyclerViewAdapter extends RecyclerView.Adapter<Recy
             IssuesRequestsViewHolder issuesRequestsViewHolder, int position) {
 
         if (type == Constants.CREATE_ISSUE) {
-            IssuesListModel.Issues issue = issues.get(position);
+            final IssuesListModel.Issues issue = issues.get(position);
+            final String imageUrl = Constants.BASE_URL + issue.getImages().get(0).getImage()
+                    .getUrl();
             issuesRequestsViewHolder.getTvTitle().setText(issue.getTitle());
             issuesRequestsViewHolder.getTvDescription().setText(issue.getDescription());
             ImageView imageView = issuesRequestsViewHolder.getImageView();
-            ImageLoader.getInstance().displayImage(
-                    Constants.BASE_URL + issue.getImages().get(0).getImage().getUrl(),
-                    imageView, options, null);
+            ImageLoader.getInstance().displayImage(imageUrl, imageView, options, null);
             issuesRequestsViewHolder.getTvDate().setText(new DateUtil()
                     .getFormattedDateFromTimeStamp(issue.getCreatedAt()));
+            issuesRequestsViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_ADVICE);
+                    bundle.putString(Constants.BUNDLE_KEY_DESC, issue.getDescription());
+                    bundle.putString(Constants.BUNDLE_KEY_IMAGE_URL, imageUrl);
+                    bundle.putString(Constants.BUNDLE_KEY_TITLE, issue.getTitle());
+                    goToDetailsScreen(bundle);
+                }
+            });
         } else {
-            ServiceListModel.Requests request = requests.get(position);
+            final ServiceListModel.Requests request = requests.get(position);
+            final String imageUrl = Constants.BASE_URL + request.getImages().get(0).getImage()
+                    .getUrl();
             issuesRequestsViewHolder.getTvTitle().setText(request.getTitle());
             issuesRequestsViewHolder.getTvDescription().setText(request.getDescription());
             ImageView imageView = issuesRequestsViewHolder.getImageView();
-            ImageLoader.getInstance().displayImage(
-                    Constants.BASE_URL + request.getImages().get(0).getImage().getUrl(),
-                    imageView, options, null);
+            ImageLoader.getInstance().displayImage(imageUrl, imageView, options, null);
             issuesRequestsViewHolder.getTvDate().setText(new DateUtil()
                     .getFormattedDateFromTimeStamp(request.getCreatedAt()));
+
+            issuesRequestsViewHolder.getView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_SERVICE);
+                    bundle.putString(Constants.BUNDLE_KEY_DESC, request.getDescription());
+                    bundle.putString(Constants.BUNDLE_KEY_IMAGE_URL, imageUrl);
+                    bundle.putString(Constants.BUNDLE_KEY_TITLE, request.getTitle());
+                    goToDetailsScreen(bundle);
+                }
+            });
         }
+    }
+
+    private void goToDetailsScreen(Bundle bundle) {
+        Intent intent = new Intent(context, GeneralDetailsActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }

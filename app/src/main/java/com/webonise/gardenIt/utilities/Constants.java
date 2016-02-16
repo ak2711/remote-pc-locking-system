@@ -60,6 +60,7 @@ public class Constants {
     public static final String BUNDLE_KEY_LEFT = "left";
     public static final String BUNDLE_KEY_HEIGHT = "height";
     public static final String BUNDLE_KEY_TITLE = "title";
+    public static final String BUNDLE_KEY_DESC = "description";
     public static final String BUNDLE_KEY_IMAGE_URL = "image_url";
 
     public static final int CREATE_ISSUE = 0;
@@ -78,9 +79,15 @@ public class Constants {
         public static final String DASHBOARD_SCREEN = "Dashboard Screen";
         public static final String PLANT_DETAILS_SCREEN = "Plant Details Screen";
         public static final String ADVICE_LIST_SCREEN = "Advice List Screen";
-        public static final String REQUESTED_SERVICE_LIST_SCREEN = "Requested Service ListScreen";
+        public static final String REQUESTED_SERVICE_LIST_SCREEN = "Requested Service List Screen";
+        public static final String ADVICE_DETAILS_SCREEN = "Advice Details Screen";
+        public static final String SERVICE_DETAILS_SCREEN = "Service Details Screen";
     }
 
     public static final int SUCCESS_STATE_VISIBLE_TIME = 3000; //3 seconds
     public static final String RESPONSE_KEY_ERROR_MESSAGE = "message";
+
+
+    public static final int TYPE_ADVICE = 0;
+    public static final int TYPE_SERVICE = 1;
 }
