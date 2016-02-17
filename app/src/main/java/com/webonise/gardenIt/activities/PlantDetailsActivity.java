@@ -26,6 +26,7 @@ import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.models.UserModel;
+import com.webonise.gardenIt.utilities.ColorUtil;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DateUtil;
 import com.webonise.gardenIt.utilities.DisplayUtil;
@@ -90,7 +91,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
         setToolbar();
         //setPlantId();
         getPlantDetails();
-        AppController application =  AppController.getInstance();
+        AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(Constants.ScreenName.PLANT_DETAILS_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -256,7 +257,6 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             textView.setText(getString(R.string.logs));
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setTextColor(getResources().getColor(R.color.text_color_green));
-            //textView.setTextSize(new DisplayUtil(PlantDetailsActivity.this).dpToPx(6));
             textView.setTextAppearance(this, android.R.style.TextAppearance_Large);
             llLogHolder.addView(textView);
             View view = null;
@@ -289,6 +289,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
                     TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
                     tvTitle.setText(issues.getTitle());
+                    tvTitle.setTextColor(ColorUtil.getColorBasedOnStatus(this, issues.getStatus()));
 
                     TextView tvDescription = (TextView) view.findViewById(R.id.tvDescription);
                     tvDescription.setText(issues.getDescription());
