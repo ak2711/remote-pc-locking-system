@@ -62,6 +62,7 @@ public class Constants {
     public static final String BUNDLE_KEY_TITLE = "title";
     public static final String BUNDLE_KEY_DESC = "description";
     public static final String BUNDLE_KEY_IMAGE_URL = "image_url";
+    public static final String BUNDLE_KEY_STATUS = "status";
 
     public static final int CREATE_ISSUE = 0;
     public static final int REQUEST_SERVICE = CREATE_ISSUE + 1;
@@ -90,4 +91,11 @@ public class Constants {
 
     public static final int TYPE_ADVICE = 0;
     public static final int TYPE_SERVICE = 1;
+
+    public static class Status{
+        public static final String OPEN = "open";
+        public static final String DONE = "done";
+        public static final String PROGRESS = "progress";
+
+    }
 }

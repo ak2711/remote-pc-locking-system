@@ -107,14 +107,14 @@
                         android:layout_alignParentTop="true"/>
 
                     <ImageView
-                        android:id="@+id/ivShare"
+                        android:id="@+id/ivCancel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="10dp"
-                        android:src="@android:drawable/ic_menu_share"
+                        android:layout_marginRight="@dimen/margin_20"
+                        android:layout_marginTop="@dimen/margin_20"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"
                         android:visibility="gone"/>
                 </RelativeLayout>
 

@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
+import com.webonise.gardenIt.utilities.ColorUtil;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.ShareUtil;
 
@@ -38,10 +39,12 @@ public class GeneralDetailsActivity extends AppCompatActivity {
     TextView tvTitle;
     @Bind(R.id.tvHeading)
     TextView tvHeading;
+    @Bind(R.id.tvStatus)
+    TextView tvStatus;
 
     private int type;
 
-    private String plantPicUrl, description, heading;
+    private String plantPicUrl, description, heading, status;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,9 +52,7 @@ public class GeneralDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_general_details);
         ButterKnife.bind(this);
         setToolbar();
-
     }
-
 
     @Override
     protected void onResume() {
@@ -82,6 +83,7 @@ public class GeneralDetailsActivity extends AppCompatActivity {
             plantPicUrl = bundle.getString(Constants.BUNDLE_KEY_IMAGE_URL);
             heading = bundle.getString(Constants.BUNDLE_KEY_TITLE);
             description = bundle.getString(Constants.BUNDLE_KEY_DESC);
+            status = bundle.getString(Constants.BUNDLE_KEY_STATUS);
         }
     }
 
@@ -119,7 +121,8 @@ public class GeneralDetailsActivity extends AppCompatActivity {
 
         tvDescription.setText(description);
         tvHeading.setText(heading);
-
+        tvStatus.setText(" " + status.substring(0, 1).toUpperCase() + status.substring(1));
+        tvStatus.setTextColor(ColorUtil.getColorBasedOnStatus(this, status));
         ivShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

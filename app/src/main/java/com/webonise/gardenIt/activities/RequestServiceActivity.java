@@ -65,8 +65,8 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
     EditText etDescription;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
-    @Bind(R.id.ivShare)
-    ImageView ivShare;
+    @Bind(R.id.ivCancel)
+    ImageView ivCancel;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
@@ -88,7 +88,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
         btnRequestService.setOnClickListener(this);
-        ivShare.setOnClickListener(this);
+        ivCancel.setOnClickListener(this);
     }
 
     @Override
@@ -134,9 +134,10 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
             case R.id.btnRequestService:
                 validateAndRequestService();
                 break;
-            case R.id.ivShare:
-                shareUtil = new ShareUtil(this);
-                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivToUpload));
+            case R.id.ivCancel:
+                image_file = null;
+                ivToUpload.setImageDrawable(null);
+                ivCancel.setVisibility(View.GONE);
                 break;
         }
     }
@@ -173,7 +174,7 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
-        ivShare.setVisibility(View.VISIBLE);
+        ivCancel.setVisibility(View.VISIBLE);
     }
 
     private void validateAndRequestService() {
@@ -270,9 +271,10 @@ public class RequestServiceActivity extends AppCompatActivity implements View.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (shareUtil != null) {
-            shareUtil.deleteImageFile();
+        if (shareUtil == null) {
+            shareUtil = new ShareUtil(RequestServiceActivity.this);
         }
+        shareUtil.deleteImageFile();
     }
 
     private void showSuccessPopUp() {
