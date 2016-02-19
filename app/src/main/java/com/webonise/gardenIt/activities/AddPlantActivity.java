@@ -372,6 +372,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             etNameOfPlant.setText(plantName);
             etDescription.setText(description);
             showImage(plantImageUrl);
+            btnAddPlant.setText(getString(R.string.update_plant));
         }
     }
 }
