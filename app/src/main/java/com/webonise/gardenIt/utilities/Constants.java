@@ -19,6 +19,7 @@ public class Constants {
     public static final String REGISTER_URL = BASE_URL_API + "register";
     public static final String CREATE_GARDEN_URL = BASE_URL_API + "create_garden";
     public static final String ADD_PLANT_URL = BASE_URL_API + "create_plant";
+    public static final String EDIT_PLANT_URL = BASE_URL_API + "edit_plant";
     public static final String SIGN_IN_URL = BASE_URL_API + "sign_in";
     public static final String CREATE_ISSUE_URL = BASE_URL_API + "create_issue";
     public static final String REQUEST_SERVICE_URL = BASE_URL_API + "request_gardener";

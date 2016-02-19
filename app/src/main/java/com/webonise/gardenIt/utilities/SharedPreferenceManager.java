@@ -134,4 +134,8 @@ public class SharedPreferenceManager {
     public long getLongValue(String key) {
         return mSharedPreference.getLong(key, 0);
     }
+
+    public int getGardenId(){
+        return mSharedPreference.getInt(Constants.KEY_PREF_GARDEN_ID, -1);
+    }
 }

@@ -36,6 +36,7 @@ import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.AddPlantModel;
 import com.webonise.gardenIt.models.AddPlantRequestModel;
 import com.webonise.gardenIt.models.CreateGardenModel;
+import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
@@ -68,21 +69,23 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     EditText etDescription;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
-    @Bind(R.id.ivShare)
-    ImageView ivShare;
+    @Bind(R.id.ivCancel)
+    ImageView ivCancel;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
     RelativeLayout rlGallery;
     @Bind(R.id.btnAddPlant)
     Button btnAddPlant;
-    private ShareUtil shareUtil;
 
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
     private boolean showBackButton = false;
-
+    private ShareUtil shareUtil;
     private PopupWindow popupWindow;
+
+    private int plantId, gardenId;
+    private String plantName, description, plantImageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
         btnAddPlant.setOnClickListener(this);
-        ivShare.setOnClickListener(this);
+        ivCancel.setOnClickListener(this);
         etDescription.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -103,15 +106,21 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                 return false;
             }
         });
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            gardenId = bundle.getInt(Constants.BUNDLE_KEY_GARDEN_ID);
+            showBackButton = bundle.getBoolean(Constants.BUNDLE_KEY_SHOW_BACK_ICON);
+            plantId = bundle.getInt(Constants.BUNDLE_KEY_PLANT_ID);
+        }
+        if (plantId > 0) {
+            setData();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            showBackButton = bundle.getBoolean(Constants.BUNDLE_KEY_SHOW_BACK_ICON);
-        }
+
         setToolbar();
         AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
@@ -150,9 +159,10 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnAddPlant:
                 validateAndAddPlant();
                 break;
-            case R.id.ivShare:
-                shareUtil = new ShareUtil(this);
-                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivToUpload));
+            case R.id.ivCancel:
+                image_file = null;
+                ivToUpload.setImageDrawable(null);
+                ivCancel.setVisibility(View.GONE);
                 break;
         }
     }
@@ -164,7 +174,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
                     ImageUtil.deleteCapturedPhoto();
                 image_file = new File(getFilesDir(), FileContentProvider.getUniqueFileName());
-                showImage();
+                showImage("file://" + image_file.toString());
             }
         } else if (requestCode == Constants.PICK_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -175,7 +185,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                             .LENGTH_LONG).show();
                 } else {
                     image_file = new File(realPath);
-                    showImage();
+                    showImage("file://" + image_file.toString());
                 }
             }
         } else {
@@ -184,12 +194,12 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    protected void showImage() {
+    protected void showImage(String filepath) {
         AppController.setupUniversalImageLoader(AddPlantActivity.this);
         DisplayImageOptions options = ImageUtil.getImageOptions();
-        ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
+        ImageLoader.getInstance().displayImage(filepath, ivToUpload,
                 options);
-        ivShare.setVisibility(View.VISIBLE);
+        ivCancel.setVisibility(View.VISIBLE);
     }
 
     private void validateAndAddPlant() {
@@ -218,7 +228,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     private void addPlant(String nameOfPlant, String description) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
-        webService.setUrl(Constants.ADD_PLANT_URL);
+        webService.setUrl(plantId > 0 ? Constants.EDIT_PLANT_URL : Constants.ADD_PLANT_URL);
         webService.setBody(getBody(nameOfPlant, description));
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
@@ -257,7 +267,6 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             sharedPreferenceManager = new SharedPreferenceManager(AddPlantActivity.this);
         }
 
-        int gardenId = sharedPreferenceManager.getIntValue(Constants.KEY_PREF_GARDEN_ID);
         AddPlantRequestModel addPlantRequestModel = new AddPlantRequestModel();
 
         try {
@@ -265,8 +274,11 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             addPlantRequestModel.setDescription(description);
             addPlantRequestModel.setPhoneNumber(sharedPreferenceManager
                     .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER));
-            addPlantRequestModel.setGardenId(gardenId);
-
+            addPlantRequestModel.setGardenId(gardenId > 0 ? gardenId : sharedPreferenceManager
+                    .getIntValue(Constants.KEY_PREF_GARDEN_ID));
+            if (plantId > 0) {
+                addPlantRequestModel.setPlantId(plantId);
+            }
             List<AddPlantRequestModel.PlantImage> plantImages = new ArrayList<>();
 
             AddPlantRequestModel.PlantImage plantImage = addPlantRequestModel.new PlantImage();
@@ -293,9 +305,10 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (shareUtil != null) {
-            shareUtil.deleteImageFile();
+        if (shareUtil == null) {
+            shareUtil = new ShareUtil(AddPlantActivity.this);
         }
+        shareUtil.deleteImageFile();
     }
 
     private void showSuccessPopUp() {
@@ -348,4 +361,17 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             }
         }
     };
+
+    private void setData() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            plantName = bundle.getString(Constants.BUNDLE_KEY_TITLE);
+            description = bundle.getString(Constants.BUNDLE_KEY_DESC);
+            plantImageUrl = bundle.getString(Constants.BUNDLE_KEY_IMAGE_URL);
+
+            etNameOfPlant.setText(plantName);
+            etDescription.setText(description);
+            showImage(plantImageUrl);
+        }
+    }
 }

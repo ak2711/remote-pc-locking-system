@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -68,7 +70,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
     private UserDashboardModel userDashboardModel;
     private PlantDetailsModel plantDetailsModel;
     private DisplayImageOptions options;
-
+    private String plantName, description, plantImageUrl;
     private int gardenId, plantId;
 
     @Override
@@ -112,6 +114,38 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_plant_details_screen, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_edit:
+                Intent intent = new Intent(PlantDetailsActivity.this, AddPlantActivity.class);
+                intent.putExtra(Constants.BUNDLE_KEY_PLANT_ID, plantId);
+                intent.putExtra(Constants.BUNDLE_KEY_SHOW_BACK_ICON, true);
+                intent.putExtra(Constants.BUNDLE_KEY_TITLE, plantName);
+                intent.putExtra(Constants.BUNDLE_KEY_DESC, description);
+                intent.putExtra(Constants.BUNDLE_KEY_IMAGE_URL, plantImageUrl);
+
+                startActivity(intent);
+                break;
+
+            case R.id.action_delete:
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnCreateIssue:
@@ -130,6 +164,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             intent.putExtra(Constants.BUNDLE_KEY_PLANT_ID, plantId);
         }
         startActivity(intent);
+        finish();
     }
 
     private List<Object> sortLogsAndIssues() {
@@ -209,16 +244,20 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
         AppController.getInstance().setupUniversalImageLoader(PlantDetailsActivity.this);
 
+
+        plantName = plant.getName();
+        description = plant.getDescription();
+        plantImageUrl = Constants.BASE_URL + plant.getImages().get(0).getImage().getUrl();
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 new DisplayUtil(PlantDetailsActivity.this).getImageHeight());
         ivPlantImage.setLayoutParams(layoutParams);
-        ImageLoader.getInstance().displayImage(
-                Constants.BASE_URL + plant.getImages().get(0).getImage().getUrl(),
+        ImageLoader.getInstance().displayImage(plantImageUrl,
                 ivPlantImage, options, null);
 
-        tvTitle.setText(plant.getName());
-        tvDescription.setText(plant.getDescription());
+        tvTitle.setText(plantName);
+
+        tvDescription.setText(description);
 
         plantId = plant.getId();
         gardenId = plant.getGardenId();

@@ -233,21 +233,21 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         Intent intent = new Intent();
         intent.setClass(DashboardActivity.this, AddPlantActivity.class);
         intent.putExtra(Constants.BUNDLE_KEY_SHOW_BACK_ICON, true);
+        intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, selectedGardenId);
         startActivity(intent);
     }
 
     private void goToCreateIssueActivity() {
         Intent intent = new Intent();
         intent.setClass(DashboardActivity.this, CreateIssueActivity.class);
+        intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, selectedGardenId);
         startActivity(intent);
     }
 
     private void goToServiceRequestActivity() {
         Intent intent = new Intent();
         intent.setClass(DashboardActivity.this, RequestServiceActivity.class);
-
         intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, selectedGardenId);
-
         startActivity(intent);
     }
 

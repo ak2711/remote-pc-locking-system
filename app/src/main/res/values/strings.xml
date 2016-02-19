@@ -83,4 +83,6 @@
     <string name="logout">Logout</string>
     <string name="logout_confirmation_message">Are you sure you want to logout?</string>
     <string name="status">Status : </string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

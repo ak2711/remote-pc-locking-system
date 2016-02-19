@@ -13,6 +13,8 @@ public class AddPlantRequestModel {
     private String phoneNumber;
     @SerializedName("plant_image")
     private List<PlantImage> plantImage;
+    @SerializedName("plant_id")
+    private int plantId;
 
     public int getGardenId() {
         return gardenId;
@@ -52,6 +54,14 @@ public class AddPlantRequestModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getPlantId() {
+        return plantId;
+    }
+
+    public void setPlantId(int plantId) {
+        this.plantId = plantId;
     }
 
     public class PlantImage {

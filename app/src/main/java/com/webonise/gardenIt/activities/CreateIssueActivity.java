@@ -79,6 +79,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private SharedPreferenceManager sharedPreferenceManager;
     private int plantId;
     private ShareUtil shareUtil;
+    private int gardenId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             plantId = bundle.getInt(Constants.BUNDLE_KEY_PLANT_ID);
+            gardenId = bundle.getInt(Constants.BUNDLE_KEY_GARDEN_ID);
         }
         setToolbar();
         AppController application = AppController.getInstance();
@@ -237,7 +239,9 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             createIssueRequestModel.setName(nameOfPlant);
             createIssueRequestModel.setDescription(description);
             createIssueRequestModel.setPhoneNumber(phoneNumber);
-
+            if (gardenId > 0){
+                createIssueRequestModel.setGardenId(gardenId);
+            }
             if (plantId > 0) {
                 createIssueRequestModel.setPlantId(plantId);
             }

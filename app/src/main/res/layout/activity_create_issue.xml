@@ -97,23 +97,24 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/margin_10">
 
                     <ImageView
                         android:id="@+id/ivToUpload"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"/>
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"/>
 
                     <ImageView
                         android:id="@+id/ivCancel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginRight="@dimen/margin_20"
-                        android:layout_marginTop="@dimen/margin_20"
+                        android:layout_alignRight="@id/ivToUpload"
+                        android:layout_alignTop="@id/ivToUpload"
+                        android:layout_marginRight="@dimen/margin_10"
+                        android:layout_marginTop="@dimen/margin_10"
                         android:src="@android:drawable/ic_menu_close_clear_cancel"
                         android:visibility="gone"/>
                 </RelativeLayout>
