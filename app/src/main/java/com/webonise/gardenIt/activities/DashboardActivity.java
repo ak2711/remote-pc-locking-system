@@ -411,7 +411,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.logout_confirmation_message))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
                                         @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
@@ -419,7 +419,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog,
                                         @SuppressWarnings("unused") final int id) {
                         dialog.cancel();

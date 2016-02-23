@@ -1,7 +1,9 @@
 package com.webonise.gardenIt.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -25,6 +27,8 @@ import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
+import com.webonise.gardenIt.models.AddPlantModel;
+import com.webonise.gardenIt.models.AddPlantRequestModel;
 import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.models.UserModel;
@@ -139,7 +143,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                 break;
 
             case R.id.action_delete:
-
+                buildAlertDialogForDelete();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -394,5 +398,47 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             jsonException.printStackTrace();
         }
         return jsonObject;
+    }
+
+    private void deletePlant() {
+        WebService webService = new WebService(this);
+        webService.setProgressDialog();
+        webService.setUrl(Constants.EDIT_PLANT_URL);
+        webService.setBody(getBody());
+        webService.POSTStringRequest(new ApiResponseInterface() {
+            @Override
+            public void onResponse(String response) {
+                finish();
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                error.printStackTrace();
+                Toast.makeText(PlantDetailsActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void buildAlertDialogForDelete() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.delete_confirmation_message))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        deletePlant();
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 }

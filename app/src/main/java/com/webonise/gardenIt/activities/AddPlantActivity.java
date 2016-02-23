@@ -86,6 +86,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
 
     private int plantId, gardenId;
     private String plantName, description, plantImageUrl;
+    private boolean isNewImage = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +164,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                 image_file = null;
                 ivToUpload.setImageDrawable(null);
                 ivCancel.setVisibility(View.GONE);
+                //User has removed the selected/captured image
+                isNewImage = false;
                 break;
         }
     }
@@ -175,6 +178,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                     ImageUtil.deleteCapturedPhoto();
                 image_file = new File(getFilesDir(), FileContentProvider.getUniqueFileName());
                 showImage("file://" + image_file.toString());
+                //User has captured new image
+                isNewImage = true;
             }
         } else if (requestCode == Constants.PICK_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -186,6 +191,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
                 } else {
                     image_file = new File(realPath);
                     showImage("file://" + image_file.toString());
+                    //User has selected new image
+                    isNewImage = true;
                 }
             }
         } else {
@@ -279,15 +286,25 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             if (plantId > 0) {
                 addPlantRequestModel.setPlantId(plantId);
             }
-            List<AddPlantRequestModel.PlantImage> plantImages = new ArrayList<>();
 
-            AddPlantRequestModel.PlantImage plantImage = addPlantRequestModel.new PlantImage();
-            plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
-                    + getEncodedImage());
+            /**
+             * If user has selected new image then only we need to send this data to server.
+             * In case of edit plant, isNewImage can be false and we might not need to send the image to server.
+             * isNewImage is true in case of User captures or select and image from gallery.
+             * The isNewImage value is false when user edits the plant or cancels the image.
+             *
+             */
+            if (isNewImage) {
+                List<AddPlantRequestModel.PlantImage> plantImages = new ArrayList<>();
 
-            plantImages.add(plantImage);
+                AddPlantRequestModel.PlantImage plantImage = addPlantRequestModel.new PlantImage();
+                plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
+                        + getEncodedImage());
 
-            addPlantRequestModel.setPlantImage(plantImages);
+                plantImages.add(plantImage);
+
+                addPlantRequestModel.setPlantImage(plantImages);
+            }
 
             return new JSONObject(new Gson().toJson(addPlantRequestModel));
 
@@ -373,6 +390,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             etDescription.setText(description);
             showImage(plantImageUrl);
             btnAddPlant.setText(getString(R.string.update_plant));
+
+            isNewImage = false;
         }
     }
 }
