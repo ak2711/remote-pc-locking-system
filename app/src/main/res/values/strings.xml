@@ -15,8 +15,9 @@
     <string name="enter_phone_number">Please enter your Mobile Number.</string>
     <string name="invalid_mobile_number_length">Invalid Mobile Number. Please provide correct one.</string>
     <string name="create_garden">Create Garden</string>
-    <string name="name_your_garden">Name your garden</string>
+    <string name="name_your_garden">Name your garden*</string>
     <string name="enter_garden_name">Please enter Garden Name</string>
+    <string name="enter_your_address">Please enter your address.</string>
     <string name="add_plant">Add Plant</string>
     <string name="add_new_plant">Add New Plant</string>
     <string name="name_of_plant">Name of plant</string>
@@ -90,4 +91,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
+    <string name="address_line_1">Address Line 1*</string>
+    <string name="address_line_2">Address Line 2</string>
 </resources>

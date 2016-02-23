@@ -14,7 +14,8 @@ public class Constants {
     public static final String KEY_PREF_USER_REQUEST = "user_requests";
     public static final String KEY_PREF_GARDEN_ID = "gardenID";
 
-    public static final String BASE_URL = "http://test-uf.weboapps.com";
+    //public static final String BASE_URL = "http://test-uf.weboapps.com";
+    public static final String BASE_URL = "http://3b295fb5.ngrok.io"; //TODO testing url
     public static final String BASE_URL_API = BASE_URL + "/apis/";
     public static final String REGISTER_URL = BASE_URL_API + "register";
     public static final String CREATE_GARDEN_URL = BASE_URL_API + "create_garden";
@@ -27,6 +28,7 @@ public class Constants {
     public static final String ISSUES_LIST_URL = BASE_URL_API + "issues";
     public static final String ADD_LOG_URL = BASE_URL_API + "add_log";
     public static final String GET_PLANT_DETAILS_URL = BASE_URL_API + "get_plant";
+    public static final String GET_CITIES_LIST = BASE_URL_API + "cities";
 
     public static final String REQUEST_KEY_EMAIl = "email";
     public static final String REQUEST_KEY_NAME = "name";
