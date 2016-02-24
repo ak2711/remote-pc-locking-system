@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.webonise.gardenIt.AppController;
@@ -12,6 +13,8 @@ import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 
+import io.fabric.sdk.android.Fabric;
+
 public class SplashScreen extends AppCompatActivity {
 
     private boolean isActivityStopped = false;
@@ -19,6 +22,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
     }
 
