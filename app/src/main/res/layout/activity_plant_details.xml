@@ -47,6 +47,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|right"
                         android:layout_marginRight="10dp"
+                        android:drawableLeft="@drawable/ic_clock_large"
+                        android:gravity="center_vertical"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="@color/text_color_white"/>
                 </FrameLayout>

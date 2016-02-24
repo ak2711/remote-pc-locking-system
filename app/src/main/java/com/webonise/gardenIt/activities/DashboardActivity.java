@@ -159,7 +159,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             case R.id.rlAddNewPlant:
                 goToAddNewPlantActivity();
                 break;
-
         }
     }
 
@@ -193,9 +192,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     } catch (ArrayIndexOutOfBoundsException indexOutOfBoundException) {
                         indexOutOfBoundException.printStackTrace();
                     }
-
                     setupSpinner();
-
                 } else {
                     Toast.makeText(DashboardActivity.this, userDashboardModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
@@ -206,7 +203,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onError(VolleyError error) {
                 error.printStackTrace();
-
                 Toast.makeText(DashboardActivity.this, getString(R.string.error_msg),
                         Toast.LENGTH_LONG).show();
             }
@@ -305,6 +301,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 
