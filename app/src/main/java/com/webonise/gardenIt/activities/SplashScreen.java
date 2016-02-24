@@ -1,12 +1,17 @@
 package com.webonise.gardenIt.activities;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -35,6 +40,20 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                if (sentToken) {
+                    Toast.makeText(SplashScreen.this, "Token Sent",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SplashScreen.this, "Error while Token Sent",Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
 
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
