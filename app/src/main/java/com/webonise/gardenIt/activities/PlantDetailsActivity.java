@@ -411,7 +411,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
     private void deletePlant() {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
-        webService.setUrl(Constants.EDIT_PLANT_URL);
+        webService.setUrl(Constants.DELETE_PLANT_URL);
         webService.setBody(getBody());
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override

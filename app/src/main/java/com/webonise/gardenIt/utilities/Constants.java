@@ -29,6 +29,7 @@ public class Constants {
     public static final String ADD_LOG_URL = BASE_URL_API + "add_log";
     public static final String GET_PLANT_DETAILS_URL = BASE_URL_API + "get_plant";
     public static final String GET_CITIES_LIST = BASE_URL_API + "cities";
+    public static final String DELETE_PLANT_URL = BASE_URL_API + "delete_plant";
 
     public static final String REQUEST_KEY_EMAIl = "email";
     public static final String REQUEST_KEY_NAME = "name";
