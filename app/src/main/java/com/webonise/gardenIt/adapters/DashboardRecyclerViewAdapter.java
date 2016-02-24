@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -17,6 +18,7 @@ import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.activities.PlantDetailsActivity;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.utilities.Constants;
+import com.webonise.gardenIt.utilities.DateUtil;
 import com.webonise.gardenIt.utilities.DisplayUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.viewholders.DashboardPlantsViewHolder;
@@ -85,9 +87,11 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         final UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
         dashboardPlantsViewHolder.getTvTitle().setText(plants.getName());
         dashboardPlantsViewHolder.getTvDescription().setText(plants.getDescription());
+        dashboardPlantsViewHolder.getTvDate().setText(DateUtil.getFormattedDateFromTimeStamp(
+                plants.getUpdatedAt(), DateUtil.DATE_FORMAT_DD_MMM_YYYY_HH_MM));
         ImageView ivPlant = dashboardPlantsViewHolder.getIvPlant();
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
                 new DisplayUtil(context).getImageHeight());
         ivPlant.setLayoutParams(params);
         ImageLoader.getInstance().displayImage(

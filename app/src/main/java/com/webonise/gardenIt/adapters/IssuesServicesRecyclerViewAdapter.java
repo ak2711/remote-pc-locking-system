@@ -100,8 +100,8 @@ public class IssuesServicesRecyclerViewAdapter extends RecyclerView.Adapter<Recy
             issuesRequestsViewHolder.getTvDescription().setText(issue.getDescription());
             ImageView imageView = issuesRequestsViewHolder.getImageView();
             ImageLoader.getInstance().displayImage(imageUrl, imageView, options, null);
-            issuesRequestsViewHolder.getTvDate().setText(new DateUtil()
-                    .getFormattedDateFromTimeStamp(issue.getCreatedAt()));
+            issuesRequestsViewHolder.getTvDate().setText(DateUtil.getFormattedDateFromTimeStamp(
+                    issue.getCreatedAt(), DateUtil.DATE_FORMAT_DD_MMM));
             issuesRequestsViewHolder.getView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -124,8 +124,8 @@ public class IssuesServicesRecyclerViewAdapter extends RecyclerView.Adapter<Recy
             issuesRequestsViewHolder.getTvDescription().setText(request.getDescription());
             ImageView imageView = issuesRequestsViewHolder.getImageView();
             ImageLoader.getInstance().displayImage(imageUrl, imageView, options, null);
-            issuesRequestsViewHolder.getTvDate().setText(new DateUtil()
-                    .getFormattedDateFromTimeStamp(request.getCreatedAt()));
+            issuesRequestsViewHolder.getTvDate().setText(DateUtil.getFormattedDateFromTimeStamp(
+                    request.getCreatedAt(), DateUtil.DATE_FORMAT_DD_MMM));
 
             issuesRequestsViewHolder.getView().setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -71,6 +72,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
     Button btnAddLog;
     @Bind(R.id.llLogHolder)
     LinearLayout llLogHolder;
+    @Bind(R.id.tvDate)
+    TextView tvDate;
 
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
@@ -255,8 +258,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
         plantName = plant.getName();
         description = plant.getDescription();
         plantImageUrl = Constants.BASE_URL + plant.getImages().get(0).getImage().getUrl();
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
                 new DisplayUtil(PlantDetailsActivity.this).getImageHeight());
         ivPlantImage.setLayoutParams(layoutParams);
         ImageLoader.getInstance().displayImage(plantImageUrl,
@@ -266,6 +269,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
         tvDescription.setText(description);
 
+        tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(plant.getUpdatedAt(),
+                DateUtil.DATE_FORMAT_DD_MMM_YYYY_HH_MM));
         plantId = plant.getId();
         gardenId = plant.getGardenId();
 
@@ -318,8 +323,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                     tvTitle.setText(logs.getContent());
 
                     TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
-                    tvDate.setText(new DateUtil()
-                            .getFormattedDateFromTimeStamp(logs.getUpdatedAt()));
+                    tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(logs.getUpdatedAt(),
+                            DateUtil.DATE_FORMAT_DD_MMM));
 
                     ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
                     if (logs.getImages().size() > 0) {
@@ -341,8 +346,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                     tvDescription.setText(issues.getDescription());
 
                     TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
-                    tvDate.setText(new DateUtil()
-                            .getFormattedDateFromTimeStamp(issues.getUpdatedAt()));
+                    tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(issues.getUpdatedAt(),
+                            DateUtil.DATE_FORMAT_DD_MMM));
 
                     ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
                     if (issues.getImages().size() > 0) {
