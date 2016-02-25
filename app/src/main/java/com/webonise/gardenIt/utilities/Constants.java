@@ -76,9 +76,12 @@ public class Constants {
     public static final String BUNDLE_KEY_DESC = "description";
     public static final String BUNDLE_KEY_IMAGE_URL = "image_url";
     public static final String BUNDLE_KEY_STATUS = "status";
+    public static final String BUNDLE_KEY_PHONE_NUMBERS = "mobile_numbers";
 
     public static final int CREATE_ISSUE = 0;
     public static final int REQUEST_SERVICE = CREATE_ISSUE + 1;
+
+    public static final String PREF_FILE_TOKEN_DATA = "tokenData";
 
 
     public static class ScreenName {

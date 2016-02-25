@@ -21,7 +21,7 @@ public class RegistrationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        sharedPreferenceManager = new SharedPreferenceManager(this);
+        sharedPreferenceManager = new SharedPreferenceManager(this, Constants.PREF_FILE_TOKEN_DATA);
         try {
             // [START register_for_gcm]
             // Initially this call goes out to the network to retrieve the token, subsequent calls

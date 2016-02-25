@@ -28,11 +28,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.webonise.gardenIt.activities.GeneralDetailsActivity;
 import com.webonise.gardenIt.utilities.Constants;
+import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -47,11 +47,25 @@ public class MyGcmListenerService extends GcmListenerService {
      */
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("message");
-        String type = data.getString(Constants.BUNDLE_KEY_TYPE);
-        String id = data.getString(Constants.BUNDLE_KEY_ID);
-
-        sendNotification(id, type, message);
+        SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
+        if (sharedPreferenceManager.getBooleanValue(Constants
+                .KEY_PREF_IS_USER_LOGGED_IN)) {
+            String message = data.getString("message");
+            String type = data.getString(Constants.BUNDLE_KEY_TYPE);
+            String id = data.getString(Constants.BUNDLE_KEY_ID);
+            String mobileNumbers = data.getString(Constants.BUNDLE_KEY_PHONE_NUMBERS);
+            if (mobileNumbers != null) {
+                String[] mobileNumberArray = mobileNumbers.split(",");
+                String userMobileNumber =
+                        sharedPreferenceManager.getStringValue(Constants
+                                .KEY_PREF_USER_PHONE_NUMBER);
+                for (String mobileNumber : mobileNumberArray) {
+                    if (mobileNumber.contains(userMobileNumber)) {
+                        sendNotification(id, type, message);
+                    }
+                }
+            }
+        }
     }
 
     /**

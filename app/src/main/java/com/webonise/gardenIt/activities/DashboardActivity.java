@@ -95,11 +95,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(this);
         }
-        if (!TextUtils.isEmpty(sharedPreferenceManager
-                .getStringValue(Constants.KEY_PREF_GCM_TOKEN))) {
-            if (!sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_GCM_TOKEN_SENT)) {
-                sendGCMToken();
-            }
+        if (!sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_GCM_TOKEN_SENT)) {
+            sendGCMToken();
         }
     }
 
@@ -474,8 +471,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         }
         String phoneNumber = sharedPreferenceManager
                 .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
-        String token = sharedPreferenceManager
-                .getStringValue(Constants.KEY_PREF_GCM_TOKEN);
+        String token = new SharedPreferenceManager(DashboardActivity.this,
+                Constants.PREF_FILE_TOKEN_DATA).getStringValue(Constants.KEY_PREF_GCM_TOKEN);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
