@@ -20,6 +20,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +31,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.webonise.gardenIt.activities.DashboardActivity;
 import com.webonise.gardenIt.activities.GeneralDetailsActivity;
 import com.webonise.gardenIt.utilities.Constants;
 
@@ -79,9 +82,9 @@ public class MyGcmListenerService extends GcmListenerService {
      */
     private void sendNotification(String id, String type, String message) {
         Intent intent = new Intent(this, GeneralDetailsActivity.class);
-        if (type.equalsIgnoreCase("issue")){
+        if (type.equalsIgnoreCase("issue")) {
             intent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_ADVICE);
-        } else if(type.equalsIgnoreCase("request")){
+        } else if (type.equalsIgnoreCase("request")) {
             intent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_SERVICE);
         }
         intent.putExtra(Constants.BUNDLE_KEY_ID, Integer.parseInt(id));
@@ -91,7 +94,8 @@ public class MyGcmListenerService extends GcmListenerService {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.logo)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setLargeIcon(getBitmapDrawable())
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(message)
                 .setAutoCancel(true)
@@ -102,5 +106,18 @@ public class MyGcmListenerService extends GcmListenerService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+    private Bitmap getBitmapDrawable() {
+        Drawable d = getResources().getDrawable(R.drawable.drawable_notification_icon);
+        Bitmap b = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap
+                .Config.ARGB_8888);
+
+        LayerDrawable ld = (LayerDrawable) getResources().getDrawable(R.drawable
+                .drawable_notification_icon);
+        ld.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        ld.draw(new Canvas(b));
+
+        return b;
     }
 }
