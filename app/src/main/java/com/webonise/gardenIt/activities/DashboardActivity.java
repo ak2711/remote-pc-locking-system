@@ -92,6 +92,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         setupNavigationDrawer();
         setToolbar();
         setUpRecyclerView();
+        if (sharedPreferenceManager == null) {
+            sharedPreferenceManager = new SharedPreferenceManager(this);
+        }
+        if (!TextUtils.isEmpty(sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_GCM_TOKEN))) {
+            if (!sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_GCM_TOKEN_SENT)) {
+                sendGCMToken();
+            }
+        }
     }
 
     @Override
@@ -434,5 +443,47 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         Intent intent = new Intent(DashboardActivity.this, SignInActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void sendGCMToken() {
+        WebService webService = new WebService(this);
+        webService.setProgressDialog();
+        webService.setUrl(Constants.UPDATE_TOKEN_URL);
+        webService.setBody(getGCMTokenRequestBody());
+        webService.POSTStringRequest(new ApiResponseInterface() {
+            @Override
+            public void onResponse(String response) {
+                if (sharedPreferenceManager == null) {
+                    sharedPreferenceManager = new SharedPreferenceManager(DashboardActivity.this);
+                }
+                sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_GCM_TOKEN_SENT, true);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                error.printStackTrace();
+                Toast.makeText(DashboardActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private JSONObject getGCMTokenRequestBody() {
+        if (sharedPreferenceManager == null) {
+            sharedPreferenceManager = new SharedPreferenceManager(DashboardActivity.this);
+        }
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
+        String token = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_GCM_TOKEN);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
+                    phoneNumber);
+            jsonObject.put(Constants.REQUEST_KEY_DEVICE_TOKEN, token);
+        } catch (JSONException jsonException) {
+            jsonException.printStackTrace();
+        }
+        return jsonObject;
     }
 }

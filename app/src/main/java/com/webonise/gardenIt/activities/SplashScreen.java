@@ -19,7 +19,6 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.webonise.gardenIt.AppController;
-import com.webonise.gardenIt.QuickstartPreferences;
 import com.webonise.gardenIt.R;
 
 import com.webonise.gardenIt.RegistrationIntentService;
@@ -43,15 +42,7 @@ public class SplashScreen extends AppCompatActivity {
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(context);
-                boolean sentToken = sharedPreferences
-                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-                if (sentToken) {
-                    Toast.makeText(SplashScreen.this, "Token Sent",Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(SplashScreen.this, "Error while Token Sent",Toast.LENGTH_SHORT).show();
-                }
+
             }
         };
 
@@ -66,7 +57,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+                new IntentFilter(Constants.KEY_PREF_REGISTRATION_COMPLETE));
         isActivityStopped = false;
         Thread sleeper = new Thread(sleepRunnable);
         sleeper.start();

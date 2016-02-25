@@ -13,6 +13,9 @@ public class Constants {
     public static final String KEY_PREF_USER_ISSUES = "user_issues";
     public static final String KEY_PREF_USER_REQUEST = "user_requests";
     public static final String KEY_PREF_GARDEN_ID = "gardenID";
+    public static final String KEY_PREF_GCM_TOKEN = "gcmToken";
+    public static final String KEY_PREF_GCM_TOKEN_SENT = "gcmTokenSent";
+    public static final String KEY_PREF_REGISTRATION_COMPLETE = "registrationComplete";
 
     //public static final String BASE_URL = "http://test-uf.weboapps.com";
     public static final String BASE_URL = "http://ba4cf30f.ngrok.io"; //TODO testing url
@@ -30,6 +33,7 @@ public class Constants {
     public static final String GET_PLANT_DETAILS_URL = BASE_URL_API + "get_plant";
     public static final String GET_CITIES_LIST = BASE_URL_API + "cities";
     public static final String DELETE_PLANT_URL = BASE_URL_API + "delete_plant";
+    public static final String UPDATE_TOKEN_URL = BASE_URL_API + "update_token";
 
     public static final String REQUEST_KEY_EMAIl = "email";
     public static final String REQUEST_KEY_NAME = "name";
@@ -45,6 +49,7 @@ public class Constants {
     public static final String REQUEST_KEY_PLANT_ID = "plant_id";
     public static final String REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE = "data:image/jpeg;base64,";
     public static final String REQUEST_KEY_PASSWORD = "password";
+    public static final String REQUEST_KEY_DEVICE_TOKEN = "device_token";
     public static final int RESPONSE_CODE_200 = 200;
 
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
