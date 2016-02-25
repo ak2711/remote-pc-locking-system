@@ -41,9 +41,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:theme="@style/TextLabel">
+                    style="@style/TextLabel">
 
-                    <android.support.v7.widget.AppCompatEditText
+                    <EditText
                         android:id="@+id/etLogTitle"
                         style="@style/EditTextStyleBlackSingleLine"
                         android:layout_width="match_parent"
