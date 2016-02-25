@@ -28,6 +28,8 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.webonise.gardenIt.activities.DashboardActivity;
+import com.webonise.gardenIt.activities.GeneralDetailsActivity;
+import com.webonise.gardenIt.utilities.Constants;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -44,14 +46,14 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         String message = data.getString("message");
+        String type = data.getString(Constants.BUNDLE_KEY_TYPE);
+        String id = data.getString(Constants.BUNDLE_KEY_ID);
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
+        Log.d(TAG, "Id : " + data.getString("id"));
+        Log.d(TAG, "type : " + data.getString("type"));
+        Log.d(TAG, "status : " + data.getString("status"));
 
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
-        }
 
         // [START_EXCLUDE]
         /**
@@ -65,7 +67,7 @@ public class MyGcmListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
-        sendNotification(message);
+        sendNotification(id, type, message);
         // [END_EXCLUDE]
     }
     // [END receive_message]
@@ -75,16 +77,22 @@ public class MyGcmListenerService extends GcmListenerService {
      *
      * @param message GCM message received.
      */
-    private void sendNotification(String message) {
-        Intent intent = new Intent(this, DashboardActivity.class);
+    private void sendNotification(String id, String type, String message) {
+        Intent intent = new Intent(this, GeneralDetailsActivity.class);
+        if (type.equalsIgnoreCase("issue")){
+            intent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_ADVICE);
+        } else if(type.equalsIgnoreCase("request")){
+            intent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_SERVICE);
+        }
+        intent.putExtra(Constants.BUNDLE_KEY_ID, Integer.parseInt(id));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.icon_add)
-                .setContentTitle("GCM Message")
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle(getString(R.string.app_name))
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)

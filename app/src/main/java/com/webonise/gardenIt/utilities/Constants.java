@@ -18,7 +18,7 @@ public class Constants {
     public static final String KEY_PREF_REGISTRATION_COMPLETE = "registrationComplete";
 
     //public static final String BASE_URL = "http://test-uf.weboapps.com";
-    public static final String BASE_URL = "http://c4db8fa4.ngrok.io"; //TODO testing url
+    public static final String BASE_URL = "http://bb43af51.ngrok.io"; //TODO testing url
     public static final String BASE_URL_API = BASE_URL + "/apis/";
     public static final String REGISTER_URL = BASE_URL_API + "register";
     public static final String CREATE_GARDEN_URL = BASE_URL_API + "create_garden";
@@ -34,6 +34,8 @@ public class Constants {
     public static final String GET_CITIES_LIST = BASE_URL_API + "cities";
     public static final String DELETE_PLANT_URL = BASE_URL_API + "delete_plant";
     public static final String UPDATE_TOKEN_URL = BASE_URL_API + "update_token";
+    public static final String GET_ADVICE_DETAILS_URL = BASE_URL_API + "get_issue_detail";
+    public static final String GET_REQUEST_DETAILS_URL = BASE_URL_API + "get_request_detail";
 
     public static final String REQUEST_KEY_EMAIl = "email";
     public static final String REQUEST_KEY_NAME = "name";
@@ -51,6 +53,7 @@ public class Constants {
     public static final String REQUEST_KEY_PASSWORD = "password";
     public static final String REQUEST_KEY_DEVICE_TOKEN = "device_token";
     public static final int RESPONSE_CODE_200 = 200;
+    public static final String REQUEST_KEY_ID = "id";
 
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String APPLICATION_JSON = "application/json";
@@ -62,6 +65,7 @@ public class Constants {
     public static final String BUNDLE_KEY_SHOW_BACK_ICON = "show_back_icon";
     public static final String BUNDLE_KEY_PLANT_ID = "plantId";
     public static final String BUNDLE_KEY_GARDEN_ID = "gardenId";
+    public static final String BUNDLE_KEY_ID = "id";
     public static final String BUNDLE_KEY_TYPE = "type";
     public static final String BUNDLE_KEY_POSITION = "position";
     public static final String BUNDLE_KEY_TOP = "top";

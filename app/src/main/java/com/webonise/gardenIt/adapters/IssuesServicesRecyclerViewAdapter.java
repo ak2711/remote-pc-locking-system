@@ -107,10 +107,7 @@ public class IssuesServicesRecyclerViewAdapter extends RecyclerView.Adapter<Recy
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putInt(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_ADVICE);
-                    bundle.putString(Constants.BUNDLE_KEY_DESC, issue.getDescription());
-                    bundle.putString(Constants.BUNDLE_KEY_IMAGE_URL, imageUrl);
-                    bundle.putString(Constants.BUNDLE_KEY_TITLE, issue.getTitle());
-                    bundle.putString(Constants.BUNDLE_KEY_STATUS, issue.getStatus());
+                    bundle.putInt(Constants.BUNDLE_KEY_ID, issue.getId());
                     goToDetailsScreen(bundle);
                 }
             });
@@ -132,10 +129,7 @@ public class IssuesServicesRecyclerViewAdapter extends RecyclerView.Adapter<Recy
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putInt(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_SERVICE);
-                    bundle.putString(Constants.BUNDLE_KEY_DESC, request.getDescription());
-                    bundle.putString(Constants.BUNDLE_KEY_IMAGE_URL, imageUrl);
-                    bundle.putString(Constants.BUNDLE_KEY_TITLE, request.getTitle());
-                    bundle.putString(Constants.BUNDLE_KEY_STATUS, request.getStatus());
+                    bundle.putInt(Constants.BUNDLE_KEY_ID, request.getId());
                     goToDetailsScreen(bundle);
                 }
             });
