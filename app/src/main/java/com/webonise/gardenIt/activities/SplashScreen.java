@@ -71,7 +71,7 @@ public class SplashScreen extends AppCompatActivity {
     public Runnable sleepRunnable = new Runnable() {
         public void run() {
             try {
-                Thread.sleep(1000); //TODO increase time to 1500 milli secs
+                Thread.sleep(1500); //TODO increase time to 1500 milli secs
             } catch (Exception e) {
                 e.printStackTrace();
             }

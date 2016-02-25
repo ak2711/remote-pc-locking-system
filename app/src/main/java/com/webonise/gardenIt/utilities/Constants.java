@@ -18,7 +18,7 @@ public class Constants {
     public static final String KEY_PREF_REGISTRATION_COMPLETE = "registrationComplete";
 
     //public static final String BASE_URL = "http://test-uf.weboapps.com";
-    public static final String BASE_URL = "http://ba4cf30f.ngrok.io"; //TODO testing url
+    public static final String BASE_URL = "http://c4db8fa4.ngrok.io"; //TODO testing url
     public static final String BASE_URL_API = BASE_URL + "/apis/";
     public static final String REGISTER_URL = BASE_URL_API + "register";
     public static final String CREATE_GARDEN_URL = BASE_URL_API + "create_garden";

@@ -93,4 +93,5 @@
     <string name="cancel">Cancel</string>
     <string name="address_line_1">Address Line 1*</string>
     <string name="address_line_2">Address Line 2</string>
+    <string name="gcm_sender_id">676527630821</string>
 </resources>
