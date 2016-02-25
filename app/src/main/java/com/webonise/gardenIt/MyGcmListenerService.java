@@ -48,6 +48,8 @@ public class MyGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
+        //Check if user is logged in or not.
+        // If not we should not show the notification even if we get from server based on GCM token.
         if (sharedPreferenceManager.getBooleanValue(Constants
                 .KEY_PREF_IS_USER_LOGGED_IN)) {
             String message = data.getString("message");
@@ -55,14 +57,15 @@ public class MyGcmListenerService extends GcmListenerService {
             String id = data.getString(Constants.BUNDLE_KEY_ID);
             String mobileNumbers = data.getString(Constants.BUNDLE_KEY_PHONE_NUMBERS);
             if (mobileNumbers != null) {
-                String[] mobileNumberArray = mobileNumbers.split(",");
                 String userMobileNumber =
                         sharedPreferenceManager.getStringValue(Constants
                                 .KEY_PREF_USER_PHONE_NUMBER);
-                for (String mobileNumber : mobileNumberArray) {
-                    if (mobileNumber.contains(userMobileNumber)) {
-                        sendNotification(id, type, message);
-                    }
+                //Check if logged in user mobile number matches to any one number who needs to be notified.
+                //If user logs out and logs in as different user in same device the device token is same.
+                //Server sends Push notification based on device token and hence we need to check
+                //if right user is getting the notification or not.
+                if (mobileNumbers.contains(userMobileNumber)) {
+                    sendNotification(id, type, message);
                 }
             }
         }
