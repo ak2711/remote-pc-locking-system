@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 
 public class SharedPreferenceManager {
 
-    public static final String SHARED_PREF_NAME = "miles2share";
+    public static final String SHARED_PREF_NAME = "farmerCity";
     private SharedPreferences mSharedPreference;
 
     public SharedPreferenceManager(Context mContext) {
