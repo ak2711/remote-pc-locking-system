@@ -52,7 +52,7 @@ public class MyGcmListenerService extends GcmListenerService {
         // If not we should not show the notification even if we get from server based on GCM token.
         if (sharedPreferenceManager.getBooleanValue(Constants
                 .KEY_PREF_IS_USER_LOGGED_IN)) {
-            String message = data.getString("message");
+            String message = data.getString(Constants.BUNDLE_KEY_MESSAGE);
             String type = data.getString(Constants.BUNDLE_KEY_TYPE);
             String id = data.getString(Constants.BUNDLE_KEY_ID);
             String mobileNumbers = data.getString(Constants.BUNDLE_KEY_PHONE_NUMBERS);
