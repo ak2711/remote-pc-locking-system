@@ -1,7 +1,9 @@
 package com.webonise.gardenIt.utilities;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by Webonise Lab on 04/09/15.
@@ -33,18 +35,19 @@ public class DateUtil {
     public static String getFormattedDateFromTimeStamp(String timeStamp, String format) {
 
         SimpleDateFormat receivedFormat = new SimpleDateFormat(DATE_FORMAT_FROM_API);
+        receivedFormat.setTimeZone(TimeZone.getTimeZone("IST"));
         SimpleDateFormat displayFormat = null;
         Date date = null;
         try {
             date = receivedFormat.parse(timeStamp);
             displayFormat = new SimpleDateFormat(format);
+            //displayFormat.setTimeZone(TimeZone.getTimeZone("IST"));
             return displayFormat.format(date);
         } catch (Exception ex1) {
             ex1.printStackTrace();
         }
         return null;
     }
-
 
     /**
      * Function to get formatted date as sent in API

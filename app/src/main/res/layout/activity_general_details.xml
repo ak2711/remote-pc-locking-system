@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <RelativeLayout
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -36,19 +36,28 @@
                         android:id="@+id/ivPlantImage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
                         android:scaleType="centerCrop"/>
 
                     <ImageView
                         android:id="@+id/ivShare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
+                        android:layout_gravity="top|right"
                         android:layout_marginRight="15dp"
                         android:layout_marginTop="15dp"
                         android:src="@android:drawable/ic_menu_share"/>
-                </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|right"
+                        android:layout_marginRight="10dp"
+                        android:drawableLeft="@drawable/ic_clock_large"
+                        android:gravity="center_vertical"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="@color/text_color_white"/>
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/tvHeading"

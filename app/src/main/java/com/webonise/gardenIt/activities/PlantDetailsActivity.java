@@ -332,8 +332,9 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                                 Constants.BASE_URL + logs.getImages().get(0).getImage().getUrl(),
                                 imageView, options, null);
                     }
+
                 } else if (sortedList.get(i) instanceof PlantDetailsModel.Plant.Issues) {
-                    PlantDetailsModel.Plant.Issues issues
+                    final PlantDetailsModel.Plant.Issues issues
                             = (PlantDetailsModel.Plant.Issues) sortedList.get(i);
                     view = LayoutInflater.from(PlantDetailsActivity.this)
                             .inflate(R.layout.image_text_list_item, null);
@@ -355,6 +356,17 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                                 Constants.BASE_URL + issues.getImages().get(0).getImage().getUrl(),
                                 imageView, options, null);
                     }
+
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(PlantDetailsActivity.this,
+                                    GeneralDetailsActivity.class);
+                            intent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_ADVICE);
+                            intent.putExtra(Constants.BUNDLE_KEY_ID, issues.getId());
+                            startActivity(intent);
+                        }
+                    });
                 }
                 if (view != null) {
                     llLogHolder.addView(view);
@@ -432,7 +444,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.delete_confirmation_message))
                 .setCancelable(false)
-                .setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.delete), new DialogInterface
+                        .OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
                                         @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
@@ -440,7 +453,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
                     }
                 })
-                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface
+                        .OnClickListener() {
                     public void onClick(final DialogInterface dialog,
                                         @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
