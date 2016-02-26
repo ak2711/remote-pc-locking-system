@@ -292,7 +292,8 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
 
             /**
              * If user has selected new image then only we need to send this data to server.
-             * In case of edit plant, isNewImage can be false and we might not need to send the image to server.
+             * In case of edit plant, isNewImage can be false and we might not need to send the
+             * image to server.
              * isNewImage is true in case of User captures or select and image from gallery.
              * The isNewImage value is false when user edits the plant or cancels the image.
              *
@@ -393,7 +394,7 @@ public class AddPlantActivity extends AppCompatActivity implements View.OnClickL
             etDescription.setText(description);
             showImage(plantImageUrl);
             btnAddPlant.setText(getString(R.string.update_plant));
-
+            image_file = new File(plantImageUrl);
             isNewImage = false;
         }
     }

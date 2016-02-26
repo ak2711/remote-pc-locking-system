@@ -1,14 +1,26 @@
 package com.webonise.gardenIt.activities;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,19 +30,31 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
+import com.webonise.gardenIt.models.SignUpRequestModel;
 import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
+import com.webonise.gardenIt.utilities.FileContentProvider;
+import com.webonise.gardenIt.utilities.ImageUtil;
 import com.webonise.gardenIt.utilities.LogUtils;
+import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
+import com.webonise.gardenIt.utilities.UriManager;
 import com.webonise.gardenIt.webservice.WebService;
 
 import android.widget.TextView.OnEditorActionListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -40,6 +64,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private final String TAG = this.getClass().getName();
 
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.tvTitle)
+    TextView tvTitle;
     @Bind(R.id.etFullName)
     EditText etFullName;
     @Bind(R.id.etPhoneNumber)
@@ -56,6 +84,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText etReferredBy;
     @Bind(R.id.btnSignUp)
     Button btnSignUp;
+    @Bind(R.id.ivProfilePic)
+    ImageView ivProfilePic;
+
+    private PopupWindow popupWindow;
+    private File image_file;
+    private ShareUtil shareUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +97,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
+        setToolbar();
         btnSignUp.setOnClickListener(this);
+        ivProfilePic.setOnClickListener(this);
         tvAlreadyAnUser.setOnClickListener(this);
         etReferredBy.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
@@ -81,15 +117,30 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     protected void onResume() {
         super.onResume();
         // Obtain the shared Tracker instance.
-        AppController application =  AppController.getInstance();
+        AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(Constants.ScreenName.SIGN_UP_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
+    private void setToolbar() {
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            tvTitle.setText(R.string.add_new_plant);
+        }
+    }
+
     @Override
     public void onClick(View v) {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        }
         switch (v.getId()) {
+
+            case R.id.ivProfilePic:
+                showPopupWindow();
+                break;
             case R.id.btnSignUp:
                 validateDataAndSignUp();
                 break;
@@ -97,6 +148,16 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.tvAlreadyAnUser:
                 gotoNextActivity(SignInActivity.class);
                 break;
+
+            case R.id.btnOpenCamera:
+                Intent cameraIntent = new ImageUtil().getCameraIntent();
+                startActivityForResult(cameraIntent, Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                break;
+            case R.id.btnOpenGallery:
+                Intent galleryIntent = new ImageUtil().getOpenGalleryIntent();
+                startActivityForResult(galleryIntent, Constants.PICK_IMAGE);
+                break;
+
         }
     }
 
@@ -184,7 +245,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                 Toast.makeText(SignUpActivity.this,
                                         jsonObject.getString(Constants.RESPONSE_KEY_ERROR_MESSAGE),
                                         Toast.LENGTH_SHORT).show();
-                            } catch (JSONException je){
+                            } catch (JSONException je) {
                                 je.printStackTrace();
                                 Toast.makeText(SignUpActivity.this, getString(R.string.error_msg),
                                         Toast.LENGTH_LONG).show();
@@ -203,17 +264,30 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private JSONObject getBody(String fullName, String phoneNumber, String email,
                                String referredBy, String password) {
+
+        SignUpRequestModel signUpRequestModel = new SignUpRequestModel();
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(Constants.REQUEST_KEY_NAME, fullName);
-            jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER, phoneNumber);
-            jsonObject.put(Constants.REQUEST_KEY_EMAIl, email);
-            jsonObject.put(Constants.REQUEST_KEY_REFERRED_BY, referredBy);
-            jsonObject.put(Constants.REQUEST_KEY_PASSWORD, password);
+
+            signUpRequestModel.setName(fullName);
+            signUpRequestModel.setEmail(email);
+            signUpRequestModel.setPassword(password);
+            signUpRequestModel.setPhoneNumber(phoneNumber);
+            signUpRequestModel.setReferredBy(referredBy);
+
+            List<SignUpRequestModel.PlantImage> plantImages = new ArrayList<>();
+            SignUpRequestModel.PlantImage plantImage = signUpRequestModel.new PlantImage();
+            plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
+                    + getEncodedImage());
+
+            plantImages.add(plantImage);
+            signUpRequestModel.setPlantImage(plantImages);
+            jsonObject = new JSONObject(new Gson().toJson(signUpRequestModel));
         } catch (Exception e) {
             e.printStackTrace();
         }
         LogUtils.LOGD(TAG, jsonObject.toString());
+
         return jsonObject;
     }
 
@@ -221,5 +295,86 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         Intent intent = new Intent(SignUpActivity.this, clazz);
         startActivity(intent);
         finish();
+    }
+
+    private void showPopupWindow() {
+
+        LayoutInflater layoutInflater
+                = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.add_photo_pop_up_menu, (ViewGroup)
+                findViewById(R.id.popupWindow));
+
+        popupWindow = new PopupWindow(
+                popupView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        Button btnOpenCamera = (Button) popupView.findViewById(R.id.btnOpenCamera);
+        btnOpenCamera.setOnClickListener(this);
+
+        Button btnOpenGallery = (Button) popupView.findViewById(R.id.btnOpenGallery);
+        btnOpenGallery.setOnClickListener(this);
+
+        ImageButton btnCancel = (ImageButton) popupView.findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                    ImageUtil.deleteCapturedPhoto();
+                image_file = new File(getFilesDir(), FileContentProvider.getUniqueFileName());
+                showImage("file://" + image_file.toString());
+            }
+        } else if (requestCode == Constants.PICK_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Uri uri = data.getData();
+                String realPath = UriManager.getPath(uri, this);
+                if (TextUtils.isEmpty(realPath)) {
+                    Toast.makeText(this, getString(R.string.toast_online_image), Toast
+                            .LENGTH_LONG).show();
+                } else {
+                    image_file = new File(realPath);
+                    showImage("file://" + image_file.toString());
+                }
+            }
+        } else {
+            Toast.makeText(this, getString(R.string.toast_pic_not_taken), Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    protected void showImage(String filepath) {
+        AppController.setupUniversalImageLoader(SignUpActivity.this);
+        DisplayImageOptions options = ImageUtil.getImageOptions();
+        ImageLoader.getInstance().displayImage(filepath, ivProfilePic,
+                options);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (shareUtil == null) {
+            shareUtil = new ShareUtil(SignUpActivity.this);
+        }
+        shareUtil.deleteImageFile();
+    }
+
+    private String getEncodedImage() {
+        Bitmap bitmap = ((BitmapDrawable) ivProfilePic.getDrawable()).getBitmap();
+        return ImageUtil.encodeTobase64(bitmap);
     }
 }
