@@ -44,6 +44,10 @@ public class UserDashboardModel {
         private String createdAt;
         @SerializedName("updated_at")
         private String updatedAt;
+        @SerializedName("referred_by")
+        private String referredBy;
+        @SerializedName("profile_image")
+        private String profileImage;
         private List<Gardens> gardens;
         private Links links;
         @SerializedName("supported_gardens")
@@ -119,6 +123,22 @@ public class UserDashboardModel {
 
         public void setSupportedGardens(List<Gardens> supportedGardens) {
             this.supportedGardens = supportedGardens;
+        }
+
+        public String getReferredBy() {
+            return referredBy;
+        }
+
+        public void setReferredBy(String referredBy) {
+            this.referredBy = referredBy;
+        }
+
+        public String getProfileImage() {
+            return profileImage;
+        }
+
+        public void setProfileImage(String profileImage) {
+            this.profileImage = profileImage;
         }
 
         public class Links {

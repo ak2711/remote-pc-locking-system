@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.webonise.gardenIt"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="com.webonise.gardenIt"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -9,9 +10,10 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
-    <permission android:name="com.webonise.gardenIt.permission.C2D_MESSAGE"
-                android:protectionLevel="signature" />
-    <uses-permission android:name="com.webonise.gardenIt.permission.C2D_MESSAGE" />
+    <permission
+        android:name="com.webonise.gardenIt.permission.C2D_MESSAGE"
+        android:protectionLevel="signature"/>
+    <uses-permission android:name="com.webonise.gardenIt.permission.C2D_MESSAGE"/>
     <application
         android:name="com.webonise.gardenIt.AppController"
         android:allowBackup="true"
@@ -81,6 +83,9 @@
         <activity
             android:name=".activities.CreateLogActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.UserDetailsActivity"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".activities.GeneralDetailsActivity"
@@ -94,17 +99,18 @@
             android:grantUriPermissions="true"/>
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="6ff16e6cc941c2b24dddc0822e547dc13ed6c989" />
+            android:value="6ff16e6cc941c2b24dddc0822e547dc13ed6c989"/>
 
         <!-- [START gcm_receiver] -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <category android:name="com.webonise.gardenIt" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
+
+                <category android:name="com.webonise.gardenIt"/>
             </intent-filter>
         </receiver>
         <!-- [END gcm_receiver] -->
@@ -112,9 +118,9 @@
         <!-- [START gcm_listener] -->
         <service
             android:name="com.webonise.gardenIt.MyGcmListenerService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
             </intent-filter>
         </service>
         <!-- [END gcm_listener] -->

@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -73,6 +74,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     Spinner spinnerGarden;
 
     private TextView tvUserName, tvMobileNumber;
+    private LinearLayout llUserDetails;
 
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
@@ -151,6 +153,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         View view = navigationView.getHeaderView(0);
         tvUserName = (TextView) view.findViewById(R.id.tvUserName);
         tvMobileNumber = (TextView) view.findViewById(R.id.tvMobileNumber);
+        llUserDetails = (LinearLayout) view.findViewById(R.id.llUserDetails);
+        llUserDetails.setOnClickListener(this);
     }
 
     @Override
@@ -164,6 +168,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.rlAddNewPlant:
                 goToAddNewPlantActivity();
+                break;
+            case R.id.llUserDetails:
+                goToUserDetailsActivity();
                 break;
         }
     }
@@ -482,5 +489,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             jsonException.printStackTrace();
         }
         return jsonObject;
+    }
+
+    private void goToUserDetailsActivity() {
+        Intent intent = new Intent(DashboardActivity.this, UserDetailsActivity.class);
+        startActivity(intent);
     }
 }

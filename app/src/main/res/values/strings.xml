@@ -6,9 +6,9 @@
     <string name="error_msg">There might be a problem , Please try again !</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_in">Sign In</string>
-    <string name="full_name">Full Name*</string>
-    <string name="phone_number">Mobile Number*</string>
-    <string name="referred_by">Referred By (Mobile Number)*</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone_number">Mobile Number</string>
+    <string name="referred_by">Referred By (Mobile Number)</string>
     <string name="enter_referral_mobile_number">Please enter mobile number of person who referred you.</string>
     <string name="email_address">Email Address</string>
     <string name="enter_full_name">Please enter your Full Name.</string>
@@ -62,8 +62,8 @@
 
     <string name="already_an_user"><u>Already an User? Sign In</u></string>
     <string name="new_user"><u>New User? Sign Up</u></string>
-    <string name="password">Password*</string>
-    <string name="confirm_password">Confirm Password*</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="enter_password">Please enter password</string>
     <string name="password_does_not_match">Password doesn\'t match. Please check again</string>
     <string name="user_does_not_exists">User doesn\'t exists. Please check Mobile number and password</string>
@@ -94,6 +94,8 @@
     <string name="address_line_1">Address Line 1*</string>
     <string name="address_line_2">Address Line 2</string>
     <string name="gcm_sender_id">676527630821</string>
-<string name="notification_type_request">request</string>
+    <string name="notification_type_request">request</string>
     <string name="notification_type_issue">issue</string>
+    <string name="na">-NA-</string>
+    <string name="my_profile">My Profile</string>
 </resources>
