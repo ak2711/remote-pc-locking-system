@@ -321,6 +321,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 closeDrawer();
                 buildAlertDialogForLogout();
                 break;
+
+            case R.id.updatePassword:
+                Intent updatePasswordIntent = new Intent(DashboardActivity.this,
+                        UpdatePasswordActivity.class);
+                startActivity(updatePasswordIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -64,6 +64,8 @@
     <string name="new_user"><u>New User? Sign Up</u></string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="new_password">New Password</string>
+    <string name="old_password">Old Password</string>
     <string name="enter_password">Please enter password</string>
     <string name="password_does_not_match">Password doesn\'t match. Please check again</string>
     <string name="user_does_not_exists">User doesn\'t exists. Please check Mobile number and password</string>
@@ -101,4 +103,6 @@
     <string name="no_plants">No plants in your garden!</string>
     <string name="tap_above">Tap above to add one</string>
     <string name="update">Update</string>
+    <string name="update_password">Update Password</string>
+    <string name="enter_new_password">Please enter new Password</string>
 </resources>

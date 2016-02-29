@@ -90,6 +90,9 @@
         <activity
             android:name=".activities.GeneralDetailsActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.UpdatePasswordActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name=".utilities.FileContentProvider"

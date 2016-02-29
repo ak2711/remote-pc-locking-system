@@ -22,6 +22,7 @@ public class Constants {
     public static final String BASE_URL_API = BASE_URL + "/apis/";
     public static final String REGISTER_URL = BASE_URL_API + "register";
     public static final String EDIT_USER_URL = BASE_URL_API + "edit_profile";
+    public static final String UPDATE_PASSWORD_URL = BASE_URL_API + "change_password";
     public static final String CREATE_GARDEN_URL = BASE_URL_API + "create_garden";
     public static final String ADD_PLANT_URL = BASE_URL_API + "create_plant";
     public static final String EDIT_PLANT_URL = BASE_URL_API + "edit_plant";
@@ -55,6 +56,7 @@ public class Constants {
     public static final String REQUEST_KEY_DEVICE_TOKEN = "device_token";
     public static final int RESPONSE_CODE_200 = 200;
     public static final String REQUEST_KEY_ID = "id";
+    public static final String REQUEST_KEY_CURRENT_PASSWORD = "current_password";
 
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String APPLICATION_JSON = "application/json";
@@ -102,6 +104,7 @@ public class Constants {
         public static final String ADVICE_DETAILS_SCREEN = "Advice Details Screen";
         public static final String SERVICE_DETAILS_SCREEN = "Service Details Screen";
         public static final String USER_DETAILS_SCREEN = "User Details Screen";
+        public static final String UPDATE_PASSWORD_SCREEN = "Update Password Screen";
     }
 
     public static final int SUCCESS_STATE_VISIBLE_TIME = 3000; //3 seconds
