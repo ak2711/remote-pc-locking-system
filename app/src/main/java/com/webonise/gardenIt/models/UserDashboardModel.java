@@ -44,8 +44,14 @@ public class UserDashboardModel {
         private String createdAt;
         @SerializedName("updated_at")
         private String updatedAt;
+        @SerializedName("referred_by")
+        private String referredBy;
+        @SerializedName("profile_image")
+        private String profileImage;
         private List<Gardens> gardens;
         private Links links;
+        @SerializedName("supported_gardens")
+        private List<Gardens> supportedGardens;
 
         public Links getLinks() {
             return links;
@@ -111,6 +117,30 @@ public class UserDashboardModel {
             this.gardens = gardens;
         }
 
+        public List<Gardens> getSupportedGardens() {
+            return supportedGardens;
+        }
+
+        public void setSupportedGardens(List<Gardens> supportedGardens) {
+            this.supportedGardens = supportedGardens;
+        }
+
+        public String getReferredBy() {
+            return referredBy;
+        }
+
+        public void setReferredBy(String referredBy) {
+            this.referredBy = referredBy;
+        }
+
+        public String getProfileImage() {
+            return profileImage;
+        }
+
+        public void setProfileImage(String profileImage) {
+            this.profileImage = profileImage;
+        }
+
         public class Links {
             @SerializedName("store_link")
             private String storeLink;
@@ -139,6 +169,8 @@ public class UserDashboardModel {
             private String createdAt;
             @SerializedName("updated_at")
             private String updatedAt;
+            @SerializedName("gardner_name")
+            private String gardnerName;
             private List<Plants> plants;
 
             public int getId() {
@@ -219,6 +251,14 @@ public class UserDashboardModel {
 
             public void setUpdatedAt(String updatedAt) {
                 this.updatedAt = updatedAt;
+            }
+
+            public String getGardnerName() {
+                return gardnerName;
+            }
+
+            public void setGardnerName(String gardnerName) {
+                this.gardnerName = gardnerName;
             }
 
             public List<Plants> getPlants() {

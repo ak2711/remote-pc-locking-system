@@ -14,25 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/ftNameYourGarden"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:theme="@style/TextLabel">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/etNameYourGarden"
-                style="@style/EditTextStyleBlackSingleLine"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/name_your_garden"
-                android:imeOptions="actionGo"/>
-        </android.support.design.widget.TextInputLayout>
-
         <Button
             android:id="@+id/btnCreateGarden"
             style="@style/ButtonStyleRed"
@@ -41,27 +22,71 @@
             android:layout_alignParentBottom="true"
             android:text="@string/create_garden"/>
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_above="@id/btnCreateGarden"
-            android:layout_below="@id/ftNameYourGarden">
+            android:layout_alignParentTop="true">
 
-            <fragment
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:map="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/map"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".MapsActivity"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/icon_map_pin"/>
-        </RelativeLayout>
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    style="@style/TextLabel">
+
+                    <EditText
+                        android:id="@+id/etNameYourGarden"
+                        style="@style/EditTextStyleBlackSingleLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/name_your_garden"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    style="@style/TextLabel">
+
+                    <EditText
+                        android:id="@+id/etAddressLine1"
+                        style="@style/EditTextStyleBlackSingleLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/address_line_1"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    style="@style/TextLabel">
+
+                    <EditText
+                        android:id="@+id/etAddressLine2"
+                        style="@style/EditTextStyleBlackSingleLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/address_line_2"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <Spinner
+                    android:id="@+id/spinnerCity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"/>
+            </LinearLayout>
+        </ScrollView>
     </RelativeLayout>
 </LinearLayout>

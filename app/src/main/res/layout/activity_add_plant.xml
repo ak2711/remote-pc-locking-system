@@ -36,12 +36,12 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/ftNameOfPlant"
+                    style="@style/TextLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:theme="@style/TextLabel">
+                    android:layout_marginTop="10dp">
 
-                    <android.support.v7.widget.AppCompatEditText
+                    <EditText
                         android:id="@+id/etNameOfPlant"
                         style="@style/EditTextStyleBlackSingleLine"
                         android:layout_width="match_parent"
@@ -52,13 +52,13 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/ftDescription"
+                    style="@style/TextLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/ftNameOfPlant"
-                    android:layout_marginTop="10dp"
-                    android:theme="@style/TextLabel">
+                    android:layout_marginTop="10dp">
 
-                    <android.support.v7.widget.AppCompatEditText
+                    <EditText
                         android:id="@+id/etDescription"
                         style="@style/EditTextStyleBlack"
                         android:layout_width="match_parent"
@@ -76,24 +76,25 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/margin_10">
 
                     <ImageView
                         android:id="@+id/ivToUpload"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"/>
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"/>
 
                     <ImageView
-                        android:id="@+id/ivShare"
+                        android:id="@+id/ivCancel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="10dp"
-                        android:src="@android:drawable/ic_menu_share"
+                        android:layout_alignRight="@id/ivToUpload"
+                        android:layout_alignTop="@id/ivToUpload"
+                        android:layout_marginRight="@dimen/margin_10"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"
                         android:visibility="gone"/>
                 </RelativeLayout>
 

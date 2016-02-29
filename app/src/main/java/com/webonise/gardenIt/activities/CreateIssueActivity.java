@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
@@ -50,6 +51,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 public class CreateIssueActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -65,8 +67,8 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     EditText etDescription;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
-    @Bind(R.id.ivShare)
-    ImageView ivShare;
+    @Bind(R.id.ivCancel)
+    ImageView ivCancel;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
@@ -79,16 +81,18 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     private SharedPreferenceManager sharedPreferenceManager;
     private int plantId;
     private ShareUtil shareUtil;
+    private int gardenId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_create_issue);
         ButterKnife.bind(this);
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
         btnCreateIssue.setOnClickListener(this);
-        ivShare.setOnClickListener(this);
+        ivCancel.setOnClickListener(this);
     }
 
     @Override
@@ -97,6 +101,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             plantId = bundle.getInt(Constants.BUNDLE_KEY_PLANT_ID);
+            gardenId = bundle.getInt(Constants.BUNDLE_KEY_GARDEN_ID);
         }
         setToolbar();
         AppController application = AppController.getInstance();
@@ -134,9 +139,10 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             case R.id.btnCreateIssue:
                 validateAndCreateIssue();
                 break;
-            case R.id.ivShare:
-                shareUtil = new ShareUtil(this);
-                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivToUpload));
+            case R.id.ivCancel:
+                image_file = null;
+                ivToUpload.setImageDrawable(null);
+                ivCancel.setVisibility(View.GONE);
                 break;
         }
     }
@@ -173,7 +179,7 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
-        ivShare.setVisibility(View.VISIBLE);
+        ivCancel.setVisibility(View.VISIBLE);
     }
 
     private void validateAndCreateIssue() {
@@ -236,7 +242,9 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
             createIssueRequestModel.setName(nameOfPlant);
             createIssueRequestModel.setDescription(description);
             createIssueRequestModel.setPhoneNumber(phoneNumber);
-
+            if (gardenId > 0){
+                createIssueRequestModel.setGardenId(gardenId);
+            }
             if (plantId > 0) {
                 createIssueRequestModel.setPlantId(plantId);
             }
@@ -271,9 +279,10 @@ public class CreateIssueActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (shareUtil != null) {
-            shareUtil.deleteImageFile();
+        if (shareUtil == null) {
+            shareUtil = new ShareUtil(CreateIssueActivity.this);
         }
+        shareUtil.deleteImageFile();
     }
 
     private void showSuccessPopUp() {

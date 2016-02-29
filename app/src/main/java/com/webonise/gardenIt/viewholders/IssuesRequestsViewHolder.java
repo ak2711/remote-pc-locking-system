@@ -14,9 +14,11 @@ public class IssuesRequestsViewHolder extends RecyclerView.ViewHolder {
     private TextView tvTitle;
     private TextView tvDescription;
     private TextView tvDate;
+    private View view;
 
     public IssuesRequestsViewHolder(View view) {
         super(view);
+        this.view = view;
         imageView = (ImageView) view.findViewById(R.id.imageView);
         tvTitle = (TextView) view.findViewById(R.id.tvTitle);
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
@@ -53,5 +55,13 @@ public class IssuesRequestsViewHolder extends RecyclerView.ViewHolder {
 
     public void setTvDate(TextView tvDate) {
         this.tvDate = tvDate;
+    }
+
+    public View getView() {
+        return view;
+    }
+
+    public void setView(View view) {
+        this.view = view;
     }
 }

@@ -10,11 +10,11 @@ import com.webonise.gardenIt.R;
 import butterknife.ButterKnife;
 
 public class DashboardPlantsViewHolder extends RecyclerView.ViewHolder {
-    private final String TAG = this.getClass().getName();
 
     private ImageView ivPlant;
     private TextView tvTitle;
     private TextView tvDescription;
+    private TextView tvDate;
     private View view;
 
     public View getView() {
@@ -49,11 +49,20 @@ public class DashboardPlantsViewHolder extends RecyclerView.ViewHolder {
         this.tvDescription = tvDescription;
     }
 
+    public TextView getTvDate() {
+        return tvDate;
+    }
+
+    public void setTvDate(TextView tvDate) {
+        this.tvDate = tvDate;
+    }
+
     public DashboardPlantsViewHolder(View view) {
         super(view);
         this.view = view;
         ivPlant = (ImageView) view.findViewById(R.id.ivPlant);
         tvTitle = (TextView)view.findViewById(R.id.tvTitle);
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
+        tvDate = (TextView)view.findViewById(R.id.tvDate);
     }
 }

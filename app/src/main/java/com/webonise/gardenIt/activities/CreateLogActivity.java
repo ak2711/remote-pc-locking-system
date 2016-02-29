@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
@@ -48,6 +49,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 public class CreateLogActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -74,10 +76,12 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     private SharedPreferenceManager sharedPreferenceManager;
     private int plantId;
     private ShareUtil shareUtil;
+    private int gardenId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_create_log);
         ButterKnife.bind(this);
         rlCapture.setOnClickListener(this);
@@ -92,6 +96,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             plantId = bundle.getInt(Constants.BUNDLE_KEY_PLANT_ID);
+            gardenId = bundle.getInt(Constants.BUNDLE_KEY_GARDEN_ID);
         }
         setToolbar();
         AppController application =  AppController.getInstance();
@@ -225,6 +230,9 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
 
             if (plantId > 0) {
                 createLogRequestModel.setPlantId(plantId);
+            }
+            if (gardenId > 0) {
+                createLogRequestModel.setGardenId(gardenId);
             }
 
             if (image_file != null) {

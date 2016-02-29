@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
@@ -28,10 +29,12 @@ import com.webonise.gardenIt.utilities.LogUtils;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.webservice.WebService;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,6 +52,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this);
         btnSignIn.setOnClickListener(this);
@@ -158,9 +162,17 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
                         case 401: //Unauthorized
-                            Toast.makeText(SignInActivity.this,
-                                    getString(R.string.user_does_not_exists),
-                                    Toast.LENGTH_SHORT).show();
+                            try {
+                                JSONObject jsonObject = new JSONObject(new String(response.data));
+                                Toast.makeText(SignInActivity.this,
+                                        jsonObject.getString(Constants.RESPONSE_KEY_ERROR_MESSAGE),
+                                        Toast.LENGTH_SHORT).show();
+                            } catch (JSONException je) {
+                                je.printStackTrace();
+                                Toast.makeText(SignInActivity.this, getString(R.string.error_msg),
+                                        Toast.LENGTH_LONG).show();
+                            }
+
                             break;
                         default:
                             Toast.makeText(SignInActivity.this, getString(R.string.error_msg),

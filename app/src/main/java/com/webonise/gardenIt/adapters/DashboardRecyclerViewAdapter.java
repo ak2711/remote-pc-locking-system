@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -17,6 +18,7 @@ import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.activities.PlantDetailsActivity;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.utilities.Constants;
+import com.webonise.gardenIt.utilities.DateUtil;
 import com.webonise.gardenIt.utilities.DisplayUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.viewholders.DashboardPlantsViewHolder;
@@ -30,17 +32,21 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     private DisplayImageOptions options;
     private Context context;
 
-    public DashboardRecyclerViewAdapter(Context context) {
+    public DashboardRecyclerViewAdapter(Context context,
+                                        List<UserDashboardModel.User.Gardens> allGardens,
+                                        int gardenId) {
         this.context = context;
         sharedPreferenceManager = new SharedPreferenceManager(context);
-        UserDashboardModel userDashboardModel =
-                sharedPreferenceManager.getObject(Constants.KEY_PREF_USER_GARDEN_PLANTS,
-                        UserDashboardModel.class);
+        UserDashboardModel.User.Gardens gardens = null;
+        if (allGardens != null && allGardens.size() > 0) {
+            for (int i = 0; i < allGardens.size(); i++) {
+                if (gardenId == allGardens.get(i).getId()) {
+                    gardens = allGardens.get(i);
+                }
+            }
 
-        List<UserDashboardModel.User.Gardens> gardensList = userDashboardModel.getUser()
-                .getGardens();
-        UserDashboardModel.User.Gardens gardens = gardensList.get(gardensList.size() - 1);
-        plantsList = gardens.getPlants();
+            plantsList = gardens.getPlants();
+        }
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.logo)
                 .showImageForEmptyUri(R.drawable.logo)
@@ -66,35 +72,37 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        DashboardPlantsViewHolder dashboardPlantsViewHolder = (DashboardPlantsViewHolder)holder;
+        DashboardPlantsViewHolder dashboardPlantsViewHolder = (DashboardPlantsViewHolder) holder;
         configureDashboardPlantsViewHolder(dashboardPlantsViewHolder, position);
     }
 
     @Override
     public int getItemCount() {
-        return plantsList.size();
+        return plantsList != null ? plantsList.size() : 0;
     }
 
     private void configureDashboardPlantsViewHolder(
-            DashboardPlantsViewHolder dashboardPlantsViewHolder, final int position){
+            DashboardPlantsViewHolder dashboardPlantsViewHolder, int position) {
 
-        UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
+        final UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
         dashboardPlantsViewHolder.getTvTitle().setText(plants.getName());
         dashboardPlantsViewHolder.getTvDescription().setText(plants.getDescription());
+        dashboardPlantsViewHolder.getTvDate().setText(DateUtil.getFormattedDateFromTimeStamp(
+                plants.getUpdatedAt(), DateUtil.DATE_FORMAT_DD_MMM_YYYY_HH_MM));
         ImageView ivPlant = dashboardPlantsViewHolder.getIvPlant();
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
                 new DisplayUtil(context).getImageHeight());
         ivPlant.setLayoutParams(params);
         ImageLoader.getInstance().displayImage(
-                Constants.BASE_URL+plants.getImages().get(0).getImage().getUrl(),
+                Constants.BASE_URL + plants.getImages().get(0).getImage().getUrl(),
                 ivPlant, options, null);
 
         dashboardPlantsViewHolder.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PlantDetailsActivity.class);
-                intent.putExtra(Constants.BUNDLE_KEY_POSITION, position);
+                intent.putExtra(Constants.BUNDLE_KEY_PLANT_ID, plants.getId());
                 context.startActivity(intent);
             }
         });

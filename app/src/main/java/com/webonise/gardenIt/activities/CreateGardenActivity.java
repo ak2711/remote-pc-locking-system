@@ -19,12 +19,15 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
@@ -41,8 +44,10 @@ import com.google.gson.Gson;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
+import com.webonise.gardenIt.models.CitiesModel;
 import com.webonise.gardenIt.models.CreateGardenModel;
 import com.webonise.gardenIt.models.UserModel;
+import com.webonise.gardenIt.utilities.CommonUtils;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.LogUtils;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
@@ -50,18 +55,13 @@ import com.webonise.gardenIt.webservice.WebService;
 
 import org.json.JSONObject;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
-public class CreateGardenActivity extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener {
-
-    private Location location;
-    private SupportMapFragment mapFragment;
-    private GoogleMap map;
-    private GoogleApiClient mGoogleApiClient;
+public class CreateGardenActivity extends AppCompatActivity implements View.OnClickListener {
 
     private SharedPreferenceManager sharedPreferenceManager;
 
@@ -75,55 +75,27 @@ public class CreateGardenActivity extends AppCompatActivity implements
     EditText etNameYourGarden;
     @Bind(R.id.btnCreateGarden)
     Button btnCreateGarden;
-
-    /*
-     * Define a request code to send to Google Play services This code is
-     * returned in Activity.onActivityResult
-     */
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    @Bind(R.id.etAddressLine1)
+    EditText etAddressLine1;
+    @Bind(R.id.etAddressLine2)
+    EditText etAddressLine2;
+    @Bind(R.id.spinnerCity)
+    Spinner spinnerCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_create_garden);
         ButterKnife.bind(this);
         btnCreateGarden.setOnClickListener(this);
         setToolbar();
-        mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap map) {
-                    loadMap(map);
-                }
-            });
-        } else {
-            Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
-        }
-
-        etNameYourGarden.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_GO) {
-                    validateAndCreateGarden();
-                    return true;
-                }
-                return false;
-            }
-        });
-
+        getCitiesList();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        final LocationManager manager = (LocationManager)
-                this.getSystemService(Context.LOCATION_SERVICE);
-
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-        }
 
         AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
@@ -139,166 +111,6 @@ public class CreateGardenActivity extends AppCompatActivity implements
         }
     }
 
-    protected void loadMap(GoogleMap googleMap) {
-        map = googleMap;
-        if (map != null) {
-            // Map is ready
-            try {
-                map.setMyLocationEnabled(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            // Now that map has loaded, let's get our location!
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addApi(LocationServices.API)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this).build();
-
-            connectClient();
-        } else {
-            Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    protected void connectClient() {
-        // Connect the client.
-        if (isGooglePlayServicesAvailable() && mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    /*
-     * Called when the Activity becomes visible.
-    */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        connectClient();
-    }
-
-    /*
-     * Called when the Activity is no longer visible.
-	 */
-    @Override
-    protected void onStop() {
-        // Disconnecting the client invalidates it.
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-        super.onStop();
-    }
-
-    /*
-     * Handle results returned to the FragmentActivity by Google Play services
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Decide what to do based on the original request code
-        switch (requestCode) {
-
-            case CONNECTION_FAILURE_RESOLUTION_REQUEST:
-            /*
-             * If the result code is Activity.RESULT_OK, try to connect again
-			 */
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        mGoogleApiClient.connect();
-                        break;
-                }
-
-        }
-    }
-
-    private boolean isGooglePlayServicesAvailable() {
-        // Check that Google Play services is available
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d("Location Updates", "Google Play services is available.");
-            return true;
-        } else {
-            // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
-            // If Google Play services can provide an error dialog
-            if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-                errorFragment.setDialog(errorDialog);
-                errorFragment.show(getSupportFragmentManager(), "Location Updates");
-            }
-
-            return false;
-        }
-    }
-
-    /*
-     * Called by Location Services when the request to connect the client
-     * finishes successfully. At this point, you can request the current
-     * location or start periodic updates
-     */
-    @Override
-    public void onConnected(Bundle dataBundle) {
-        // Display the connection status
-        try {
-            location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (location != null) {
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-            map.animateCamera(cameraUpdate);
-        } else {
-            Toast.makeText(this, "Location not found. Please make sure location services is on.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /*
-     * Called by Location Services if the connection to the location client
-     * drops because of an error.
-     */
-    @Override
-    public void onConnectionSuspended(int i) {
-        if (i == CAUSE_SERVICE_DISCONNECTED) {
-            Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
-        } else if (i == CAUSE_NETWORK_LOST) {
-            Toast.makeText(this, "Network lost. Please re-connect.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /*
-     * Called by Location Services if the attempt to Location Services fails.
-     */
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        /*
-         * Google Play services can resolve some errors it detects. If the error
-		 * has a resolution, try sending an Intent to start a Google Play
-		 * services activity that can resolve error.
-		 */
-        if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(this,
-                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
-                /*
-                 * Thrown if Google Play services canceled the original
-				 * PendingIntent
-				 */
-            } catch (IntentSender.SendIntentException e) {
-                // Log the error
-                e.printStackTrace();
-            }
-        } else {
-            Toast.makeText(getApplicationContext(),
-                    "Sorry. Location services not available to you", Toast.LENGTH_LONG).show();
-        }
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -308,45 +120,30 @@ public class CreateGardenActivity extends AppCompatActivity implements
         }
     }
 
-    // Define a DialogFragment that displays the error dialog
-    public static class ErrorDialogFragment extends DialogFragment {
-
-        // Global field to contain the error dialog
-        private Dialog mDialog;
-
-        // Default constructor. Sets the dialog field to null
-        public ErrorDialogFragment() {
-            super();
-            mDialog = null;
-        }
-
-        // Set the dialog to display
-        public void setDialog(Dialog dialog) {
-            mDialog = dialog;
-        }
-
-        // Return a Dialog to the DialogFragment.
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return mDialog;
-        }
-    }
-
     private void validateAndCreateGarden() {
-        String gardenName = etNameYourGarden.getText().toString();
+        String gardenName = etNameYourGarden.getText().toString().trim();
+        String addressLine1 = etAddressLine1.getText().toString().trim();
+        String addressLine2 = etAddressLine2.getText().toString().trim();
+        String city = spinnerCity.getSelectedItem().toString();
         if (!TextUtils.isEmpty(gardenName)) {
-            createGarden(gardenName);
+            if (!TextUtils.isEmpty(addressLine1)) {
+                createGarden(gardenName, addressLine1, addressLine2, city);
+            } else {
+                Toast.makeText(CreateGardenActivity.this, getString(R.string.enter_your_address),
+                        Toast.LENGTH_SHORT).show();
+            }
         } else {
             Toast.makeText(CreateGardenActivity.this, getString(R.string.enter_garden_name),
                     Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void createGarden(String gardenName) {
+    private void createGarden(String gardenName, String addressLine1, String addressLine2,
+                              String city) {
         WebService webService = new WebService(this);
         webService.setProgressDialog();
         webService.setUrl(Constants.CREATE_GARDEN_URL);
-        webService.setBody(getBody(gardenName));
+        webService.setBody(getBody(gardenName, addressLine1, addressLine2, city));
         webService.POSTStringRequest(new ApiResponseInterface() {
             @Override
             public void onResponse(String response) {
@@ -379,8 +176,8 @@ public class CreateGardenActivity extends AppCompatActivity implements
         });
     }
 
-    private JSONObject getBody(String gardenName) {
-        LatLng centerLocation = map.getCameraPosition().target;
+    private JSONObject getBody(String gardenName, String addressLine1, String addressLine2,
+                               String city) {
         if (sharedPreferenceManager == null) {
             sharedPreferenceManager = new SharedPreferenceManager(CreateGardenActivity.this);
         }
@@ -391,10 +188,8 @@ public class CreateGardenActivity extends AppCompatActivity implements
             jsonObject.put(Constants.REQUEST_KEY_NAME, gardenName);
             jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
                     phoneNumber);
-            jsonObject.put(Constants.REQUEST_KEY_LATITUDE,
-                    Double.toString(centerLocation.latitude));
-            jsonObject.put(Constants.REQUEST_KEY_LONGITUDE,
-                    Double.toString(centerLocation.longitude));
+            jsonObject.put(Constants.REQUEST_KEY_ADDRESS,
+                    getFormattedAddress(addressLine1, addressLine2, city));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -409,26 +204,64 @@ public class CreateGardenActivity extends AppCompatActivity implements
         finish();
     }
 
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, please enable it.")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
-                                        @SuppressWarnings("unused") final int id) {
-                        startActivity(new Intent(android.provider.Settings
-                                .ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog,
-                                        @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                        finish();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
+    private void getCitiesList() {
+        WebService webService = new WebService(this);
+        webService.setProgressDialog();
+        webService.setUrl(Constants.GET_CITIES_LIST);
+        webService.setBody(getBody());
+        webService.POSTStringRequest(new ApiResponseInterface() {
+            @Override
+            public void onResponse(String response) {
+                setUpCitiesSpinner(response);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                error.printStackTrace();
+                Toast.makeText(CreateGardenActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private JSONObject getBody() {
+        if (sharedPreferenceManager == null) {
+            sharedPreferenceManager = new SharedPreferenceManager(CreateGardenActivity.this);
+        }
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
+                    phoneNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LogUtils.LOGD(TAG, jsonObject.toString());
+        return jsonObject;
+    }
+
+    private void setUpCitiesSpinner(String response) {
+        if (!TextUtils.isEmpty(response)) {
+            CitiesModel citiesModel = new Gson().fromJson(response, CitiesModel.class);
+            if (citiesModel != null) {
+                List cities = citiesModel.getCities();
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(CreateGardenActivity.this,
+                        android.R.layout.simple_spinner_item, cities);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerCity.setAdapter(adapter);
+            }
+        }
+    }
+
+    private String getFormattedAddress(String addressLine1, String addressLine2, String city) {
+        StringBuilder formattedAddress = new StringBuilder();
+        formattedAddress.append(addressLine1);
+        if (!TextUtils.isEmpty(addressLine2)){
+            formattedAddress.append(", ").append(addressLine2);
+        }
+        formattedAddress.append(", ").append(city);
+        return formattedAddress.toString();
     }
 }
 

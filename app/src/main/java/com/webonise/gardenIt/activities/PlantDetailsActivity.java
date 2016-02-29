@@ -1,19 +1,25 @@
 package com.webonise.gardenIt.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
@@ -23,9 +29,12 @@ import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
+import com.webonise.gardenIt.models.AddPlantModel;
+import com.webonise.gardenIt.models.AddPlantRequestModel;
 import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.models.UserModel;
+import com.webonise.gardenIt.utilities.ColorUtil;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DateUtil;
 import com.webonise.gardenIt.utilities.DisplayUtil;
@@ -43,6 +52,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 public class PlantDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -62,18 +72,20 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
     Button btnAddLog;
     @Bind(R.id.llLogHolder)
     LinearLayout llLogHolder;
+    @Bind(R.id.tvDate)
+    TextView tvDate;
 
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
     private PlantDetailsModel plantDetailsModel;
     private DisplayImageOptions options;
-
-    private int position;
+    private String plantName, description, plantImageUrl;
     private int gardenId, plantId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_plant_details);
         ButterKnife.bind(this);
         btnAddLog.setOnClickListener(this);
@@ -87,11 +99,11 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             sharedPreferenceManager = new SharedPreferenceManager
                     (PlantDetailsActivity.this);
         }
-        position = getIntent().getIntExtra(Constants.BUNDLE_KEY_POSITION, 0);
+        plantId = getIntent().getIntExtra(Constants.BUNDLE_KEY_PLANT_ID, 0);
         setToolbar();
-        setPlantId();
+        //setPlantId();
         getPlantDetails();
-        AppController application =  AppController.getInstance();
+        AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(Constants.ScreenName.PLANT_DETAILS_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -109,6 +121,38 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_plant_details_screen, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_edit:
+                Intent intent = new Intent(PlantDetailsActivity.this, AddPlantActivity.class);
+                intent.putExtra(Constants.BUNDLE_KEY_PLANT_ID, plantId);
+                intent.putExtra(Constants.BUNDLE_KEY_SHOW_BACK_ICON, true);
+                intent.putExtra(Constants.BUNDLE_KEY_TITLE, plantName);
+                intent.putExtra(Constants.BUNDLE_KEY_DESC, description);
+                intent.putExtra(Constants.BUNDLE_KEY_IMAGE_URL, plantImageUrl);
+
+                startActivity(intent);
+                break;
+
+            case R.id.action_delete:
+                buildAlertDialogForDelete();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -130,6 +174,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             intent.putExtra(Constants.BUNDLE_KEY_PLANT_ID, plantId);
         }
         startActivity(intent);
+        finish();
     }
 
     private List<Object> sortLogsAndIssues() {
@@ -209,17 +254,23 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
         AppController.getInstance().setupUniversalImageLoader(PlantDetailsActivity.this);
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
+
+        plantName = plant.getName();
+        description = plant.getDescription();
+        plantImageUrl = Constants.BASE_URL + plant.getImages().get(0).getImage().getUrl();
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
                 new DisplayUtil(PlantDetailsActivity.this).getImageHeight());
         ivPlantImage.setLayoutParams(layoutParams);
-        ImageLoader.getInstance().displayImage(
-                Constants.BASE_URL + plant.getImages().get(0).getImage().getUrl(),
+        ImageLoader.getInstance().displayImage(plantImageUrl,
                 ivPlantImage, options, null);
 
-        tvTitle.setText(plant.getName());
-        tvDescription.setText(plant.getDescription());
+        tvTitle.setText(plantName);
 
+        tvDescription.setText(description);
+
+        tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(plant.getUpdatedAt(),
+                DateUtil.DATE_FORMAT_DD_MMM_YYYY_HH_MM));
         plantId = plant.getId();
         gardenId = plant.getGardenId();
 
@@ -257,7 +308,6 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             textView.setText(getString(R.string.logs));
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setTextColor(getResources().getColor(R.color.text_color_green));
-            //textView.setTextSize(new DisplayUtil(PlantDetailsActivity.this).dpToPx(6));
             textView.setTextAppearance(this, android.R.style.TextAppearance_Large);
             llLogHolder.addView(textView);
             View view = null;
@@ -273,8 +323,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                     tvTitle.setText(logs.getContent());
 
                     TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
-                    tvDate.setText(new DateUtil()
-                            .getFormattedDateFromTimeStamp(logs.getUpdatedAt()));
+                    tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(logs.getUpdatedAt(),
+                            DateUtil.DATE_FORMAT_DD_MMM));
 
                     ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
                     if (logs.getImages().size() > 0) {
@@ -282,21 +332,23 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                                 Constants.BASE_URL + logs.getImages().get(0).getImage().getUrl(),
                                 imageView, options, null);
                     }
+
                 } else if (sortedList.get(i) instanceof PlantDetailsModel.Plant.Issues) {
-                    PlantDetailsModel.Plant.Issues issues
+                    final PlantDetailsModel.Plant.Issues issues
                             = (PlantDetailsModel.Plant.Issues) sortedList.get(i);
                     view = LayoutInflater.from(PlantDetailsActivity.this)
                             .inflate(R.layout.image_text_list_item, null);
 
                     TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
                     tvTitle.setText(issues.getTitle());
+                    tvTitle.setTextColor(ColorUtil.getColorBasedOnStatus(this, issues.getStatus()));
 
                     TextView tvDescription = (TextView) view.findViewById(R.id.tvDescription);
                     tvDescription.setText(issues.getDescription());
 
                     TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
-                    tvDate.setText(new DateUtil()
-                            .getFormattedDateFromTimeStamp(issues.getUpdatedAt()));
+                    tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(issues.getUpdatedAt(),
+                            DateUtil.DATE_FORMAT_DD_MMM));
 
                     ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
                     if (issues.getImages().size() > 0) {
@@ -304,6 +356,17 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                                 Constants.BASE_URL + issues.getImages().get(0).getImage().getUrl(),
                                 imageView, options, null);
                     }
+
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(PlantDetailsActivity.this,
+                                    GeneralDetailsActivity.class);
+                            intent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_ADVICE);
+                            intent.putExtra(Constants.BUNDLE_KEY_ID, issues.getId());
+                            startActivity(intent);
+                        }
+                    });
                 }
                 if (view != null) {
                     llLogHolder.addView(view);
@@ -357,15 +420,47 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
         return jsonObject;
     }
 
-    private void setPlantId() {
-        userDashboardModel = sharedPreferenceManager.getObject(Constants
-                .KEY_PREF_USER_GARDEN_PLANTS, UserDashboardModel.class);
+    private void deletePlant() {
+        WebService webService = new WebService(this);
+        webService.setProgressDialog();
+        webService.setUrl(Constants.DELETE_PLANT_URL);
+        webService.setBody(getBody());
+        webService.POSTStringRequest(new ApiResponseInterface() {
+            @Override
+            public void onResponse(String response) {
+                finish();
+            }
 
-        List<UserDashboardModel.User.Gardens> gardensList = userDashboardModel.getUser()
-                .getGardens();
-        UserDashboardModel.User.Gardens gardens = gardensList.get(gardensList.size() - 1);
-        List<UserDashboardModel.User.Gardens.Plants> plantsList = gardens.getPlants();
-        UserDashboardModel.User.Gardens.Plants plants = plantsList.get(position);
-        plantId = plants.getId();
+            @Override
+            public void onError(VolleyError error) {
+                error.printStackTrace();
+                Toast.makeText(PlantDetailsActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void buildAlertDialogForDelete() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.delete_confirmation_message))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.delete), new DialogInterface
+                        .OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        deletePlant();
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface
+                        .OnClickListener() {
+                    public void onClick(final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 }

@@ -1,5 +1,6 @@
 package com.webonise.gardenIt.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +16,18 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
@@ -29,6 +37,7 @@ import com.webonise.gardenIt.adapters.DashboardRecyclerViewAdapter;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.UserDashboardModel;
 import com.webonise.gardenIt.models.UserModel;
+import com.webonise.gardenIt.utilities.CommonUtils;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.RecyclerViewItemDecorator;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
@@ -37,10 +46,12 @@ import com.webonise.gardenIt.webservice.WebService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.fabric.sdk.android.Fabric;
 
 public class DashboardActivity extends AppCompatActivity implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -54,22 +65,42 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView tvTitle;
     @Bind(R.id.rlAddNewPlant)
     RelativeLayout rlAddNewPlant;
+    @Bind(R.id.rlAddLog)
+    RelativeLayout rlAddLog;
     @Bind(R.id.btnCreateIssue)
     Button btnRequestService;
     @Bind(R.id.btnRequestService)
     Button btnCreateIssue;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
+    @Bind(R.id.spinnerGarden)
+    Spinner spinnerGarden;
+    @Bind(R.id.llEmptyView)
+    LinearLayout llEmptyView;
+    @Bind(R.id.imageView)
+    ImageView imageView;
+    @Bind(R.id.textView1)
+    TextView textView1;
+    @Bind(R.id.textView2)
+    TextView textView2;
+    @Bind(R.id.imageView2)
+    ImageView imageView2;
+    @Bind(R.id.textView3)
+    TextView textView3;
 
-    TextView tvUserName, tvMobileNumber;
+    private TextView tvUserName, tvMobileNumber;
+    private LinearLayout llUserDetails;
 
     private SharedPreferenceManager sharedPreferenceManager;
     private UserDashboardModel userDashboardModel;
     private String shopNowLink;
+    private int selectedGardenId;
+    private String selectedGardenName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.dashboard_main);
         ButterKnife.bind(this);
         rlAddNewPlant.setOnClickListener(this);
@@ -78,6 +109,12 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         setupNavigationDrawer();
         setToolbar();
         setUpRecyclerView();
+        if (sharedPreferenceManager == null) {
+            sharedPreferenceManager = new SharedPreferenceManager(this);
+        }
+        if (!sharedPreferenceManager.getBooleanValue(Constants.KEY_PREF_GCM_TOKEN_SENT)) {
+            sendGCMToken();
+        }
     }
 
     @Override
@@ -131,19 +168,27 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         View view = navigationView.getHeaderView(0);
         tvUserName = (TextView) view.findViewById(R.id.tvUserName);
         tvMobileNumber = (TextView) view.findViewById(R.id.tvMobileNumber);
+        llUserDetails = (LinearLayout) view.findViewById(R.id.llUserDetails);
+        llUserDetails.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnCreateIssue:
-                goToCreateIssueActivity();
+                goToNextActivity(CreateIssueActivity.class);
                 break;
             case R.id.btnRequestService:
-                goToServiceRequestActivity();
+                goToNextActivity(RequestServiceActivity.class);
                 break;
             case R.id.rlAddNewPlant:
                 goToAddNewPlantActivity();
+                break;
+            case R.id.llUserDetails:
+                goToUserDetailsActivity();
+                break;
+            case R.id.rlAddLog:
+                goToNextActivity(CreateLogActivity.class);
                 break;
         }
     }
@@ -167,7 +212,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             userDashboardModel);
                     sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
                             userDashboardModel.getUser().getPhoneNumber());
-                    setTitle();
                     tvUserName.setText(userDashboardModel.getUser().getName());
                     tvMobileNumber.setText(userDashboardModel.getUser().getPhoneNumber());
                     try {
@@ -176,29 +220,20 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                         shopNowLink = userDashboardModel.getUser().getLinks().getStoreLink();
                     } catch (NullPointerException npe) {
                         npe.printStackTrace();
-                    } catch (ArrayIndexOutOfBoundsException indexOutOfBoundException){
+                    } catch (ArrayIndexOutOfBoundsException indexOutOfBoundException) {
                         indexOutOfBoundException.printStackTrace();
                     }
-                    DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
-                            = new DashboardRecyclerViewAdapter(DashboardActivity.this);
-
-                    //Set Span count to 2 as 2 items to show in a row.
-                    GridLayoutManager gridLayoutManager = new GridLayoutManager(
-                            DashboardActivity.this, SPAN_COUNT);
-
-                    recyclerView.setLayoutManager(gridLayoutManager);
-                    recyclerView.setAdapter(dashboardRecyclerViewAdapter);
-
+                    setupSpinner();
                 } else {
                     Toast.makeText(DashboardActivity.this, userDashboardModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
+                setTitle();
             }
 
             @Override
             public void onError(VolleyError error) {
                 error.printStackTrace();
-
                 Toast.makeText(DashboardActivity.this, getString(R.string.error_msg),
                         Toast.LENGTH_LONG).show();
             }
@@ -228,24 +263,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         Intent intent = new Intent();
         intent.setClass(DashboardActivity.this, AddPlantActivity.class);
         intent.putExtra(Constants.BUNDLE_KEY_SHOW_BACK_ICON, true);
+        intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, selectedGardenId);
         startActivity(intent);
     }
 
-    private void goToCreateIssueActivity() {
+    private void goToNextActivity(Class clazz) {
         Intent intent = new Intent();
-        intent.setClass(DashboardActivity.this, CreateIssueActivity.class);
-        startActivity(intent);
-    }
-
-    private void goToServiceRequestActivity() {
-        Intent intent = new Intent();
-        intent.setClass(DashboardActivity.this, RequestServiceActivity.class);
-
-        UserDashboardModel.User.Gardens lastGarden = getLastGardenDetails();
-        if (lastGarden != null) {
-            intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, lastGarden.getId());
-        }
-
+        intent.setClass(DashboardActivity.this, clazz);
+        intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, selectedGardenId);
         startActivity(intent);
     }
 
@@ -291,42 +316,219 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
+
+            case R.id.logout:
+                closeDrawer();
+                buildAlertDialogForLogout();
+                break;
+
+            case R.id.updatePassword:
+                Intent updatePasswordIntent = new Intent(DashboardActivity.this,
+                        UpdatePasswordActivity.class);
+                startActivity(updatePasswordIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        closeDrawer();
+    }
+
+    private void setTitle() {
+        tvTitle.setText(!TextUtils.isEmpty(selectedGardenName)
+                ? selectedGardenName : getString(R.string.dashboard));
+    }
+
+    private void setupSpinner() {
+
+        final List<UserDashboardModel.User.Gardens> gardensList
+                = getAllGardens();
+
+        final List<UserDashboardModel.User.Gardens> supportedGardenList
+                = getSupportedGardens();
+
+        final List<UserDashboardModel.User.Gardens> allGardens = new ArrayList<>();
+
+        allGardens.addAll(gardensList);
+        allGardens.addAll(supportedGardenList);
+
+        ArrayList gardenNames = new ArrayList();
+        for (UserDashboardModel.User.Gardens gardens : allGardens) {
+            gardenNames.add(gardens.getGardnerName() + "\'s " + gardens.getName());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(DashboardActivity.this,
+                android.R.layout.simple_spinner_item, gardenNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGarden.setAdapter(adapter);
+
+        spinnerGarden.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                UserDashboardModel.User.Gardens garden = allGardens.get(position);
+                selectedGardenName = garden.getGardnerName() + "\'s " + garden.getName();
+                setDataInRecyclerView(allGardens, garden.getId());
+                sharedPreferenceManager.setIntValue(Constants.KEY_PREF_GARDEN_ID, garden.getId());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        UserDashboardModel.User.Gardens garden = allGardens.get(0);
+        selectedGardenName = garden.getGardnerName() + "\'s " + garden.getName();
+        setDataInRecyclerView(allGardens, garden.getId());
+    }
+
+    private List<UserDashboardModel.User.Gardens> getAllGardens() throws NullPointerException {
+        if (!CommonUtils.isEmpty(userDashboardModel)) {
+            try {
+                return userDashboardModel.getUser().getGardens();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private List<UserDashboardModel.User.Gardens> getSupportedGardens() throws
+            NullPointerException {
+        if (!CommonUtils.isEmpty(userDashboardModel)) {
+            try {
+                return userDashboardModel.getUser().getSupportedGardens();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private void setDataInRecyclerView(List<UserDashboardModel.User.Gardens> allGardens,
+                                       int gardenId) {
+        selectedGardenId = gardenId;
+        DashboardRecyclerViewAdapter dashboardRecyclerViewAdapter
+                = new DashboardRecyclerViewAdapter(DashboardActivity.this, allGardens,
+                gardenId);
+
+        //Set Span count to 2 as 2 items to show in a row.
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(
+                DashboardActivity.this, SPAN_COUNT);
+
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setAdapter(dashboardRecyclerViewAdapter);
+        dashboardRecyclerViewAdapter.notifyDataSetChanged();
+
+        if (dashboardRecyclerViewAdapter.getItemCount() == 0) {
+            recyclerView.setVisibility(View.GONE);
+            llEmptyView.setVisibility(View.VISIBLE);
+            rlAddLog.setVisibility(View.GONE);
+            setEmptyView();
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            llEmptyView.setVisibility(View.GONE);
+            rlAddLog.setVisibility(View.VISIBLE);
+            rlAddLog.setOnClickListener(this);
+        }
+    }
+
+    private void closeDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
     }
 
-    private void setTitle() {
-        UserDashboardModel.User.Gardens lastGarden = getLastGardenDetails();
-        if (lastGarden != null) {
-            tvTitle.setText(lastGarden.getName());
-        } else {
-            tvTitle.setText(getString(R.string.dashboard));
-        }
+    private void buildAlertDialogForLogout() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.logout_confirmation_message))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        logout();
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog,
+                                        @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
-    private UserDashboardModel.User.Gardens getLastGardenDetails() {
-        if (userDashboardModel != null) {
-            try{
-                List<UserDashboardModel.User.Gardens> gardensList
-                        = userDashboardModel.getUser().getGardens();
-                return gardensList.get(gardensList.size() - 1);
-            } catch (Exception e){
-               e.printStackTrace();
-                return null;
+    private void logout() {
+        new SharedPreferenceManager(DashboardActivity.this).clearSharedPreference();
+        Intent intent = new Intent(DashboardActivity.this, SignInActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void sendGCMToken() {
+        WebService webService = new WebService(this);
+        webService.setProgressDialog();
+        webService.setUrl(Constants.UPDATE_TOKEN_URL);
+        webService.setBody(getGCMTokenRequestBody());
+        webService.POSTStringRequest(new ApiResponseInterface() {
+            @Override
+            public void onResponse(String response) {
+                if (sharedPreferenceManager == null) {
+                    sharedPreferenceManager = new SharedPreferenceManager(DashboardActivity.this);
+                }
+                sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_GCM_TOKEN_SENT, true);
             }
+
+            @Override
+            public void onError(VolleyError error) {
+                error.printStackTrace();
+                Toast.makeText(DashboardActivity.this, getString(R.string.error_msg),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private JSONObject getGCMTokenRequestBody() {
+        if (sharedPreferenceManager == null) {
+            sharedPreferenceManager = new SharedPreferenceManager(DashboardActivity.this);
         }
-        return null;
+        String phoneNumber = sharedPreferenceManager
+                .getStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER);
+        String token = new SharedPreferenceManager(DashboardActivity.this,
+                Constants.PREF_FILE_TOKEN_DATA).getStringValue(Constants.KEY_PREF_GCM_TOKEN);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(Constants.REQUEST_KEY_PHONE_NUMBER,
+                    phoneNumber);
+            jsonObject.put(Constants.REQUEST_KEY_DEVICE_TOKEN, token);
+        } catch (JSONException jsonException) {
+            jsonException.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    private void goToUserDetailsActivity() {
+        Intent intent = new Intent(DashboardActivity.this, UserDetailsActivity.class);
+        startActivity(intent);
+    }
+
+    private void setEmptyView() {
+        imageView.setImageResource(R.drawable.empty_plant_icon);
+        textView1.setText(R.string.no_plants);
+        textView2.setText(R.string.tap_above);
+        textView3.setText("");
+        imageView2.setImageResource(android.R.color.transparent);
     }
 }

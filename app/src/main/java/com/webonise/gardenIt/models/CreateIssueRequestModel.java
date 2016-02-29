@@ -13,6 +13,8 @@ public class CreateIssueRequestModel {
     private String phoneNumber;
     @SerializedName("plant_image")
     private List<PlantImage> plantImage;
+    @SerializedName("garden_id")
+    private int gardenId;
 
     public int getPlantId() {
         return plantId;
@@ -52,6 +54,14 @@ public class CreateIssueRequestModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getGardenId() {
+        return gardenId;
+    }
+
+    public void setGardenId(int gardenId) {
+        this.gardenId = gardenId;
     }
 
     public class PlantImage {
