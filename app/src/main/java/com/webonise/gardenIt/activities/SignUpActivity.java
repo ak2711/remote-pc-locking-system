@@ -32,10 +32,13 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.SignUpRequestModel;
+import com.webonise.gardenIt.models.UserDashboardModel;
+import com.webonise.gardenIt.models.UserDetailsUpdateRequestModel;
 import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
@@ -87,16 +90,23 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     @Bind(R.id.ivProfilePic)
     ImageView ivProfilePic;
 
+
     private PopupWindow popupWindow;
     private File image_file;
     private ShareUtil shareUtil;
-
+    private boolean isEditable;
+    private boolean isNewImage = true;
+    private int userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
+        getBundleData();
+        if (isEditable) {
+            setupData();
+        }
         setToolbar();
         btnSignUp.setOnClickListener(this);
         ivProfilePic.setOnClickListener(this);
@@ -113,6 +123,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
+    private void getBundleData() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            isEditable = bundle.getBoolean(Constants.BUNDLE_KEY_IS_EDITABLE);
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -127,7 +144,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            tvTitle.setText(R.string.add_new_plant);
+            if (isEditable) {
+                toolbar.setNavigationIcon(R.drawable.ic_action_back);
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onBackPressed();
+                    }
+                });
+                tvTitle.setText(R.string.my_profile);
+            } else {
+                tvTitle.setText(R.string.sign_up);
+            }
+
         }
     }
 
@@ -142,7 +171,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 showPopupWindow();
                 break;
             case R.id.btnSignUp:
-                validateDataAndSignUp();
+                if (isEditable) {
+                    validateAndUpdate();
+                } else {
+                    validateDataAndSignUp();
+                }
                 break;
 
             case R.id.tvAlreadyAnUser:
@@ -268,20 +301,20 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         SignUpRequestModel signUpRequestModel = new SignUpRequestModel();
         JSONObject jsonObject = new JSONObject();
         try {
-
             signUpRequestModel.setName(fullName);
             signUpRequestModel.setEmail(email);
             signUpRequestModel.setPassword(password);
             signUpRequestModel.setPhoneNumber(phoneNumber);
             signUpRequestModel.setReferredBy(referredBy);
+            if (isNewImage) {
+                List<SignUpRequestModel.PlantImage> plantImages = new ArrayList<>();
+                SignUpRequestModel.PlantImage plantImage = signUpRequestModel.new PlantImage();
+                plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
+                        + getEncodedImage());
 
-            List<SignUpRequestModel.PlantImage> plantImages = new ArrayList<>();
-            SignUpRequestModel.PlantImage plantImage = signUpRequestModel.new PlantImage();
-            plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
-                    + getEncodedImage());
-
-            plantImages.add(plantImage);
-            signUpRequestModel.setPlantImage(plantImages);
+                plantImages.add(plantImage);
+                signUpRequestModel.setPlantImage(plantImages);
+            }
             jsonObject = new JSONObject(new Gson().toJson(signUpRequestModel));
         } catch (Exception e) {
             e.printStackTrace();
@@ -353,6 +386,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage(filepath, ivProfilePic,
                 options);
+        isNewImage = true;
     }
 
     @Override
@@ -376,5 +410,141 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private String getEncodedImage() {
         Bitmap bitmap = ((BitmapDrawable) ivProfilePic.getDrawable()).getBitmap();
         return ImageUtil.encodeTobase64(bitmap);
+    }
+
+    private void setupData() {
+        SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager(this);
+        UserDashboardModel userDashboardModel = sharedPreferenceManager.getObject(Constants
+                .KEY_PREF_USER_GARDEN_PLANTS, UserDashboardModel.class);
+        UserDashboardModel.User user = userDashboardModel.getUser();
+        if (user != null) {
+            etFullName.setText(user.getName());
+            etEmailAddress.setText(user.getEmail());
+            etPhoneNumber.setText(user.getPhoneNumber());
+            etPassword.setVisibility(View.GONE);
+            etConfirmPassword.setVisibility(View.GONE);
+            etReferredBy.setVisibility(View.GONE);
+            btnSignUp.setText(getString(R.string.update));
+            tvAlreadyAnUser.setVisibility(View.GONE);
+
+            userId = user.getId();
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(R.drawable.icon_profile_pic)
+                    .showImageForEmptyUri(R.drawable.icon_profile_pic)
+                    .showImageOnFail(R.drawable.icon_profile_pic)
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .considerExifParams(true)
+                    .displayer(new FadeInBitmapDisplayer(500))
+                    .build();
+
+            AppController.getInstance().setupUniversalImageLoader(this);
+            ImageLoader.getInstance().displayImage(
+                    Constants.BASE_URL + user.getProfileImage(),
+                    ivProfilePic, options, null);
+        }
+    }
+
+    private void validateAndUpdate() {
+        String fullName = etFullName.getText().toString().trim();
+        String phoneNumber = etPhoneNumber.getText().toString().trim();
+        String email = etEmailAddress.getText().toString().trim();
+        if (!TextUtils.isEmpty(fullName)) {
+            if (!TextUtils.isEmpty(phoneNumber)) {
+                if (phoneNumber.length() == 10) {
+                    updateUser(fullName, phoneNumber, email);
+                } else {
+                    Toast.makeText(SignUpActivity.this,
+                            getString(R.string.invalid_mobile_number_length),
+                            Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(SignUpActivity.this, getString(R.string.enter_phone_number),
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(SignUpActivity.this, getString(R.string.enter_full_name),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateUser(String fullName, final String phoneNumber, String email) {
+        WebService webService = new WebService(this);
+        webService.setProgressDialog();
+        webService.setUrl(Constants.EDIT_USER_URL);
+        webService.setBody(getBodyForUpdate(fullName, phoneNumber, email));
+        webService.POSTStringRequest(new ApiResponseInterface() {
+            @Override
+            public void onResponse(String response) {
+                UserModel userModel = new Gson().fromJson(response, UserModel.class);
+                if (userModel.getStatus() == Constants.RESPONSE_CODE_200) {
+                    SharedPreferenceManager sharedPreferenceManager = new SharedPreferenceManager
+                            (SignUpActivity.this);
+                    sharedPreferenceManager.putObject(Constants.KEY_PREF_USER, userModel);
+                    sharedPreferenceManager.setBooleanValue(Constants.KEY_PREF_IS_USER_LOGGED_IN,
+                            true);
+                    sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
+                            phoneNumber);
+                    gotoNextActivity(DashboardActivity.class);
+                } else {
+                    Toast.makeText(SignUpActivity.this, userModel.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 400: //Already Exists, Invalid Referral
+                            try {
+                                JSONObject jsonObject = new JSONObject(new String(response.data));
+                                Toast.makeText(SignUpActivity.this,
+                                        jsonObject.getString(Constants.RESPONSE_KEY_ERROR_MESSAGE),
+                                        Toast.LENGTH_SHORT).show();
+                            } catch (JSONException je) {
+                                je.printStackTrace();
+                                Toast.makeText(SignUpActivity.this, getString(R.string.error_msg),
+                                        Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            Toast.makeText(SignUpActivity.this, getString(R.string.error_msg),
+                                    Toast.LENGTH_LONG).show();
+                            break;
+                    }
+                }
+                error.printStackTrace();
+            }
+        });
+    }
+
+    private JSONObject getBodyForUpdate(String fullName, String phoneNumber, String email) {
+
+        UserDetailsUpdateRequestModel userDetailsUpdateRequestModel
+                = new UserDetailsUpdateRequestModel();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            userDetailsUpdateRequestModel.setName(fullName);
+            userDetailsUpdateRequestModel.setEmail(email);
+            userDetailsUpdateRequestModel.setPhoneNumber(phoneNumber);
+            userDetailsUpdateRequestModel.setUserId(userId);
+            if (isNewImage) {
+                List<UserDetailsUpdateRequestModel.PlantImage> plantImages = new ArrayList<>();
+                UserDetailsUpdateRequestModel.PlantImage plantImage = userDetailsUpdateRequestModel.new PlantImage();
+                plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
+                        + getEncodedImage());
+
+                plantImages.add(plantImage);
+                userDetailsUpdateRequestModel.setPlantImage(plantImages);
+            }
+            jsonObject = new JSONObject(new Gson().toJson(userDetailsUpdateRequestModel));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LogUtils.LOGD(TAG, jsonObject.toString());
+
+        return jsonObject;
     }
 }

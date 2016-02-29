@@ -17,10 +17,11 @@ public class Constants {
     public static final String KEY_PREF_GCM_TOKEN_SENT = "gcmTokenSent";
     public static final String KEY_PREF_REGISTRATION_COMPLETE = "registrationComplete";
 
-    public static final String BASE_URL = "http://test-uf.weboapps.com";
-    //public static final String BASE_URL = "http://eb7a9e23.ngrok.io"; //TODO testing url
+    //public static final String BASE_URL = "http://test-uf.weboapps.com";
+    public static final String BASE_URL = "http://1ba4a027.ngrok.io"; //TODO testing url
     public static final String BASE_URL_API = BASE_URL + "/apis/";
     public static final String REGISTER_URL = BASE_URL_API + "register";
+    public static final String EDIT_USER_URL = BASE_URL_API + "edit_profile";
     public static final String CREATE_GARDEN_URL = BASE_URL_API + "create_garden";
     public static final String ADD_PLANT_URL = BASE_URL_API + "create_plant";
     public static final String EDIT_PLANT_URL = BASE_URL_API + "edit_plant";
@@ -116,4 +117,6 @@ public class Constants {
         public static final String PROGRESS = "progress";
 
     }
+
+    public static final String BUNDLE_KEY_IS_EDITABLE = "isEditable";
 }

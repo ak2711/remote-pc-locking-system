@@ -100,4 +100,5 @@
     <string name="my_profile">My Profile</string>
     <string name="no_plants">No plants in your garden!</string>
     <string name="tap_above">Tap above to add one</string>
+    <string name="update">Update</string>
 </resources>
