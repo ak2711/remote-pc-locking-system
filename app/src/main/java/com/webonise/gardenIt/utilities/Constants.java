@@ -105,6 +105,8 @@ public class Constants {
         public static final String SERVICE_DETAILS_SCREEN = "Service Details Screen";
         public static final String USER_DETAILS_SCREEN = "User Details Screen";
         public static final String UPDATE_PASSWORD_SCREEN = "Update Password Screen";
+        public static final String UPDATE_USER_DETAILS_SCREEN = "Update User Details Screen";
+
     }
 
     public static final int SUCCESS_STATE_VISIBLE_TIME = 3000; //3 seconds

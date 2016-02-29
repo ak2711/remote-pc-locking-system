@@ -97,6 +97,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private boolean isEditable;
     private boolean isNewImage = true;
     private int userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,7 +137,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         // Obtain the shared Tracker instance.
         AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
-        mTracker.setScreenName(Constants.ScreenName.SIGN_UP_SCREEN);
+        mTracker.setScreenName(isEditable ? Constants.ScreenName.UPDATE_USER_DETAILS_SCREEN
+                : Constants.ScreenName.SIGN_UP_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
@@ -532,7 +534,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             userDetailsUpdateRequestModel.setUserId(userId);
             if (isNewImage) {
                 List<UserDetailsUpdateRequestModel.PlantImage> plantImages = new ArrayList<>();
-                UserDetailsUpdateRequestModel.PlantImage plantImage = userDetailsUpdateRequestModel.new PlantImage();
+                UserDetailsUpdateRequestModel.PlantImage plantImage =
+                        userDetailsUpdateRequestModel.new PlantImage();
                 plantImage.setImage(Constants.REQUEST_ADDITIONAL_PARAMETER_FOR_IMAGE
                         + getEncodedImage());
 
