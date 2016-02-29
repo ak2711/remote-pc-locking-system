@@ -487,7 +487,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                             true);
                     sharedPreferenceManager.setStringValue(Constants.KEY_PREF_USER_PHONE_NUMBER,
                             phoneNumber);
-                    finish();
+                    Intent intent = new Intent(SignUpActivity.this, DashboardActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                 } else {
                     Toast.makeText(SignUpActivity.this, userModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
