@@ -76,6 +76,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     private SharedPreferenceManager sharedPreferenceManager;
     private int plantId;
     private ShareUtil shareUtil;
+    private int gardenId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             plantId = bundle.getInt(Constants.BUNDLE_KEY_PLANT_ID);
+            gardenId = bundle.getInt(Constants.BUNDLE_KEY_GARDEN_ID);
         }
         setToolbar();
         AppController application =  AppController.getInstance();
@@ -228,6 +230,9 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
 
             if (plantId > 0) {
                 createLogRequestModel.setPlantId(plantId);
+            }
+            if (gardenId > 0) {
+                createLogRequestModel.setGardenId(gardenId);
             }
 
             if (image_file != null) {

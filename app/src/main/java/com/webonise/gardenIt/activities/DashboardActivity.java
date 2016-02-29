@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -64,6 +65,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     TextView tvTitle;
     @Bind(R.id.rlAddNewPlant)
     RelativeLayout rlAddNewPlant;
+    @Bind(R.id.rlAddLog)
+    RelativeLayout rlAddLog;
     @Bind(R.id.btnCreateIssue)
     Button btnRequestService;
     @Bind(R.id.btnRequestService)
@@ -72,6 +75,18 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     RecyclerView recyclerView;
     @Bind(R.id.spinnerGarden)
     Spinner spinnerGarden;
+    @Bind(R.id.llEmptyView)
+    LinearLayout llEmptyView;
+    @Bind(R.id.imageView)
+    ImageView imageView;
+    @Bind(R.id.textView1)
+    TextView textView1;
+    @Bind(R.id.textView2)
+    TextView textView2;
+    @Bind(R.id.imageView2)
+    ImageView imageView2;
+    @Bind(R.id.textView3)
+    TextView textView3;
 
     private TextView tvUserName, tvMobileNumber;
     private LinearLayout llUserDetails;
@@ -161,16 +176,19 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnCreateIssue:
-                goToCreateIssueActivity();
+                goToNextActivity(CreateIssueActivity.class);
                 break;
             case R.id.btnRequestService:
-                goToServiceRequestActivity();
+                goToNextActivity(RequestServiceActivity.class);
                 break;
             case R.id.rlAddNewPlant:
                 goToAddNewPlantActivity();
                 break;
             case R.id.llUserDetails:
                 goToUserDetailsActivity();
+                break;
+            case R.id.rlAddLog:
+                goToNextActivity(CreateLogActivity.class);
                 break;
         }
     }
@@ -249,16 +267,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         startActivity(intent);
     }
 
-    private void goToCreateIssueActivity() {
+    private void goToNextActivity(Class clazz) {
         Intent intent = new Intent();
-        intent.setClass(DashboardActivity.this, CreateIssueActivity.class);
-        intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, selectedGardenId);
-        startActivity(intent);
-    }
-
-    private void goToServiceRequestActivity() {
-        Intent intent = new Intent();
-        intent.setClass(DashboardActivity.this, RequestServiceActivity.class);
+        intent.setClass(DashboardActivity.this, clazz);
         intent.putExtra(Constants.BUNDLE_KEY_GARDEN_ID, selectedGardenId);
         startActivity(intent);
     }
@@ -411,6 +422,18 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(dashboardRecyclerViewAdapter);
         dashboardRecyclerViewAdapter.notifyDataSetChanged();
+
+        if (dashboardRecyclerViewAdapter.getItemCount() == 0) {
+            recyclerView.setVisibility(View.GONE);
+            llEmptyView.setVisibility(View.VISIBLE);
+            rlAddLog.setVisibility(View.GONE);
+            setEmptyView();
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            llEmptyView.setVisibility(View.GONE);
+            rlAddLog.setVisibility(View.VISIBLE);
+            rlAddLog.setOnClickListener(this);
+        }
     }
 
     private void closeDrawer() {
@@ -494,5 +517,13 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private void goToUserDetailsActivity() {
         Intent intent = new Intent(DashboardActivity.this, UserDetailsActivity.class);
         startActivity(intent);
+    }
+
+    private void setEmptyView() {
+        imageView.setImageResource(R.drawable.empty_plant_icon);
+        textView1.setText(R.string.no_plants);
+        textView2.setText(R.string.tap_above);
+        textView3.setText("");
+        imageView2.setImageResource(android.R.color.transparent);
     }
 }

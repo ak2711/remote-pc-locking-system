@@ -8,10 +8,20 @@ public class CreateLogRequestModel {
     private String content;
     @SerializedName("plant_id")
     private int plantId;
+    @SerializedName("garden_id")
+    private int gardenId;
     @SerializedName("phone_number")
     private String phoneNumber;
     @SerializedName("plant_image")
     private List<PlantImage> plantImage;
+
+    public int getGardenId() {
+        return gardenId;
+    }
+
+    public void setGardenId(int gardenId) {
+        this.gardenId = gardenId;
+    }
 
     public int getPlantId() {
         return plantId;

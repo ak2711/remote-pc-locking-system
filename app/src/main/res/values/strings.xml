@@ -98,4 +98,6 @@
     <string name="notification_type_issue">issue</string>
     <string name="na">-NA-</string>
     <string name="my_profile">My Profile</string>
+    <string name="no_plants">No plants in your garden!</string>
+    <string name="tap_above">Tap above to add one</string>
 </resources>
