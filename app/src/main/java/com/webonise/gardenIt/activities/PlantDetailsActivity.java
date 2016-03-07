@@ -341,7 +341,6 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
                     TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
                     tvTitle.setText(issues.getTitle());
-                    tvTitle.setTextColor(ColorUtil.getColorBasedOnStatus(this, issues.getStatus()));
 
                     TextView tvDescription = (TextView) view.findViewById(R.id.tvDescription);
                     tvDescription.setText(issues.getDescription());
@@ -356,6 +355,10 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                                 Constants.BASE_URL + issues.getImages().get(0).getImage().getUrl(),
                                 imageView, options, null);
                     }
+
+                    View statusView = view.findViewById(R.id.statusView);
+                    statusView.setBackgroundColor(ColorUtil.getColorBasedOnStatus(this, issues
+                            .getStatus()));
 
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override

@@ -15,6 +15,7 @@ public class IssuesRequestsViewHolder extends RecyclerView.ViewHolder {
     private TextView tvDescription;
     private TextView tvDate;
     private View view;
+    private View statusView;
 
     public IssuesRequestsViewHolder(View view) {
         super(view);
@@ -23,6 +24,7 @@ public class IssuesRequestsViewHolder extends RecyclerView.ViewHolder {
         tvTitle = (TextView) view.findViewById(R.id.tvTitle);
         tvDescription = (TextView) view.findViewById(R.id.tvDescription);
         tvDate = (TextView) view.findViewById(R.id.tvDate);
+        statusView = view.findViewById(R.id.statusView);
     }
 
     public ImageView getImageView() {
@@ -63,5 +65,13 @@ public class IssuesRequestsViewHolder extends RecyclerView.ViewHolder {
 
     public void setView(View view) {
         this.view = view;
+    }
+
+    public View getStatusView() {
+        return statusView;
+    }
+
+    public void setStatusView(View statusView) {
+        this.statusView = statusView;
     }
 }
