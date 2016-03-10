@@ -61,8 +61,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.tvTitle)
-    TextView tvTitle;
     @Bind(R.id.rlAddNewPlant)
     RelativeLayout rlAddNewPlant;
     @Bind(R.id.rlAddLog)
@@ -228,7 +226,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     Toast.makeText(DashboardActivity.this, userDashboardModel.getMessage(),
                             Toast.LENGTH_SHORT).show();
                 }
-                setTitle();
             }
 
             @Override
@@ -338,11 +335,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     protected void onStop() {
         super.onStop();
         closeDrawer();
-    }
-
-    private void setTitle() {
-        tvTitle.setText(!TextUtils.isEmpty(selectedGardenName)
-                ? selectedGardenName : getString(R.string.dashboard));
     }
 
     private void setupSpinner() {
