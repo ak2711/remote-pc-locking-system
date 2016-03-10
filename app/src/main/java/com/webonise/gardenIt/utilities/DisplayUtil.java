@@ -22,10 +22,9 @@ public class DisplayUtil {
      * @return height of image in dp
      */
     public int getImageHeight(int proportionType) {
-        int height;
         switch (proportionType) {
-            case Constants.PROPORTION_TYPE.ONE_BY_THREE:
-                return Integer.valueOf(getDeviceWidth() / 3);
+            case Constants.PROPORTION_TYPE.ONE_BY_TWO:
+                return Integer.valueOf(getDeviceWidth() / 2);
 
             case Constants.PROPORTION_TYPE.NINE_BY_SIXTEEN:
                 return Integer.valueOf((getDeviceWidth() * 9) / 16);

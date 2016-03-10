@@ -24,12 +24,10 @@ import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.GeneralDetailsModel;
-import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.utilities.ColorUtil;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DateUtil;
 import com.webonise.gardenIt.utilities.DisplayUtil;
-import com.webonise.gardenIt.utilities.ImageUtil;
 import com.webonise.gardenIt.utilities.LogUtils;
 import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
@@ -243,7 +241,7 @@ public class GeneralDetailsActivity extends AppCompatActivity {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 new DisplayUtil(GeneralDetailsActivity.this)
-                        .getImageHeight(Constants.PROPORTION_TYPE.ONE_BY_THREE));
+                        .getImageHeight(Constants.PROPORTION_TYPE.ONE_BY_TWO));
         ivPlantImage.setLayoutParams(layoutParams);
 
         if (bundle != null) {

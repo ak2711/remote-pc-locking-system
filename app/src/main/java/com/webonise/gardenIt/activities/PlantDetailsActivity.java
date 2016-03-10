@@ -29,16 +29,14 @@ import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
-import com.webonise.gardenIt.models.AddPlantModel;
-import com.webonise.gardenIt.models.AddPlantRequestModel;
 import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.models.UserDashboardModel;
-import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.ColorUtil;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DateUtil;
 import com.webonise.gardenIt.utilities.DisplayUtil;
 import com.webonise.gardenIt.utilities.LogUtils;
+import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.webservice.WebService;
 
@@ -60,6 +58,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
     @Bind(R.id.ivPlantImage)
     ImageView ivPlantImage;
+    @Bind(R.id.ivShare)
+    ImageView ivShare;
     @Bind(R.id.tvDescription)
     TextView tvDescription;
     @Bind(R.id.toolbar)
@@ -254,14 +254,20 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
         AppController.getInstance().setupUniversalImageLoader(PlantDetailsActivity.this);
 
-
+        ivShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareUtil shareUtil = new ShareUtil(PlantDetailsActivity.this);
+                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivPlantImage));
+            }
+        });
         plantName = plant.getName();
         description = plant.getDescription();
         plantImageUrl = Constants.BASE_URL + plant.getImages().get(0).getImage().getUrl();
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 new DisplayUtil(PlantDetailsActivity.this)
-                        .getImageHeight(Constants.PROPORTION_TYPE.ONE_BY_THREE));
+                        .getImageHeight(Constants.PROPORTION_TYPE.ONE_BY_TWO));
         ivPlantImage.setLayoutParams(layoutParams);
         ImageLoader.getInstance().displayImage(plantImageUrl,
                 ivPlantImage, options, null);

@@ -129,7 +129,7 @@ public class Constants {
     public static final String BUNDLE_KEY_IS_EDITABLE = "isEditable";
 
     public static class PROPORTION_TYPE{
-        public static final int ONE_BY_THREE = 1;
+        public static final int ONE_BY_TWO = 1;
         public static final int NINE_BY_SIXTEEN = 2;
     }
 }
