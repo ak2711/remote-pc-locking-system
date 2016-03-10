@@ -92,7 +92,7 @@ public class DashboardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
         ImageView ivPlant = dashboardPlantsViewHolder.getIvPlant();
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                new DisplayUtil(context).getImageHeight());
+                new DisplayUtil(context).getImageHeight(Constants.PROPORTION_TYPE.NINE_BY_SIXTEEN));
         ivPlant.setLayoutParams(params);
         ImageLoader.getInstance().displayImage(
                 Constants.BASE_URL + plants.getImages().get(0).getImage().getUrl(),

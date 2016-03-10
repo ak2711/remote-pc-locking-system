@@ -260,7 +260,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
         plantImageUrl = Constants.BASE_URL + plant.getImages().get(0).getImage().getUrl();
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                new DisplayUtil(PlantDetailsActivity.this).getImageHeight());
+                new DisplayUtil(PlantDetailsActivity.this)
+                        .getImageHeight(Constants.PROPORTION_TYPE.ONE_BY_THREE));
         ivPlantImage.setLayoutParams(layoutParams);
         ImageLoader.getInstance().displayImage(plantImageUrl,
                 ivPlantImage, options, null);
@@ -345,7 +346,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                             intent.putExtra(Constants.BUNDLE_KEY_ID, logs.getId());
                             intent.putExtra(Constants.BUNDLE_KEY_TITLE, logs.getContent());
                             intent.putExtra(Constants.BUNDLE_KEY_UPDATED_AT, logs.getUpdatedAt());
-                            intent.putExtra(Constants.BUNDLE_KEY_IMAGE_URL,imageUrl);
+                            intent.putExtra(Constants.BUNDLE_KEY_IMAGE_URL, imageUrl);
                             startActivity(intent);
                         }
                     });

@@ -16,14 +16,23 @@ public class DisplayUtil {
     }
 
     /**
-     * Method to return image height based on 16:9 proportion
+     * Method to return image height
      *
+     * @param proportionType
      * @return height of image in dp
      */
-    public int getImageHeight() {
+    public int getImageHeight(int proportionType) {
         int height;
-        height = Integer.valueOf((getDeviceWidth() * 9) / 16);
-        return height;
+        switch (proportionType) {
+            case Constants.PROPORTION_TYPE.ONE_BY_THREE:
+                return Integer.valueOf(getDeviceWidth() / 3);
+
+            case Constants.PROPORTION_TYPE.NINE_BY_SIXTEEN:
+                return Integer.valueOf((getDeviceWidth() * 9) / 16);
+
+            default:
+                return getDeviceHeight();
+        }
     }
 
     public int pxToDp(int px) {
@@ -38,5 +47,11 @@ public class DisplayUtil {
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
         return metrics.widthPixels;
+    }
+
+    private int getDeviceHeight() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        return metrics.heightPixels;
     }
 }

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.utilities.ColorUtil;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DateUtil;
+import com.webonise.gardenIt.utilities.DisplayUtil;
 import com.webonise.gardenIt.utilities.ImageUtil;
 import com.webonise.gardenIt.utilities.LogUtils;
 import com.webonise.gardenIt.utilities.ShareUtil;
@@ -238,6 +240,12 @@ public class GeneralDetailsActivity extends AppCompatActivity {
         tvDescription.setVisibility(View.GONE);
         Bundle bundle = getIntent().getExtras();
 
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                new DisplayUtil(GeneralDetailsActivity.this)
+                        .getImageHeight(Constants.PROPORTION_TYPE.ONE_BY_THREE));
+        ivPlantImage.setLayoutParams(layoutParams);
+
         if (bundle != null) {
             tvHeading.setText(bundle.getString(Constants.BUNDLE_KEY_TITLE));
             DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -251,7 +259,8 @@ public class GeneralDetailsActivity extends AppCompatActivity {
                     .build();
             AppController.getInstance().setupUniversalImageLoader(this);
             ImageLoader.getInstance().displayImage(Constants.BASE_URL
-                    + bundle.getString(Constants.BUNDLE_KEY_IMAGE_URL), ivPlantImage, options, null);
+                    + bundle.getString(Constants.BUNDLE_KEY_IMAGE_URL), ivPlantImage, options,
+                    null);
             tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(bundle.getString(Constants
                     .BUNDLE_KEY_UPDATED_AT), DateUtil.DATE_FORMAT_DD_MMM_YYYY_HH_MM));
         }
