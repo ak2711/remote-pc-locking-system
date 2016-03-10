@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.utilities.ColorUtil;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DateUtil;
+import com.webonise.gardenIt.utilities.ImageUtil;
 import com.webonise.gardenIt.utilities.LogUtils;
 import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
@@ -58,6 +60,8 @@ public class GeneralDetailsActivity extends AppCompatActivity {
     TextView tvStatus;
     @Bind(R.id.tvDate)
     TextView tvDate;
+    @Bind(R.id.llStatus)
+    LinearLayout llStatus;
 
     private int type;
     private int id;
@@ -79,7 +83,11 @@ public class GeneralDetailsActivity extends AppCompatActivity {
         super.onResume();
         getBundleData();
         sendAnalyticsData();
-        getDetails();
+        if (type == Constants.TYPE_LOGS) {
+            setLogDetails();
+        } else {
+            getDetails();
+        }
     }
 
     private void setToolbar() {
@@ -117,6 +125,8 @@ public class GeneralDetailsActivity extends AppCompatActivity {
                 return Constants.ScreenName.ADVICE_DETAILS_SCREEN;
             case Constants.TYPE_SERVICE:
                 return Constants.ScreenName.SERVICE_DETAILS_SCREEN;
+            case Constants.TYPE_LOGS:
+                return Constants.ScreenName.LOG_DETAILS_SCREEN;
             default:
                 return Constants.ScreenName.ADVICE_DETAILS_SCREEN;
         }
@@ -192,8 +202,8 @@ public class GeneralDetailsActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 generalDetailsModel = new Gson().fromJson(response,
                         GeneralDetailsModel.class);
-                    LogUtils.LOGD(TAG, response);
-                    setData();
+                LogUtils.LOGD(TAG, response);
+                setData();
             }
 
             @Override
@@ -220,5 +230,30 @@ public class GeneralDetailsActivity extends AppCompatActivity {
             jsonException.printStackTrace();
         }
         return jsonObject;
+    }
+
+    private void setLogDetails() {
+        tvTitle.setText(getString(R.string.log));
+        llStatus.setVisibility(View.GONE);
+        tvDescription.setVisibility(View.GONE);
+        Bundle bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            tvHeading.setText(bundle.getString(Constants.BUNDLE_KEY_TITLE));
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(R.drawable.logo)
+                    .showImageForEmptyUri(R.drawable.logo)
+                    .showImageOnFail(R.drawable.logo)
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .considerExifParams(true)git
+                    .displayer(new SimpleBitmapDisplayer())
+                    .build();
+            AppController.getInstance().setupUniversalImageLoader(this);
+            ImageLoader.getInstance().displayImage(Constants.BASE_URL
+                    + bundle.getString(Constants.BUNDLE_KEY_IMAGE_URL), ivPlantImage, options, null);
+            tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(bundle.getString(Constants
+                    .BUNDLE_KEY_UPDATED_AT), DateUtil.DATE_FORMAT_DD_MMM_YYYY_HH_MM));
+        }
     }
 }

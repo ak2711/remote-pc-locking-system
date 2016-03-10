@@ -58,7 +58,8 @@
     <string name="please_try_again">Something went wrong. Please try again.</string>
 
     <string name="title">Title</string>
-    <string name="logs">Activity/Logs</string>
+    <string name="activities_logs">Activity and Logs</string>
+    <string name="log">Log</string>
 
     <string name="already_an_user"><u>Already an User? Sign In</u></string>
     <string name="new_user"><u>New User? Sign Up</u></string>
