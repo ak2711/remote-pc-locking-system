@@ -63,14 +63,14 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     EditText etLogTitle;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
-    @Bind(R.id.ivShare)
-    ImageView ivShare;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
     RelativeLayout rlGallery;
     @Bind(R.id.btnAddLog)
     Button btnAddLog;
+    @Bind(R.id.ivCancel)
+    ImageView ivCancel;
 
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
@@ -87,7 +87,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
         btnAddLog.setOnClickListener(this);
-        ivShare.setOnClickListener(this);
+        ivCancel.setOnClickListener(this);
     }
 
     @Override
@@ -134,9 +134,10 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
             case R.id.btnAddLog:
                 validateAndCreateLog();
                 break;
-            case R.id.ivShare:
-                shareUtil = new ShareUtil(this);
-                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivToUpload));
+            case R.id.ivCancel:
+                image_file = null;
+                ivToUpload.setImageDrawable(null);
+                ivCancel.setVisibility(View.GONE);
                 break;
         }
     }
@@ -173,7 +174,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
-        ivShare.setVisibility(View.VISIBLE);
+        ivCancel.setVisibility(View.VISIBLE);
     }
 
     private void validateAndCreateLog() {
@@ -264,8 +265,9 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (shareUtil != null) {
-            shareUtil.deleteImageFile();
+        if (shareUtil == null) {
+            shareUtil = new ShareUtil(CreateLogActivity.this);
         }
+        shareUtil.deleteImageFile();
     }
 }

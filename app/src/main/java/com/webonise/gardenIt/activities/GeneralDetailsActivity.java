@@ -246,7 +246,7 @@ public class GeneralDetailsActivity extends AppCompatActivity {
                     .showImageOnFail(R.drawable.logo)
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
-                    .considerExifParams(true)git
+                    .considerExifParams(true)
                     .displayer(new SimpleBitmapDisplayer())
                     .build();
             AppController.getInstance().setupUniversalImageLoader(this);
