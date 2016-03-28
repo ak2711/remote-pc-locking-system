@@ -131,7 +131,7 @@ public class WebService {
                     @Override
                     public void onResponse(String response) {
                         LogUtils.LOGD(TAG, "onResponse :: " + response);
-                        if (progressDialog != null)
+                        if (progressDialog != null && progressDialog.getWindow() != null)
                             progressDialog.dismiss();
                         responseInterface.onResponse(response);
                     }
@@ -139,7 +139,7 @@ public class WebService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 LogUtils.LOGD(TAG, "onErrorResponse :: " + error);
-                if (progressDialog != null)
+                if (progressDialog != null && progressDialog.getWindow() != null)
                     progressDialog.dismiss();
                 responseInterface.onError(error);
 
@@ -193,18 +193,18 @@ public class WebService {
             requestJson) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, requestJson, new
                 Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                if (progressDialog != null)
-                    progressDialog.dismiss();
-                try {
-                    LogUtils.LOGD(TAG, "onResponse :: " + response);
-                    responseInterface.onResponse(response.toString(4));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (progressDialog != null && progressDialog.getWindow() != null)
+                            progressDialog.dismiss();
+                        try {
+                            LogUtils.LOGD(TAG, "onResponse :: " + response);
+                            responseInterface.onResponse(response.toString(4));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 LogUtils.LOGD(TAG, "onErrorResponse :: " + error);
@@ -212,7 +212,7 @@ public class WebService {
                 Toast.makeText(mContext, mContext.getString(R.string.error_msg), Toast
                         .LENGTH_LONG).show();
                 responseInterface.onError(error);
-                if (progressDialog != null)
+                if (progressDialog != null && progressDialog.getWindow() != null)
                     progressDialog.dismiss();
             }
         });
@@ -224,18 +224,18 @@ public class WebService {
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Method.POST, url, requestJson,
                 new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                if (progressDialog != null)
-                    progressDialog.dismiss();
-                try {
-                    LogUtils.LOGD(TAG, "onResponse :: " + response);
-                    responseInterface.onResponse(response.toString(4));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        if (progressDialog != null && progressDialog.getWindow() != null)
+                            progressDialog.dismiss();
+                        try {
+                            LogUtils.LOGD(TAG, "onResponse :: " + response);
+                            responseInterface.onResponse(response.toString(4));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 LogUtils.LOGD(TAG, "onErrorResponse :: " + error);
@@ -243,7 +243,7 @@ public class WebService {
                 Toast.makeText(mContext, mContext.getString(R.string.error_msg), Toast
                         .LENGTH_LONG).show();
                 responseInterface.onError(error);
-                if (progressDialog != null)
+                if (progressDialog != null && progressDialog.getWindow() != null)
                     progressDialog.dismiss();
             }
         });

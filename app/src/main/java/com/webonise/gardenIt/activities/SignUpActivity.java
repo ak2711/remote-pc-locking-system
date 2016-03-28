@@ -1,12 +1,16 @@
 package com.webonise.gardenIt.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -44,6 +48,7 @@ import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
 import com.webonise.gardenIt.utilities.LogUtils;
+import com.webonise.gardenIt.utilities.PermissionsUtil;
 import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.utilities.UriManager;
@@ -185,12 +190,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.btnOpenCamera:
-                Intent cameraIntent = new ImageUtil().getCameraIntent();
-                startActivityForResult(cameraIntent, Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                if (PermissionsUtil.checkPermissionForCamera(this)) {
+                    startCameraIntent();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission
+                            .CAMERA}, PermissionsUtil.CAMERA_REQUEST_CODE);
+                }
                 break;
             case R.id.btnOpenGallery:
-                Intent galleryIntent = new ImageUtil().getOpenGalleryIntent();
-                startActivityForResult(galleryIntent, Constants.PICK_IMAGE);
+                if (PermissionsUtil.checkPermissionForExternalStorage(this)) {
+                    startGalleryIntent();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission
+                            .WRITE_EXTERNAL_STORAGE}, PermissionsUtil
+                            .EXTERNAL_STORAGE_REQUEST_CODE);
+                }
                 break;
 
         }
@@ -551,5 +565,35 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         LogUtils.LOGD(TAG, jsonObject.toString());
 
         return jsonObject;
+    }
+
+    private void startCameraIntent() {
+        Intent cameraIntent = ImageUtil.getCameraIntent();
+        startActivityForResult(cameraIntent, Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void startGalleryIntent() {
+        Intent galleryIntent = ImageUtil.getOpenGalleryIntent();
+        startActivityForResult(galleryIntent, Constants.PICK_IMAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PermissionsUtil.CAMERA_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager
+                        .PERMISSION_GRANTED) {
+                    startCameraIntent();
+                }
+                break;
+            case PermissionsUtil.EXTERNAL_STORAGE_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager
+                        .PERMISSION_GRANTED) {
+                    startGalleryIntent();
+                }
+
+                break;
+        }
     }
 }
