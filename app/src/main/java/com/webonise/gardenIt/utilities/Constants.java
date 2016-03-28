@@ -81,6 +81,7 @@ public class Constants {
     public static final String BUNDLE_KEY_STATUS = "status";
     public static final String BUNDLE_KEY_PHONE_NUMBERS = "mobile_numbers";
     public static final String BUNDLE_KEY_MESSAGE = "message";
+    public static final String BUNDLE_KEY_UPDATED_AT = "updatedAt";
 
     public static final int CREATE_ISSUE = 0;
     public static final int REQUEST_SERVICE = CREATE_ISSUE + 1;
@@ -103,6 +104,7 @@ public class Constants {
         public static final String REQUESTED_SERVICE_LIST_SCREEN = "Requested Service List Screen";
         public static final String ADVICE_DETAILS_SCREEN = "Advice Details Screen";
         public static final String SERVICE_DETAILS_SCREEN = "Service Details Screen";
+        public static final String LOG_DETAILS_SCREEN = "Log Details Screen";
         public static final String USER_DETAILS_SCREEN = "User Details Screen";
         public static final String UPDATE_PASSWORD_SCREEN = "Update Password Screen";
         public static final String UPDATE_USER_DETAILS_SCREEN = "Update User Details Screen";
@@ -115,6 +117,7 @@ public class Constants {
 
     public static final int TYPE_ADVICE = 0;
     public static final int TYPE_SERVICE = 1;
+    public static final int TYPE_LOGS = 2;
 
     public static class Status{
         public static final String OPEN = "open";
@@ -124,4 +127,9 @@ public class Constants {
     }
 
     public static final String BUNDLE_KEY_IS_EDITABLE = "isEditable";
+
+    public static class PROPORTION_TYPE{
+        public static final int ONE_BY_TWO = 1;
+        public static final int NINE_BY_SIXTEEN = 2;
+    }
 }

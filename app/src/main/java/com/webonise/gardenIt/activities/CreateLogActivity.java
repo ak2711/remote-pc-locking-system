@@ -1,12 +1,16 @@
 package com.webonise.gardenIt.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -35,6 +39,7 @@ import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.FileContentProvider;
 import com.webonise.gardenIt.utilities.ImageUtil;
+import com.webonise.gardenIt.utilities.PermissionsUtil;
 import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.utilities.UriManager;
@@ -63,14 +68,14 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     EditText etLogTitle;
     @Bind(R.id.ivToUpload)
     ImageView ivToUpload;
-    @Bind(R.id.ivShare)
-    ImageView ivShare;
     @Bind(R.id.rlCapture)
     RelativeLayout rlCapture;
     @Bind(R.id.rlGallery)
     RelativeLayout rlGallery;
     @Bind(R.id.btnAddLog)
     Button btnAddLog;
+    @Bind(R.id.ivCancel)
+    ImageView ivCancel;
 
     private File image_file;
     private SharedPreferenceManager sharedPreferenceManager;
@@ -87,7 +92,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         rlCapture.setOnClickListener(this);
         rlGallery.setOnClickListener(this);
         btnAddLog.setOnClickListener(this);
-        ivShare.setOnClickListener(this);
+        ivCancel.setOnClickListener(this);
     }
 
     @Override
@@ -99,7 +104,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
             gardenId = bundle.getInt(Constants.BUNDLE_KEY_GARDEN_ID);
         }
         setToolbar();
-        AppController application =  AppController.getInstance();
+        AppController application = AppController.getInstance();
         Tracker mTracker = application.getDefaultTracker();
         mTracker.setScreenName(Constants.ScreenName.ADD_LOGS_SCREEN);
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -124,19 +129,30 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rlCapture:
-                Intent cameraIntent = new ImageUtil().getCameraIntent();
-                startActivityForResult(cameraIntent, Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                if (PermissionsUtil.checkPermissionForCamera(this)) {
+                    startCameraIntent();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission
+                            .CAMERA}, PermissionsUtil.CAMERA_REQUEST_CODE);
+                }
+
                 break;
             case R.id.rlGallery:
-                Intent galleryIntent = new ImageUtil().getOpenGalleryIntent();
-                startActivityForResult(galleryIntent, Constants.PICK_IMAGE);
+                if (PermissionsUtil.checkPermissionForExternalStorage(this)) {
+                    startGalleryIntent();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission
+                            .WRITE_EXTERNAL_STORAGE}, PermissionsUtil
+                            .EXTERNAL_STORAGE_REQUEST_CODE);
+                }
                 break;
             case R.id.btnAddLog:
                 validateAndCreateLog();
                 break;
-            case R.id.ivShare:
-                shareUtil = new ShareUtil(this);
-                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivToUpload));
+            case R.id.ivCancel:
+                image_file = null;
+                ivToUpload.setImageDrawable(null);
+                ivCancel.setVisibility(View.GONE);
                 break;
         }
     }
@@ -173,7 +189,7 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
         DisplayImageOptions options = ImageUtil.getImageOptions();
         ImageLoader.getInstance().displayImage("file://" + image_file.toString(), ivToUpload,
                 options);
-        ivShare.setVisibility(View.VISIBLE);
+        ivCancel.setVisibility(View.VISIBLE);
     }
 
     private void validateAndCreateLog() {
@@ -264,8 +280,39 @@ public class CreateLogActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (shareUtil != null) {
-            shareUtil.deleteImageFile();
+        if (shareUtil == null) {
+            shareUtil = new ShareUtil(CreateLogActivity.this);
+        }
+        shareUtil.deleteImageFile();
+    }
+
+    private void startCameraIntent() {
+        Intent cameraIntent = ImageUtil.getCameraIntent();
+        startActivityForResult(cameraIntent, Constants.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void startGalleryIntent() {
+        Intent galleryIntent = ImageUtil.getOpenGalleryIntent();
+        startActivityForResult(galleryIntent, Constants.PICK_IMAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PermissionsUtil.CAMERA_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager
+                        .PERMISSION_GRANTED) {
+                    startCameraIntent();
+                }
+                break;
+            case PermissionsUtil.EXTERNAL_STORAGE_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager
+                        .PERMISSION_GRANTED) {
+                    startGalleryIntent();
+                }
+
+                break;
         }
     }
 }

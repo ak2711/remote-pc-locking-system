@@ -9,16 +9,23 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="10dp"
         android:paddingRight="10dp">
+
+        <View
+            android:id="@+id/statusView"
+            android:layout_width="10dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/statusView"
             android:src="@drawable/logo"/>
 
         <TextView
@@ -32,7 +39,7 @@
             android:textColor="@color/text_color_grey"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
@@ -62,5 +69,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginLeft="35dp"
         android:background="@color/divider_color_grey"/>
 </LinearLayout>

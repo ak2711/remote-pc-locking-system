@@ -29,16 +29,14 @@ import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
-import com.webonise.gardenIt.models.AddPlantModel;
-import com.webonise.gardenIt.models.AddPlantRequestModel;
 import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.models.UserDashboardModel;
-import com.webonise.gardenIt.models.UserModel;
 import com.webonise.gardenIt.utilities.ColorUtil;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DateUtil;
 import com.webonise.gardenIt.utilities.DisplayUtil;
 import com.webonise.gardenIt.utilities.LogUtils;
+import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
 import com.webonise.gardenIt.webservice.WebService;
 
@@ -60,6 +58,8 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
     @Bind(R.id.ivPlantImage)
     ImageView ivPlantImage;
+    @Bind(R.id.ivShare)
+    ImageView ivShare;
     @Bind(R.id.tvDescription)
     TextView tvDescription;
     @Bind(R.id.toolbar)
@@ -254,13 +254,20 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
         AppController.getInstance().setupUniversalImageLoader(PlantDetailsActivity.this);
 
-
+        ivShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareUtil shareUtil = new ShareUtil(PlantDetailsActivity.this);
+                shareUtil.shareContent(shareUtil.getLocalBitmapUri(ivPlantImage));
+            }
+        });
         plantName = plant.getName();
         description = plant.getDescription();
         plantImageUrl = Constants.BASE_URL + plant.getImages().get(0).getImage().getUrl();
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
-                new DisplayUtil(PlantDetailsActivity.this).getImageHeight());
+                new DisplayUtil(PlantDetailsActivity.this)
+                        .getImageHeight(Constants.PROPORTION_TYPE.ONE_BY_TWO));
         ivPlantImage.setLayoutParams(layoutParams);
         ImageLoader.getInstance().displayImage(plantImageUrl,
                 ivPlantImage, options, null);
@@ -305,7 +312,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
         if (sortedList != null && sortedList.size() > 0) {
             llLogHolder.removeAllViews();
             TextView textView = new TextView(this);
-            textView.setText(getString(R.string.logs));
+            textView.setText(getString(R.string.activities_logs));
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setTextColor(getResources().getColor(R.color.text_color_green));
             textView.setTextAppearance(this, android.R.style.TextAppearance_Large);
@@ -313,7 +320,7 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
             View view = null;
             for (int i = 0; i < sortedList.size(); i++) {
                 if (sortedList.get(i) instanceof PlantDetailsModel.Plant.Logs) {
-                    PlantDetailsModel.Plant.Logs logs
+                    final PlantDetailsModel.Plant.Logs logs
                             = (PlantDetailsModel.Plant.Logs) sortedList.get(i);
 
                     view = LayoutInflater.from(PlantDetailsActivity.this)
@@ -327,11 +334,29 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                             DateUtil.DATE_FORMAT_DD_MMM));
 
                     ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+                    final String imageUrl;
                     if (logs.getImages().size() > 0) {
+                        imageUrl = logs.getImages().get(0).getImage().getUrl();
                         ImageLoader.getInstance().displayImage(
-                                Constants.BASE_URL + logs.getImages().get(0).getImage().getUrl(),
+                                Constants.BASE_URL + imageUrl,
                                 imageView, options, null);
+                    } else {
+                        imageUrl = "";
                     }
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(PlantDetailsActivity.this,
+                                    GeneralDetailsActivity.class);
+                            intent.putExtra(Constants.BUNDLE_KEY_TYPE, Constants.TYPE_LOGS);
+                            intent.putExtra(Constants.BUNDLE_KEY_ID, logs.getId());
+                            intent.putExtra(Constants.BUNDLE_KEY_TITLE, logs.getContent());
+                            intent.putExtra(Constants.BUNDLE_KEY_UPDATED_AT, logs.getUpdatedAt());
+                            intent.putExtra(Constants.BUNDLE_KEY_IMAGE_URL, imageUrl);
+                            startActivity(intent);
+                        }
+                    });
+
 
                 } else if (sortedList.get(i) instanceof PlantDetailsModel.Plant.Issues) {
                     final PlantDetailsModel.Plant.Issues issues
@@ -341,7 +366,6 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
 
                     TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
                     tvTitle.setText(issues.getTitle());
-                    tvTitle.setTextColor(ColorUtil.getColorBasedOnStatus(this, issues.getStatus()));
 
                     TextView tvDescription = (TextView) view.findViewById(R.id.tvDescription);
                     tvDescription.setText(issues.getDescription());
@@ -356,6 +380,10 @@ public class PlantDetailsActivity extends AppCompatActivity implements View.OnCl
                                 Constants.BASE_URL + issues.getImages().get(0).getImage().getUrl(),
                                 imageView, options, null);
                     }
+
+                    View statusView = view.findViewById(R.id.statusView);
+                    statusView.setBackgroundColor(ColorUtil.getColorBasedOnStatus(this, issues
+                            .getStatus()));
 
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override

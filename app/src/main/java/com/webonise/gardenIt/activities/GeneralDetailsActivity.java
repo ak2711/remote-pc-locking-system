@@ -6,7 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,10 +24,10 @@ import com.webonise.gardenIt.AppController;
 import com.webonise.gardenIt.R;
 import com.webonise.gardenIt.interfaces.ApiResponseInterface;
 import com.webonise.gardenIt.models.GeneralDetailsModel;
-import com.webonise.gardenIt.models.PlantDetailsModel;
 import com.webonise.gardenIt.utilities.ColorUtil;
 import com.webonise.gardenIt.utilities.Constants;
 import com.webonise.gardenIt.utilities.DateUtil;
+import com.webonise.gardenIt.utilities.DisplayUtil;
 import com.webonise.gardenIt.utilities.LogUtils;
 import com.webonise.gardenIt.utilities.ShareUtil;
 import com.webonise.gardenIt.utilities.SharedPreferenceManager;
@@ -58,6 +60,8 @@ public class GeneralDetailsActivity extends AppCompatActivity {
     TextView tvStatus;
     @Bind(R.id.tvDate)
     TextView tvDate;
+    @Bind(R.id.llStatus)
+    LinearLayout llStatus;
 
     private int type;
     private int id;
@@ -79,7 +83,11 @@ public class GeneralDetailsActivity extends AppCompatActivity {
         super.onResume();
         getBundleData();
         sendAnalyticsData();
-        getDetails();
+        if (type == Constants.TYPE_LOGS) {
+            setLogDetails();
+        } else {
+            getDetails();
+        }
     }
 
     private void setToolbar() {
@@ -117,6 +125,8 @@ public class GeneralDetailsActivity extends AppCompatActivity {
                 return Constants.ScreenName.ADVICE_DETAILS_SCREEN;
             case Constants.TYPE_SERVICE:
                 return Constants.ScreenName.SERVICE_DETAILS_SCREEN;
+            case Constants.TYPE_LOGS:
+                return Constants.ScreenName.LOG_DETAILS_SCREEN;
             default:
                 return Constants.ScreenName.ADVICE_DETAILS_SCREEN;
         }
@@ -192,8 +202,8 @@ public class GeneralDetailsActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 generalDetailsModel = new Gson().fromJson(response,
                         GeneralDetailsModel.class);
-                    LogUtils.LOGD(TAG, response);
-                    setData();
+                LogUtils.LOGD(TAG, response);
+                setData();
             }
 
             @Override
@@ -220,5 +230,64 @@ public class GeneralDetailsActivity extends AppCompatActivity {
             jsonException.printStackTrace();
         }
         return jsonObject;
+    }
+
+    private void setLogDetails() {
+        tvTitle.setText(getString(R.string.log));
+        llStatus.setVisibility(View.GONE);
+        tvDescription.setVisibility(View.GONE);
+        Bundle bundle = getIntent().getExtras();
+
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                new DisplayUtil(GeneralDetailsActivity.this)
+                        .getImageHeight(Constants.PROPORTION_TYPE.ONE_BY_TWO));
+        ivPlantImage.setLayoutParams(layoutParams);
+
+        if (bundle != null) {
+            tvHeading.setText(bundle.getString(Constants.BUNDLE_KEY_TITLE));
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(R.drawable.logo)
+                    .showImageForEmptyUri(R.drawable.logo)
+                    .showImageOnFail(R.drawable.logo)
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .considerExifParams(true)
+                    .displayer(new SimpleBitmapDisplayer())
+                    .build();
+            AppController.getInstance().setupUniversalImageLoader(this);
+            ImageLoader.getInstance().displayImage(Constants.BASE_URL
+                            + bundle.getString(Constants.BUNDLE_KEY_IMAGE_URL), ivPlantImage,
+                    options,
+                    null);
+
+            ivPlantImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(GeneralDetailsActivity.this, ActivityImageView
+                            .class);
+                    // Interesting data to pass across are the thumbnail size/location, the
+                    // resourceId of the source bitmap, the picture description, and the
+                    // orientation (to avoid returning back to an obsolete configuration if
+                    // the device rotates again in the meantime)
+
+                    int[] screenLocation = new int[2];
+                    ivPlantImage.getLocationOnScreen(screenLocation);
+
+                    //Pass the image title and url to DetailsActivity
+                    intent.putExtra(Constants.BUNDLE_KEY_LEFT, screenLocation[0]).
+                            putExtra(Constants.BUNDLE_KEY_TOP, screenLocation[1]).
+                            putExtra(Constants.BUNDLE_KEY_WIDTH, ivPlantImage.getWidth()).
+                            putExtra(Constants.BUNDLE_KEY_HEIGHT, ivPlantImage.getHeight()).
+                            putExtra(Constants.BUNDLE_KEY_TITLE, heading).
+                            putExtra(Constants.BUNDLE_KEY_IMAGE_URL, imageUrl);
+
+                    //Start details activity
+                    startActivity(intent);
+                }
+            });
+            tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(bundle.getString(Constants
+                    .BUNDLE_KEY_UPDATED_AT), DateUtil.DATE_FORMAT_DD_MMM_YYYY_HH_MM));
+        }
     }
 }

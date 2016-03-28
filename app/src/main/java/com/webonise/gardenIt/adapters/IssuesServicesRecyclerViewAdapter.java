@@ -90,15 +90,22 @@ public class IssuesServicesRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     private void configureDashboardPlantsViewHolder(
             IssuesRequestsViewHolder issuesRequestsViewHolder, int position) {
 
+        TextView tvTitle = issuesRequestsViewHolder.getTvTitle();
+        ImageView imageView = issuesRequestsViewHolder.getImageView();
+
         if (type == Constants.CREATE_ISSUE) {
             final IssuesListModel.Issues issue = issues.get(position);
+
+            tvTitle.setText(issue.getTitle());
+
+            issuesRequestsViewHolder.getTvDescription().setText(issue.getDescription());
+
+            issuesRequestsViewHolder.getStatusView().setBackgroundColor
+                    (ColorUtil.getColorBasedOnStatus(context, issue.getStatus()));
+
             final String imageUrl = Constants.BASE_URL + issue.getImages().get(0).getImage()
                     .getUrl();
-            TextView tvTitle = issuesRequestsViewHolder.getTvTitle();
-            tvTitle.setText(issue.getTitle());
-            tvTitle.setTextColor(ColorUtil.getColorBasedOnStatus(context, issue.getStatus()));
-            issuesRequestsViewHolder.getTvDescription().setText(issue.getDescription());
-            ImageView imageView = issuesRequestsViewHolder.getImageView();
+
             ImageLoader.getInstance().displayImage(imageUrl, imageView, options, null);
             issuesRequestsViewHolder.getTvDate().setText(DateUtil.getFormattedDateFromTimeStamp(
                     issue.getCreatedAt(), DateUtil.DATE_FORMAT_DD_MMM));
@@ -113,13 +120,16 @@ public class IssuesServicesRecyclerViewAdapter extends RecyclerView.Adapter<Recy
             });
         } else {
             final ServiceListModel.Requests request = requests.get(position);
+
+            tvTitle.setText(request.getTitle());
+
+            issuesRequestsViewHolder.getTvDescription().setText(request.getDescription());
+
+            issuesRequestsViewHolder.getStatusView().setBackgroundColor
+                    (ColorUtil.getColorBasedOnStatus(context, request.getStatus()));
+
             final String imageUrl = Constants.BASE_URL + request.getImages().get(0).getImage()
                     .getUrl();
-            TextView tvTitle = issuesRequestsViewHolder.getTvTitle();
-            issuesRequestsViewHolder.getTvTitle().setText(request.getTitle());
-            tvTitle.setTextColor(ColorUtil.getColorBasedOnStatus(context, request.getStatus()));
-            issuesRequestsViewHolder.getTvDescription().setText(request.getDescription());
-            ImageView imageView = issuesRequestsViewHolder.getImageView();
             ImageLoader.getInstance().displayImage(imageUrl, imageView, options, null);
             issuesRequestsViewHolder.getTvDate().setText(DateUtil.getFormattedDateFromTimeStamp(
                     request.getCreatedAt(), DateUtil.DATE_FORMAT_DD_MMM));

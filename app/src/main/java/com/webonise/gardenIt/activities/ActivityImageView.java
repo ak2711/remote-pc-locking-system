@@ -8,6 +8,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -37,8 +39,8 @@ public class ActivityImageView extends AppCompatActivity {
     ImageView imageView;
     @Bind(R.id.tvTitle)
     TextView tvTitle;
-    @Bind(R.id.mainBackground)
-    FrameLayout mainBackground;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
     private int mLeftDelta;
     private int mTopDelta;
@@ -60,7 +62,7 @@ public class ActivityImageView extends AppCompatActivity {
         ButterKnife.bind(this);
 
         getBundleData();
-
+        setToolbar();
         // Only run the animation if we're coming from the parent activity, not if
         // we're recreated automatically by the window manager (e.g., device rotation)
         if (savedInstanceState == null) {
@@ -102,8 +104,6 @@ public class ActivityImageView extends AppCompatActivity {
         String imageUrl = bundle.getString(Constants.BUNDLE_KEY_IMAGE_URL);
 
         tvTitle.setText(title);
-        colorDrawable = new ColorDrawable(Color.BLACK);
-        mainBackground.setBackground(colorDrawable);
 
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.logo)
@@ -117,6 +117,20 @@ public class ActivityImageView extends AppCompatActivity {
 
         AppController.getInstance().setupUniversalImageLoader(ActivityImageView.this);
         ImageLoader.getInstance().displayImage(imageUrl, imageView, options, null);
+    }
+
+    private void setToolbar() {
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            toolbar.setNavigationIcon(R.drawable.ic_action_back);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
     }
 
     /**
