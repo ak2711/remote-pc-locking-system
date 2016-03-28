@@ -257,8 +257,35 @@ public class GeneralDetailsActivity extends AppCompatActivity {
                     .build();
             AppController.getInstance().setupUniversalImageLoader(this);
             ImageLoader.getInstance().displayImage(Constants.BASE_URL
-                    + bundle.getString(Constants.BUNDLE_KEY_IMAGE_URL), ivPlantImage, options,
+                            + bundle.getString(Constants.BUNDLE_KEY_IMAGE_URL), ivPlantImage,
+                    options,
                     null);
+
+            ivPlantImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(GeneralDetailsActivity.this, ActivityImageView
+                            .class);
+                    // Interesting data to pass across are the thumbnail size/location, the
+                    // resourceId of the source bitmap, the picture description, and the
+                    // orientation (to avoid returning back to an obsolete configuration if
+                    // the device rotates again in the meantime)
+
+                    int[] screenLocation = new int[2];
+                    ivPlantImage.getLocationOnScreen(screenLocation);
+
+                    //Pass the image title and url to DetailsActivity
+                    intent.putExtra(Constants.BUNDLE_KEY_LEFT, screenLocation[0]).
+                            putExtra(Constants.BUNDLE_KEY_TOP, screenLocation[1]).
+                            putExtra(Constants.BUNDLE_KEY_WIDTH, ivPlantImage.getWidth()).
+                            putExtra(Constants.BUNDLE_KEY_HEIGHT, ivPlantImage.getHeight()).
+                            putExtra(Constants.BUNDLE_KEY_TITLE, heading).
+                            putExtra(Constants.BUNDLE_KEY_IMAGE_URL, imageUrl);
+
+                    //Start details activity
+                    startActivity(intent);
+                }
+            });
             tvDate.setText(DateUtil.getFormattedDateFromTimeStamp(bundle.getString(Constants
                     .BUNDLE_KEY_UPDATED_AT), DateUtil.DATE_FORMAT_DD_MMM_YYYY_HH_MM));
         }
